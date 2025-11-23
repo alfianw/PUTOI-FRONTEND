@@ -1,0 +1,161 @@
+import { Droplet, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+
+export function FooterSection() {
+  return (
+    <footer className="bg-gray-900 text-gray-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          {/* Brand */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="bg-gradient-to-r from-blue-900 to-blue-600 p-2 rounded-lg">
+                <Droplet className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl text-white">PUTOI</span>
+            </div>
+            <p className="text-gray-400 mb-4">
+              Water Treatment Plant berstandar industri milik Jurusan Teknik Elektro – Politeknik Negeri Jakarta.
+            </p>
+            <div className="flex gap-3">
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Youtube className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-white text-lg mb-4">Link Cepat</h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="#about" className="hover:text-blue-400 transition-colors">
+                  Tentang Kami
+                </a>
+              </li>
+              <li>
+                <a href="#organization" className="hover:text-blue-400 transition-colors">
+                  Organisasi
+                </a>
+              </li>
+              <li>
+                <a href="#partners" className="hover:text-blue-400 transition-colors">
+                  Partners
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-blue-400 transition-colors">
+                  Layanan
+                </a>
+              </li>
+              <li>
+                <a href="#products" className="hover:text-blue-400 transition-colors">
+                  Produk
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h3 className="text-white text-lg mb-4">Layanan</h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="#services" className="hover:text-blue-400 transition-colors">
+                  Kalibrasi Pressure
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-blue-400 transition-colors">
+                  Kalibrasi Transmitter
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-blue-400 transition-colors">
+                  Pelatihan SCADA IoT
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-blue-400 transition-colors">
+                  Pelatihan LabVIEW
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-blue-400 transition-colors">
+                  Pelatihan Kalibrasi
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="text-white text-lg mb-4">Kontak Kami</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 mt-1 flex-shrink-0" />
+                <span>Jl. Prof. Dr. G.A. Siwabessy, Kampus Baru UI, Depok 16425</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-5 h-5 flex-shrink-0" />
+                <span>(021) 7270036</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-5 h-5 flex-shrink-0" />
+                <span>putoi@pnj.ac.id</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Globe className="w-5 h-5 flex-shrink-0" />
+                <span>putoi.pnj.ac.id</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-gray-400 text-sm">
+            © 2024 PUTOI - Politeknik Negeri Jakarta. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm">
+            <a href="#" className="hover:text-blue-400 transition-colors">
+              Kebijakan Privasi
+            </a>
+            <a href="#" className="hover:text-blue-400 transition-colors">
+              Syarat & Ketentuan
+            </a>
+            <a href="#contact" className="hover:text-blue-400 transition-colors">
+              Hubungi Kami
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
