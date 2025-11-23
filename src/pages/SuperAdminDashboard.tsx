@@ -40,6 +40,11 @@ export default function SuperAdminDashboard() {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [currentDialog, setCurrentDialog] = useState<'user' | 'course' | 'news' | null>(null);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [totalCourses, setTotalCourses] = useState(0);
+    const [totalNews, setTotalNews] = useState(0);
+
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         if (user?.role === 'superadmin') {
@@ -53,18 +58,43 @@ export default function SuperAdminDashboard() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch(
-                `https://${projectId}.supabase.co/functions/v1/make-server-d9e5996a/users`,
-                {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                }
-            );
+            const token = localStorage.getItem("accessToken"); // 🔥 ambil token
+
+            const response = await fetch(`${API_BASE}/api/users/user-pagination`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token ? `Bearer ${token}` : ""
+                },
+                body: JSON.stringify({
+                    sortBy: "id",
+                    sortOrder: "desc",
+                    limit: "10",
+                    page: "1",
+                    filters: { email: "", noHp: "", nama: "" }
+                })
+            });
+
             const data = await response.json();
-            setUsers(data.users || []);
+
+            console.log("RESPONSE USERS:", data); // cek output backend
+
+            // 🔥 sesuaikan key total user sesuai backend
+            setTotalUsers(
+                data.countData ||
+                data.totalItems ||
+                data.total ||
+                data.count ||
+                0
+            );
+
+            setUsers(data.data || []);
+
         } catch (error) {
-            console.error('Failed to fetch users:', error);
+            console.error("Failed to fetch users:", error);
         }
     };
+
 
     const fetchCourses = async () => {
         try {
@@ -222,6 +252,8 @@ export default function SuperAdminDashboard() {
                         <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="courses">Courses</TabsTrigger>
                         <TabsTrigger value="news">News</TabsTrigger>
+                        <TabsTrigger value="news">Jasa</TabsTrigger>
+                        <TabsTrigger value="news">Training Participant</TabsTrigger>
                     </TabsList>
 
                     {/* Users Tab */}
@@ -229,32 +261,59 @@ export default function SuperAdminDashboard() {
                         <Card className="p-6">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-xl text-gray-900">Manage Users</h2>
-                                <CreateUserDialog onSuccess={fetchUsers} accessToken={accessToken} />
                             </div>
+
                             <Table>
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Name</TableHead>
                                         <TableHead>Email</TableHead>
+                                        <TableHead>Phone</TableHead>
                                         <TableHead>Role</TableHead>
+                                        <TableHead>Participant</TableHead>
+                                        <TableHead>Identity No</TableHead>
+                                        <TableHead>Gender</TableHead>
+                                        <TableHead>University</TableHead>
+                                        <TableHead>Education Field</TableHead>
+                                        <TableHead>Major</TableHead>
+                                        <TableHead>City</TableHead>
                                         <TableHead>Created At</TableHead>
+                                        <TableHead>Updated At</TableHead>
                                         <TableHead>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
+
                                 <TableBody>
                                     {users.map((u) => (
                                         <TableRow key={u.id}>
                                             <TableCell>{u.name}</TableCell>
                                             <TableCell>{u.email}</TableCell>
+                                            <TableCell>{u.phoneNumber}</TableCell>
+
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded text-xs ${u.role === 'superadmin' ? 'bg-red-100 text-red-700' :
-                                                        u.role === 'admin' ? 'bg-blue-100 text-blue-700' :
-                                                            'bg-gray-100 text-gray-700'
-                                                    }`}>
+                                                <span
+                                                    className={`px-2 py-1 rounded text-xs ${u.role === 'superadmin'
+                                                            ? 'bg-red-100 text-red-700'
+                                                            : u.role === 'admin'
+                                                                ? 'bg-blue-100 text-blue-700'
+                                                                : 'bg-gray-100 text-gray-700'
+                                                        }`}
+                                                >
                                                     {u.role}
                                                 </span>
                                             </TableCell>
+
+                                            <TableCell>{u.participantType}</TableCell>
+                                            <TableCell>{u.identityNumber}</TableCell>
+                                            <TableCell>{u.gender}</TableCell>
+                                            <TableCell>{u.universityName}</TableCell>
+                                            <TableCell>{u.lastEducationField}</TableCell>
+                                            <TableCell>{u.majorStudyProgram}</TableCell>
+                                            <TableCell>{u.cityOfResidence}</TableCell>
+
                                             <TableCell>{new Date(u.createdAt).toLocaleDateString()}</TableCell>
+                                            <TableCell>{new Date(u.updateAt).toLocaleDateString()}</TableCell>
+
                                             <TableCell>
                                                 <Button
                                                     variant="ghost"
@@ -344,101 +403,6 @@ export default function SuperAdminDashboard() {
                 </Tabs>
             </div>
         </div>
-    );
-}
-
-// Create User Dialog Component
-function CreateUserDialog({ onSuccess, accessToken }: { onSuccess: () => void; accessToken: string | null }) {
-    const [open, setOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        role: 'student',
-    });
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch(
-                `https://${projectId}.supabase.co/functions/v1/make-server-d9e5996a/users`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
-            if (response.ok) {
-                setOpen(false);
-                setFormData({ name: '', email: '', password: '', role: 'student' });
-                onSuccess();
-            }
-        } catch (error) {
-            console.error('Failed to create user:', error);
-        }
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    Add User
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Create New User</DialogTitle>
-                    <DialogDescription>Add a new user to the platform</DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <Label>Name</Label>
-                        <Input
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Email</Label>
-                        <Input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Password</Label>
-                        <Input
-                            type="password"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            required
-                            minLength={6}
-                        />
-                    </div>
-                    <div>
-                        <Label>Role</Label>
-                        <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="student">Student</SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
-                                <SelectItem value="superadmin">SuperAdmin</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <Button type="submit" className="w-full">Create User</Button>
-                </form>
-            </DialogContent>
-        </Dialog>
     );
 }
 
