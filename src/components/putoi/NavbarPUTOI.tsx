@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Menu, X, Search, User, Droplet, LogOut, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../../utils/auth-context";
 import { AuthModal } from "../AuthModal";
+import logo from "../../assets/pnj-logo.avif";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +32,6 @@ export function NavbarPUTOI() {
 
   const getDashboardLink = () => {
     if (user?.role === 'superadmin') return '#/superadmin';
-    if (user?.role === 'admin') return '#/admin';
     return '#/';
   };
 
@@ -82,13 +82,9 @@ export function NavbarPUTOI() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a href="#/putoi" className="flex items-center gap-2">
-            <div className="bg-gradient-to-r from-blue-900 to-blue-600 p-2 rounded-lg">
-              <Droplet className="w-6 h-6 text-white" />
-            </div>
+            <img src={logo} alt="PNJ Logo" className="h-10 w-auto" />
             <div>
-              <span className="text-xl bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent block">
-                PUTOI
-              </span>
+              <span className="text-xl bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent block">PUTOI</span>
               <span className="text-xs text-gray-500">PNJ Water Treatment</span>
             </div>
           </a>
@@ -102,9 +98,8 @@ export function NavbarPUTOI() {
               <button
                 key={link.id}
                 onClick={() => scrollToSection(link.id)}
-                className={`text-gray-700 hover:text-blue-900 transition-colors ${
-                  activeSection === link.id ? 'text-blue-900 font-medium' : ''
-                }`}
+                className={`text-gray-700 hover:text-blue-900 transition-colors ${activeSection === link.id ? 'text-blue-900 font-medium' : ''
+                  }`}
               >
                 {link.label}
               </button>
@@ -132,7 +127,7 @@ export function NavbarPUTOI() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {(user.role === 'admin' || user.role === 'superadmin') && (
+                  {(user.role === 'superadmin') && (
                     <>
                       <DropdownMenuItem onClick={() => window.location.href = getDashboardLink()} className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -153,7 +148,7 @@ export function NavbarPUTOI() {
                   <User className="w-4 h-4" />
                   Masuk
                 </Button>
-                <Button 
+                <Button
                   className="bg-gradient-to-r from-blue-900 to-blue-600 hover:from-blue-800 hover:to-blue-500"
                   onClick={() => openAuthModal('signup')}
                 >
@@ -185,9 +180,8 @@ export function NavbarPUTOI() {
               <button
                 key={link.id}
                 onClick={() => scrollToSection(link.id)}
-                className={`block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg ${
-                  activeSection === link.id ? 'bg-blue-50 text-blue-900' : ''
-                }`}
+                className={`block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg ${activeSection === link.id ? 'bg-blue-50 text-blue-900' : ''
+                  }`}
               >
                 {link.label}
               </button>
@@ -202,10 +196,10 @@ export function NavbarPUTOI() {
                       Role: {user.role}
                     </div>
                   </div>
-                  {(user.role === 'admin' || user.role === 'superadmin') && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full gap-2" 
+                  {(user.role === 'superadmin') && (
+                    <Button
+                      variant="outline"
+                      className="w-full gap-2"
                       onClick={() => window.location.href = getDashboardLink()}
                     >
                       <LayoutDashboard className="w-4 h-4" />
@@ -223,7 +217,7 @@ export function NavbarPUTOI() {
                     <User className="w-4 h-4" />
                     Masuk
                   </Button>
-                  <Button 
+                  <Button
                     className="w-full bg-gradient-to-r from-blue-900 to-blue-600"
                     onClick={() => openAuthModal('signup')}
                   >
@@ -235,10 +229,10 @@ export function NavbarPUTOI() {
           </div>
         )}
       </div>
-      
-      <AuthModal 
-        isOpen={authModalOpen} 
-        onClose={() => setAuthModalOpen(false)} 
+
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
         defaultMode={authMode}
       />
     </nav>

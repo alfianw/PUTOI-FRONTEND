@@ -17,13 +17,13 @@ export default function HomePage() {
             <Navbar />
             <main>
                 <Hero />
-                <Categories />
+                {/* <Categories /> */}
                 <FeaturedCourses />
                 <Features />
                 <NewsSection />
                 <Stats />
-                <Testimonials />
-                <Newsletter />
+                {/* <Testimonials /> */}
+                {/* <Newsletter /> */}
             </main>
             <Footer />
         </div>

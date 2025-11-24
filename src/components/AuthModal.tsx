@@ -267,8 +267,8 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
             </div>
           </form>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            
+          <form onSubmit={handleSubmit} className="space-y-4 ">
+
             {/* Signup fields */}
             {modeState === 'signup' && (
               <>

@@ -6,6 +6,7 @@ import { Input } from "./ui/input";
 import { useAuth } from "../utils/auth-context";
 import { AuthModal } from "./AuthModal";
 import { ProfileModal } from "./ProfileModal";
+import logo from "../assets/pnj-logo.avif";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,28 +52,20 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="bg-gradient-to-r from-blue-900 to-blue-600 p-2 rounded-lg">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
-              EduLearn
-            </span>
-          </div>
+            <img  src={logo} alt="PNJ Logo" className="h-10 w-auto"/><span className="text-xl text-primary">PUTOI</span></div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors">Beranda</a>
+            <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors">Pelatihan</a>
+            <a href="#categories" className="text-gray-700 hover:text-blue-900 transition-colors">Jasa</a>
+            <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors">Berita</a>
+            <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors">Galeri</a>
             <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI</a>
-            <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors">Kursus</a>
-            <a href="#categories" className="text-gray-700 hover:text-blue-900 transition-colors">Kategori</a>
-            <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors">Kontak</a>
           </div>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <Search className="w-5 h-5" />
-            </Button>
 
             {user ? (
               canAccessProfile ? (
@@ -155,11 +148,11 @@ export function Navbar() {
               />
             </div>
             <a onClick={() => setIsMenuOpen(false)} href="#/" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Beranda</a>
+            <a onClick={() => setIsMenuOpen(false)} href="#courses" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Pelatihan</a>
+            <a onClick={() => setIsMenuOpen(false)} href="#categories" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Jasa</a>
+            <a onClick={() => setIsMenuOpen(false)} href="#categories" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Berita</a>
+            <a onClick={() => setIsMenuOpen(false)} href="#categories" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Galeri</a>
             <a onClick={() => setIsMenuOpen(false)} href="#/putoi" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">PUTOI</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#courses" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Kursus</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#categories" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Kategori</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#contact" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Kontak</a>
-
             <div className="flex flex-col gap-2 pt-4 border-t">
               {user && canAccessProfile && (
                 <>
