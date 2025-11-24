@@ -47,7 +47,7 @@ export function FeaturedCourses() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl text-gray-900 mb-4">
-              Kursus Populer
+              Pelatihan
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Pilihan kursus terbaik dari berbagai kategori dengan rating tertinggi
@@ -74,10 +74,10 @@ export function FeaturedCourses() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl text-gray-900 mb-4">
-            Kursus Populer
+            Pelatihan
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Pilihan kursus terbaik dari berbagai kategori dengan rating tertinggi
+            Pilihan pelatihan terbaik dengan kategori beragam
           </p>
         </div>
 
@@ -169,7 +169,7 @@ export function FeaturedCourses() {
         <div className="text-center mt-12">
           <Button
             variant="outline"
-            className="px-8 border-2 border-blue-900 text-blue-900 hover:bg-blue-50"
+            className="px-8 border-2 border-blue-900 text-blue-900 hover:bg-blue-50 hover:text-blue-800"
           >
             Lihat Semua Kursus
           </Button>

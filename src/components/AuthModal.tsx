@@ -228,9 +228,9 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto space-y-2">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle className="text-2xl margin-bottom-4">
             {modeState === 'signin' ? 'Masuk' : modeState === 'signup' ? 'Daftar Akun' : 'Lupa Password'}
           </DialogTitle>
           <DialogDescription>
@@ -272,127 +272,151 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
             {/* Signup fields */}
             {modeState === 'signup' && (
               <>
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nama Lengkap</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="Contoh: Alfian Widjaya"
-                    required
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nama Lengkap</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                      placeholder="Contoh: Alfian Widjaya"
+                      required
+                    />
+                  </div>
 
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="Contoh: email@domain.com"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="Contoh: email@domain.com"
+                      required
+                    />
+                  </div>
 
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="Minimal 6 karakter"
-                    required
-                    minLength={6}
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      placeholder="Minimal 6 karakter"
+                      required
+                      minLength={6}
+                    />
+                  </div>
 
-                  <Label htmlFor="phoneNumber">Nomor HP</Label>
-                  <Input
-                    id="phoneNumber"
-                    type="text"
-                    value={phoneNumber}
-                    onChange={e => setPhoneNumber(e.target.value)}
-                    placeholder="Contoh: 081234567890"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="phoneNumber">Nomor HP</Label>
+                    <Input
+                      id="phoneNumber"
+                      type="text"
+                      value={phoneNumber}
+                      onChange={e => setPhoneNumber(e.target.value)}
+                      placeholder="Contoh: 081234567890"
+                      required
+                    />
+                  </div>
 
-                  <Label htmlFor="participantType">Participant Type</Label>
-                  <Input
-                    id="participantType"
-                    type="text"
-                    value={participantType}
-                    onChange={e => setParticipantType(e.target.value)}
-                    placeholder="Contoh: Mahasiswa"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="participantType">Participant Type</Label>
+                    <Input
+                      id="participantType"
+                      type="text"
+                      value={participantType}
+                      onChange={e => setParticipantType(e.target.value)}
+                      placeholder="Contoh: Mahasiswa"
+                      required
+                    />
+                  </div>
 
-                  <Label htmlFor="identityNumber">Nomor KTP</Label>
-                  <Input
-                    id="identityNumber"
-                    type="text"
-                    value={identityNumber}
-                    onChange={e => setIdentityNumber(e.target.value)}
-                    placeholder="16 digit, contoh: 1234567890123456"
-                    required
-                    maxLength={16}
-                    minLength={16}
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="identityNumber">Nomor KTP</Label>
+                    <Input
+                      id="identityNumber"
+                      type="text"
+                      value={identityNumber}
+                      onChange={e => setIdentityNumber(e.target.value)}
+                      placeholder="16 digit, contoh: 1234567890123456"
+                      required
+                      maxLength={16}
+                      minLength={16}
+                    />
+                  </div>
 
-                  <Label htmlFor="gender">Jenis Kelamin</Label>
-                  <select
-                    id="gender"
-                    value={gender}
-                    onChange={e => setGender(e.target.value)}
-                    required
-                  >
-                    <option value="">-- Pilih Gender --</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                  </select>
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">Jenis Kelamin</Label>
+                    <select
+                      id="gender"
+                      value={gender}
+                      onChange={e => setGender(e.target.value)}
+                      required
+                      className="w-full rounded-md border bg-white px-3 py-2 text-sm"
+                    >
+                      <option value="">-- Pilih Gender --</option>
+                      <option value="Laki-laki">Laki-laki</option>
+                      <option value="Perempuan">Perempuan</option>
+                    </select>
+                  </div>
 
-                  <Label htmlFor="universityName">Nama Universitas</Label>
-                  <Input
-                    id="universityName"
-                    type="text"
-                    value={universityName}
-                    onChange={e => setUniversityName(e.target.value)}
-                    placeholder="Contoh: Universitas Indonesia"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="universityName">Nama Universitas</Label>
+                    <Input
+                      id="universityName"
+                      type="text"
+                      value={universityName}
+                      onChange={e => setUniversityName(e.target.value)}
+                      placeholder="Contoh: Universitas Indonesia"
+                      required
+                    />
+                  </div>
 
-                  <Label htmlFor="lastEducationField">Bidang Pendidikan Terakhir</Label>
-                  <Input
-                    id="lastEducationField"
-                    type="text"
-                    value={lastEducationField}
-                    onChange={e => setLastEducationField(e.target.value)}
-                    placeholder="Contoh: S1"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="lastEducationField">Bidang Pendidikan Terakhir</Label>
+                    <Input
+                      id="lastEducationField"
+                      type="text"
+                      value={lastEducationField}
+                      onChange={e => setLastEducationField(e.target.value)}
+                      placeholder="Contoh: S1"
+                      required
+                    />
+                  </div>
 
-                  <Label htmlFor="majorStudyProgram">Program Studi</Label>
-                  <Input
-                    id="majorStudyProgram"
-                    type="text"
-                    value={majorStudyProgram}
-                    onChange={e => setMajorStudyProgram(e.target.value)}
-                    placeholder="Contoh: Teknik Informatika"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="majorStudyProgram">Program Studi</Label>
+                    <Input
+                      id="majorStudyProgram"
+                      type="text"
+                      value={majorStudyProgram}
+                      onChange={e => setMajorStudyProgram(e.target.value)}
+                      placeholder="Contoh: Teknik Informatika"
+                      required
+                    />
+                  </div>
 
-                  <Label htmlFor="cityOfResidence">Kota Domisili</Label>
-                  <Input
-                    id="cityOfResidence"
-                    type="text"
-                    value={cityOfResidence}
-                    onChange={e => setCityOfResidence(e.target.value)}
-                    placeholder="Contoh: Jakarta"
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="cityOfResidence">Kota Domisili</Label>
+                    <Input
+                      id="cityOfResidence"
+                      type="text"
+                      value={cityOfResidence}
+                      onChange={e => setCityOfResidence(e.target.value)}
+                      placeholder="Contoh: Jakarta"
+                      required
+                    />
+                  </div>
                 </div>
 
                 {/* OTP Section */}
                 <div className="space-y-2">
                   {!otpSent ? (
                     <Button
+                      className='w-full'
                       type="button"
                       onClick={() => {
                         // Validasi sebelum kirim OTP

@@ -6,7 +6,7 @@ import { Input } from "./ui/input";
 import { useAuth } from "../utils/auth-context";
 import { AuthModal } from "./AuthModal";
 import { ProfileModal } from "./ProfileModal";
-import logo from "../assets/pnj-logo.avif";
+import logo from "../assets/pnj-putoi-logo-v2.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,7 +52,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img  src={logo} alt="PNJ Logo" className="h-10 w-auto"/><span className="text-xl text-primary">PUTOI</span></div>
+            <img  src={logo} alt="PNJ Logo" className="h-10 w-auto"/></div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
