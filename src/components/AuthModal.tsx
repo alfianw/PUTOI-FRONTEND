@@ -324,15 +324,20 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
 
                   <div className="space-y-2">
                     <Label htmlFor="participantType">Participant Type</Label>
-                    <Input
+                    <select
                       id="participantType"
-                      type="text"
                       value={participantType}
-                      onChange={e => setParticipantType(e.target.value)}
-                      placeholder="Contoh: Mahasiswa"
+                      onChange={(e) => setParticipantType(e.target.value)}
                       required
-                    />
+                      className="w-full rounded-md border bg-white px-3 py-2 text-sm"
+                    >
+                      <option value="">- Pilih Participant Type -</option>
+                      <option value="Dosen">Dosen</option>
+                      <option value="Umum">Umum</option>
+                      <option value="Industri">Industri</option>
+                    </select>
                   </div>
+
 
                   <div className="space-y-2">
                     <Label htmlFor="identityNumber">Nomor KTP</Label>
@@ -357,7 +362,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
                       required
                       className="w-full rounded-md border bg-white px-3 py-2 text-sm"
                     >
-                      <option value="">-- Pilih Gender --</option>
+                      <option value="">- Pilih Jenis Kelamin -</option>
                       <option value="Laki-laki">Laki-laki</option>
                       <option value="Perempuan">Perempuan</option>
                     </select>

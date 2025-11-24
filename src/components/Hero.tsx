@@ -3,6 +3,7 @@ import { Search, PlayCircle } from "lucide-react";
 import { Input } from "./ui/input";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useEffect } from "react";
+import homeImage from "../assets/home-image.png";
 import '../utils/init-superadmin';
 
 export function Hero() {
@@ -12,10 +13,9 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8">
-            <h1 className="text-4xl lg:text-6xl text-gray-900">
-              Tingkatkan Skill Anda Dengan{" "}
+            <h1 className="text-6xl lg:text-6xl text-gray-900">Tingkatkan Kompetensi Anda Dengan Pelatihan.{" "}
               <span className="bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
-                Pembelajaran Online
+                Terstandar Industri
               </span>
             </h1>
             <p className="text-xl text-gray-600">
@@ -44,7 +44,7 @@ export function Hero() {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1613151096599-b234757eb4d2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBsZWFybmluZyUyMHN0dWRlbnRzfGVufDF8fHx8MTc2MDQzMDg0OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                src={homeImage}
                 alt="Online Learning"
                 className="w-full h-[500px] object-cover"
               />
