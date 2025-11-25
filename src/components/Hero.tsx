@@ -3,7 +3,7 @@ import { Search, PlayCircle } from "lucide-react";
 import { Input } from "./ui/input";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useEffect } from "react";
-import homeImage from "../assets/home-image.png";
+import homeImage from "../assets/home-image.jpg";
 import '../utils/init-superadmin';
 
 export function Hero() {
@@ -19,8 +19,7 @@ export function Hero() {
               </span>
             </h1>
             <p className="text-xl text-gray-600">
-              Akses ribuan kursus berkualitas dari instruktur ahli. Belajar sesuai dengan
-              kecepatan Anda sendiri dan raih karir impian Anda.
+PUTOI merupakan unit pelatihan profesional PNJ yang menyelenggarakan kegiatan pelatihan dan uji kompetensi baik untuk mahasiswa dan alumni maupun masyarakat umum.
             </p>
 
             {/* Stats */}

@@ -110,6 +110,49 @@ export default function SuperAdminDashboard() {
     const [showProductModal, setShowProductModal] = useState(false);
     const [isEditProduct, setIsEditProduct] = useState(false);
 
+    // TRAINING
+    interface TrainingItem {
+        id: number;
+        trainingTitle: string;
+        description: string;
+        trainingMaterials: string[];
+        institutionName: string;
+        duration: string;
+        minimumParticipants: string;
+        facilities: string[];
+        implementationSchedule: string;
+        competencyTestPlace: string;
+        certificate: string[];
+        trainingFee: string;
+        author: string;
+        createdAt: string;
+        updateAt: string;
+    }
+
+    const [trainingList, setTrainingList] = useState<TrainingItem[]>([]);
+    const [trainingPage, setTrainingPage] = useState(1);
+    const [trainingLimit, setTrainingLimit] = useState(10);
+    const [trainingTotalPages, setTrainingTotalPages] = useState(1);
+    const [trainingTotalData, setTrainingTotalData] = useState(0);
+    const [filterTrainingTitle, setFilterTrainingTitle] = useState("");
+    const [detailTraining, setDetailTraining] = useState<any>(null);
+    const [showTrainingModal, setShowTrainingModal] = useState(false);
+    const [isEditTraining, setIsEditTraining] = useState(false);
+    const [trainingForm, setTrainingForm] = useState<any>({});
+    const [showAddTrainingModal, setShowAddTrainingModal] = useState(false);
+    const [addTrainingData, setAddTrainingData] = useState({
+        trainingTitle: "",
+        description: "",
+        trainingMaterials: [""],
+        institutionName: "",
+        duration: "",
+        minimumParticipants: "",
+        facilities: [""],
+        implementationSchedule: "",
+        competencyTestPlace: "",
+        certificate: [""],
+        trainingFee: "",
+    });
 
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -120,7 +163,7 @@ export default function SuperAdminDashboard() {
     }, [user]);
 
     const fetchAllData = async () => {
-        await Promise.all([fetchUsers(), fetchCourses(), fetchNews()]);
+        await Promise.all([fetchUsers(), fetchTraining(), fetchNews()]);
     };
 
     const fetchUsers = async () => {
@@ -490,41 +533,197 @@ export default function SuperAdminDashboard() {
         fetchProducts();
     }, [productPage, productLimit, filterProductTitle, filterProductCategory]);
 
-
-
-    const fetchCourses = async () => {
+    // training
+    const fetchTraining = async () => {
         try {
-            const response = await fetch(
-                `https://${projectId}.supabase.co/functions/v1/make-server-d9e5996a/courses`,
-                {
-                    headers: { Authorization: `Bearer ${publicAnonKey}` },
-                }
-            );
-            const data = await response.json();
-            setCourses(data.courses || []);
-        } catch (error) {
-            console.error('Failed to fetch courses:', error);
-        }
-    };
+            const res = await fetch(`${API_BASE}/api/training/pagination`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    sortBy: "id",
+                    sortOrder: "desc",
+                    limit: String(trainingLimit),
+                    page: String(trainingPage),
+                    filters: { trainingTitle: filterTrainingTitle, author: "" }
+                })
+            });
 
-    const deleteCourse = async (courseId: string) => {
-        if (!confirm('Apakah Anda yakin ingin menghapus kursus ini?')) return;
+            const data = await res.json();
 
-        try {
-            const response = await fetch(
-                `https://${projectId}.supabase.co/functions/v1/make-server-d9e5996a/courses/${courseId}`,
-                {
-                    method: 'DELETE',
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                }
-            );
-            if (response.ok) {
-                await fetchCourses();
+            if (data.code === "00") {
+                setTrainingList(data.data || []);
+                setTrainingTotalPages(data.totalPages || 1);
+                setTrainingTotalData(data.countData || 0);
             }
-        } catch (error) {
-            console.error('Failed to delete course:', error);
+        } catch (e) {
+            console.error("Error fetch training:", e);
         }
     };
+
+
+    const getDetailTraining = async (id: number) => {
+        try {
+            const response = await fetch(`${API_BASE}/api/training/detail`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: String(id) })
+            });
+
+            const data = await response.json();
+
+            if (data.code === "00") {
+                setDetailTraining(data.data);
+                setTrainingForm(data.data);
+                setShowTrainingModal(true);
+            }
+
+        } catch (err) {
+            console.error("Detail training error:", err);
+        }
+    };
+
+    const createTraining = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            // VALIDASI WAJIB
+            if (!addTrainingData.competencyTestPlace.trim()) {
+                alert("Competency Test Place wajib diisi");
+                return;
+            }
+
+            // BERSIHKAN ARRAY
+            const cleanedData = {
+                ...addTrainingData,
+                trainingMaterials: addTrainingData.trainingMaterials.filter(i => i.trim() !== ""),
+                facilities: addTrainingData.facilities.filter(i => i.trim() !== ""),
+                certificate: addTrainingData.certificate.filter(i => i.trim() !== "")
+            };
+
+            const res = await fetch(`${API_BASE}/api/training/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(cleanedData)
+            });
+
+            const data = await res.json();
+
+            if (data.code === "00") {
+                setShowAddTrainingModal(false);
+                fetchTraining();
+
+                // RESET
+                setAddTrainingData({
+                    trainingTitle: "",
+                    description: "",
+                    trainingMaterials: [""],
+                    institutionName: "",
+                    duration: "",
+                    minimumParticipants: "",
+                    facilities: [""],
+                    implementationSchedule: "",
+                    competencyTestPlace: "",
+                    certificate: [""],
+                    trainingFee: ""
+                });
+            }
+
+        } catch (e) {
+            console.error("Create training error:", e);
+        }
+    };
+
+
+
+    const updateTraining = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            const res = await fetch(`${API_BASE}/api/training/update`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(trainingForm)
+            });
+
+            const data = await res.json();
+
+            if (data.code === "00") {
+                setIsEditTraining(false);
+                setDetailTraining(data.data);
+                fetchTraining();
+            }
+        } catch (err) {
+            console.error("Update training error:", err);
+        }
+    };
+
+    const deleteTraining = async (id: number) => {
+        if (!confirm("Hapus training ini?")) return;
+
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            const res = await fetch(`${API_BASE}/api/training/delete`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ id: String(id) })
+            });
+
+            const data = await res.json();
+
+            if (data.code === "00") {
+                fetchTraining();
+            }
+
+        } catch (err) {
+            console.error("Delete training error:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchTraining();
+    }, [trainingPage, trainingLimit, filterTrainingTitle]);
+
+    const updateArrayField = (field: string, index: number, value: string) => {
+        setTrainingForm((prev: any) => {
+            const copy = { ...prev };
+            copy[field][index] = value;
+            return copy;
+        });
+    };
+
+    const addArrayField = (field: string) => {
+        setTrainingForm((prev: any) => ({
+            ...prev,
+            [field]: [...prev[field], ""]
+        }));
+    };
+
+    const updateArrayAddForm = (field: string, index: number, value: string) => {
+        setAddTrainingData((prev: any) => {
+            const copy = { ...prev };
+            copy[field][index] = value;
+            return copy;
+        });
+    };
+
+    const addArrayAddForm = (field: string) => {
+        setAddTrainingData((prev: any) => ({
+            ...prev,
+            [field]: [...prev[field], ""]
+        }));
+    };
+
+
 
     if (user?.role !== 'superadmin') {
         return (
@@ -573,7 +772,7 @@ export default function SuperAdminDashboard() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-gray-600">Total Courses</p>
-                                <p className="text-3xl text-gray-900 mt-2">{courses.length}</p>
+                                <p className="text-3xl text-gray-900 mt-2">{trainingTotalData}</p>
                             </div>
                             <BookOpen className="w-12 h-12 text-blue-600" />
                         </div>
@@ -913,33 +1112,124 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
-
-                    {/* Courses Tab */}
+                    {/* training Tab */}
                     <TabsContent value="courses">
                         <Card className="p-6">
+
+                            {/* HEADER + FILTER */}
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl text-gray-900">Manage Courses</h2>
-                                <CreateCourseDialog onSuccess={fetchCourses} accessToken={accessToken} />
+                                <h2 className="text-xl text-gray-900">Manage Training</h2>
+
+                                <div className="flex items-center gap-3 ml-auto">
+                                    <input
+                                        type="text"
+                                        placeholder="Filter title..."
+                                        value={filterTrainingTitle}
+                                        onChange={(e) => {
+                                            setFilterTrainingTitle(e.target.value);
+                                            setTrainingPage(1);
+                                        }}
+                                        className="border rounded px-3 py-2 text-sm w-60"
+                                    />
+
+                                    <Button onClick={() => setShowAddTrainingModal(true)}>
+                                        Add Training
+                                    </Button>
+                                </div>
                             </div>
+
+                            {/* TABLE */}
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead>ID</TableHead>
                                         <TableHead>Title</TableHead>
-                                        <TableHead>Category</TableHead>
-                                        <TableHead>Price</TableHead>
-                                        <TableHead>Created At</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead>Materials</TableHead>
+                                        <TableHead>Institution</TableHead>
+                                        <TableHead>Duration</TableHead>
+                                        <TableHead>Min Participants</TableHead>
+                                        <TableHead>Facilities</TableHead>
+                                        <TableHead>Schedule</TableHead>
+                                        <TableHead>Competency Test Place</TableHead>
+                                        <TableHead>Certificate</TableHead>
+                                        <TableHead>Training Fee</TableHead>
+                                        <TableHead>Author</TableHead>
+                                        <TableHead>Created</TableHead>
+                                        <TableHead>Updated</TableHead>
                                         <TableHead>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
+
                                 <TableBody>
-                                    {courses.map((course) => (
-                                        <TableRow key={course.id}>
-                                            <TableCell>{course.title}</TableCell>
-                                            <TableCell>{course.category}</TableCell>
-                                            <TableCell>{course.price}</TableCell>
-                                            <TableCell>{new Date(course.createdAt).toLocaleDateString()}</TableCell>
+                                    {trainingList.map((t) => (
+                                        <TableRow key={t.id}>
+                                            <TableCell>{t.id}</TableCell>
+
+                                            <TableCell>{t.trainingTitle}</TableCell>
+
+                                            <TableCell>{t.description}</TableCell>
+
+                                            {/* MATERIALS turun ke bawah */}
                                             <TableCell>
-                                                <Button variant="ghost" size="sm" onClick={() => deleteCourse(course.id)}>
+                                                {Array.isArray(t.trainingMaterials) && t.trainingMaterials.length > 0 ? (
+                                                    <ul className="list-disc pl-4">
+                                                        {t.trainingMaterials.map((m, i) => (
+                                                            <li key={i}>{m}</li>
+                                                        ))}
+                                                    </ul>
+                                                ) : "-"}
+                                            </TableCell>
+
+                                            <TableCell>{t.institutionName}</TableCell>
+
+                                            <TableCell>{t.duration}</TableCell>
+
+                                            <TableCell>{t.minimumParticipants}</TableCell>
+
+                                            {/* FACILITIES turun ke bawah */}
+                                            <TableCell>
+                                                {Array.isArray(t.facilities) && t.facilities.length > 0 ? (
+                                                    <ul className="list-disc pl-4">
+                                                        {t.facilities.map((f, i) => (
+                                                            <li key={i}>{f}</li>
+                                                        ))}
+                                                    </ul>
+                                                ) : "-"}
+                                            </TableCell>
+
+                                            <TableCell>{t.implementationSchedule}</TableCell>
+
+                                            <TableCell>{t.competencyTestPlace}</TableCell>
+
+                                            {/* CERTIFICATE turun ke bawah */}
+                                            <TableCell>
+                                                {Array.isArray(t.certificate) && t.certificate.length > 0 ? (
+                                                    <ul className="list-disc pl-4">
+                                                        {t.certificate.map((c, i) => (
+                                                            <li key={i}>{c}</li>
+                                                        ))}
+                                                    </ul>
+                                                ) : "-"}
+                                            </TableCell>
+
+                                            <TableCell>{Number(t.trainingFee).toLocaleString("id-ID")}</TableCell>
+
+                                            <TableCell>{t.author}</TableCell>
+
+                                            <TableCell>
+                                                {new Date(t.createdAt).toLocaleString()}
+                                            </TableCell>
+
+                                            <TableCell>
+                                                {new Date(t.updateAt).toLocaleString()}
+                                            </TableCell>
+
+                                            <TableCell className="flex gap-2">
+                                                <Button variant="ghost" size="sm" onClick={() => getDetailTraining(t.id)}>
+                                                    <Eye className="w-4 h-4" />
+                                                </Button>
+                                                <Button variant="ghost" size="sm" onClick={() => deleteTraining(t.id)}>
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
                                             </TableCell>
@@ -947,8 +1237,654 @@ export default function SuperAdminDashboard() {
                                     ))}
                                 </TableBody>
                             </Table>
+
+
+
+                            {/* PAGINATION */}
+                            <div className="flex justify-end items-center gap-4 mt-4">
+                                <select
+                                    value={trainingLimit}
+                                    onChange={(e) => {
+                                        setTrainingLimit(Number(e.target.value));
+                                        setTrainingPage(1);
+                                    }}
+                                    className="border rounded px-2 py-1"
+                                >
+                                    <option value={10}>10</option>
+                                    <option value={50}>50</option>
+                                    <option value={100}>100</option>
+                                </select>
+
+                                <Button
+                                    onClick={() => setTrainingPage((p) => Math.max(1, p - 1))}
+                                    disabled={trainingPage === 1}
+                                    variant="outline"
+                                >
+                                    Prev
+                                </Button>
+
+                                <span className="text-sm text-gray-600">
+                                    Page {trainingPage} of {trainingTotalPages}
+                                </span>
+
+                                <Button
+                                    onClick={() => setTrainingPage((p) => Math.min(trainingTotalPages, p + 1))}
+                                    disabled={trainingPage === trainingTotalPages}
+                                    variant="outline"
+                                >
+                                    Next
+                                </Button>
+                            </div>
+
                         </Card>
                     </TabsContent>
+
+                    {/* CREATE TRAINING MODAL */}
+                    <Dialog open={showAddTrainingModal} onOpenChange={setShowAddTrainingModal}>
+                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                                <DialogTitle>Create Training</DialogTitle>
+                            </DialogHeader>
+
+                            {/* FORM 2 COLUMN */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+                                {/* Training Title */}
+                                <div>
+                                    <label className="block mb-1">Training Title</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border rounded px-3 py-2"
+                                        value={addTrainingData.trainingTitle}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                trainingTitle: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
+                                {/* Institution */}
+                                <div>
+                                    <label className="block mb-1">Institution Name</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border rounded px-3 py-2"
+                                        value={addTrainingData.institutionName}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                institutionName: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
+                                {/* Description */}
+                                <div className="md:col-span-2">
+                                    <label className="block mb-1">Description</label>
+                                    <textarea
+                                        className="w-full border rounded px-3 py-2 h-24"
+                                        value={addTrainingData.description}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                description: e.target.value,
+                                            })
+                                        }
+                                    ></textarea>
+                                </div>
+
+                                {/* Training Materials */}
+                                <div className="md:col-span-2">
+                                    <label className="block mb-1">Training Materials</label>
+
+                                    {addTrainingData.trainingMaterials.map((val, idx) => (
+                                        <div key={idx} className="flex gap-2 mb-2">
+                                            <input
+                                                type="text"
+                                                className="w-full border rounded px-3 py-2"
+                                                value={val}
+                                                onChange={(e) => {
+                                                    const updated = [...addTrainingData.trainingMaterials];
+                                                    updated[idx] = e.target.value;
+                                                    setAddTrainingData({
+                                                        ...addTrainingData,
+                                                        trainingMaterials: updated,
+                                                    });
+                                                }}
+                                            />
+                                            <button
+                                                className="px-3 bg-red-500 text-white rounded"
+                                                onClick={() => {
+                                                    const updated = addTrainingData.trainingMaterials.filter(
+                                                        (_, i) => i !== idx
+                                                    );
+                                                    setAddTrainingData({
+                                                        ...addTrainingData,
+                                                        trainingMaterials: updated,
+                                                    });
+                                                }}
+                                            >
+                                                🗑
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    <button
+                                        className="text-blue-600 text-xs mt-1"
+                                        onClick={() =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                trainingMaterials: [
+                                                    ...addTrainingData.trainingMaterials,
+                                                    "",
+                                                ],
+                                            })
+                                        }
+                                    >
+                                        + Add Material
+                                    </button>
+                                </div>
+
+                                {/* Duration */}
+                                <div>
+                                    <label className="block mb-1">Duration</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border rounded px-3 py-2"
+                                        value={addTrainingData.duration}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                duration: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
+                                {/* Minimum Participants */}
+                                <div>
+                                    <label className="block mb-1">Minimum Participants</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border rounded px-3 py-2"
+                                        value={addTrainingData.minimumParticipants}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                minimumParticipants: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
+                                {/* Facilities */}
+                                <div className="md:col-span-2">
+                                    <label className="block mb-1">Facilities</label>
+
+                                    {addTrainingData.facilities.map((val, idx) => (
+                                        <div key={idx} className="flex gap-2 mb-2">
+                                            <input
+                                                type="text"
+                                                className="w-full border rounded px-3 py-2"
+                                                value={val}
+                                                onChange={(e) => {
+                                                    const updated = [...addTrainingData.facilities];
+                                                    updated[idx] = e.target.value;
+                                                    setAddTrainingData({
+                                                        ...addTrainingData,
+                                                        facilities: updated,
+                                                    });
+                                                }}
+                                            />
+                                            <button
+                                                className="px-3 bg-red-500 text-white rounded"
+                                                onClick={() => {
+                                                    const updated = addTrainingData.facilities.filter(
+                                                        (_, i) => i !== idx
+                                                    );
+                                                    setAddTrainingData({
+                                                        ...addTrainingData,
+                                                        facilities: updated,
+                                                    });
+                                                }}
+                                            >
+                                                🗑
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    <button
+                                        className="text-blue-600 text-xs mt-1"
+                                        onClick={() =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                facilities: [...addTrainingData.facilities, ""],
+                                            })
+                                        }
+                                    >
+                                        + Add Facility
+                                    </button>
+                                </div>
+
+                                {/* Schedule */}
+                                <div>
+                                    <label className="block mb-1">Implementation Schedule</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border rounded px-3 py-2"
+                                        placeholder="2025-12-01 s/d 2025-12-05"
+                                        value={addTrainingData.implementationSchedule}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                implementationSchedule: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
+                                {/* Competency Test Place */}
+                                <div>
+                                    <label className="block mb-1">Competency Test Place</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border rounded px-3 py-2"
+                                        value={addTrainingData.competencyTestPlace}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                competencyTestPlace: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
+                                {/* Certificate */}
+                                <div className="md:col-span-2">
+                                    <label className="block mb-1">Certificate</label>
+
+                                    {addTrainingData.certificate.map((val, idx) => (
+                                        <div key={idx} className="flex gap-2 mb-2">
+                                            <input
+                                                type="text"
+                                                className="w-full border rounded px-3 py-2"
+                                                value={val}
+                                                onChange={(e) => {
+                                                    const updated = [...addTrainingData.certificate];
+                                                    updated[idx] = e.target.value;
+                                                    setAddTrainingData({
+                                                        ...addTrainingData,
+                                                        certificate: updated,
+                                                    });
+                                                }}
+                                            />
+                                            <button
+                                                className="px-3 bg-red-500 text-white rounded"
+                                                onClick={() => {
+                                                    const updated = addTrainingData.certificate.filter(
+                                                        (_, i) => i !== idx
+                                                    );
+                                                    setAddTrainingData({
+                                                        ...addTrainingData,
+                                                        certificate: updated,
+                                                    });
+                                                }}
+                                            >
+                                                🗑
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    <button
+                                        className="text-blue-600 text-xs mt-1"
+                                        onClick={() =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                certificate: [...addTrainingData.certificate, ""],
+                                            })
+                                        }
+                                    >
+                                        + Add Certificate
+                                    </button>
+                                </div>
+
+                                {/* Training Fee */}
+                                <div className="md:col-span-2">
+                                    <label className="block mb-1">Training Fee</label>
+                                    <input
+                                        type="number"
+                                        className="w-full border rounded px-3 py-2"
+                                        value={addTrainingData.trainingFee}
+                                        onChange={(e) =>
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                trainingFee: e.target.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
+                                {/* Buttons */}
+                                <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                                    <Button variant="outline" onClick={() => setShowAddTrainingModal(false)}>
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={createTraining}>Save</Button>
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
+
+                    {/* Detail Training Modal */}
+                    <Dialog
+                        open={showTrainingModal}
+                        onOpenChange={(v) => {
+                            setShowTrainingModal(v);
+                            if (!v) setIsEditTraining(false);
+                        }}
+                    >
+                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                                <DialogTitle>Detail Training</DialogTitle>
+                            </DialogHeader>
+
+                            {detailTraining && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+                                    {/* Training Title */}
+                                    <div>
+                                        <label className="block mb-1">Training Title</label>
+                                        <input
+                                            type="text"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.trainingTitle}
+                                            onChange={(e) =>
+                                                setTrainingForm({ ...trainingForm, trainingTitle: e.target.value })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Institution Name */}
+                                    <div>
+                                        <label className="block mb-1">Institution Name</label>
+                                        <input
+                                            type="text"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.institutionName}
+                                            onChange={(e) =>
+                                                setTrainingForm({ ...trainingForm, institutionName: e.target.value })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Description */}
+                                    <div className="md:col-span-2">
+                                        <label className="block mb-1">Description</label>
+                                        <textarea
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2 h-24"
+                                            value={trainingForm.description}
+                                            onChange={(e) =>
+                                                setTrainingForm({ ...trainingForm, description: e.target.value })
+                                            }
+                                        ></textarea>
+                                    </div>
+
+                                    {/* Duration */}
+                                    <div>
+                                        <label className="block mb-1">Duration</label>
+                                        <input
+                                            type="text"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.duration}
+                                            onChange={(e) =>
+                                                setTrainingForm({ ...trainingForm, duration: e.target.value })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Minimum Participants */}
+                                    <div>
+                                        <label className="block mb-1">Minimum Participants</label>
+                                        <input
+                                            type="number"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.minimumParticipants}
+                                            onChange={(e) =>
+                                                setTrainingForm({
+                                                    ...trainingForm,
+                                                    minimumParticipants: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Implementation Schedule */}
+                                    <div>
+                                        <label className="block mb-1">Implementation Schedule</label>
+                                        <input
+                                            type="text"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.implementationSchedule}
+                                            onChange={(e) =>
+                                                setTrainingForm({
+                                                    ...trainingForm,
+                                                    implementationSchedule: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Competency Test Place */}
+                                    <div>
+                                        <label className="block mb-1">Competency Test Place</label>
+                                        <input
+                                            type="text"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.competencyTestPlace}
+                                            onChange={(e) =>
+                                                setTrainingForm({
+                                                    ...trainingForm,
+                                                    competencyTestPlace: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Training Fee */}
+                                    <div className="md:col-span-2">
+                                        <label className="block mb-1">Training Fee</label>
+                                        <input
+                                            type="number"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.trainingFee}
+                                            onChange={(e) =>
+                                                setTrainingForm({
+                                                    ...trainingForm,
+                                                    trainingFee: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Training Materials */}
+                                    <div className="md:col-span-2">
+                                        <label className="font-semibold">Training Materials</label>
+
+                                        {trainingForm.trainingMaterials.map((item, idx) => (
+                                            <div key={idx} className="flex gap-2 mt-2">
+                                                <input
+                                                    type="text"
+                                                    disabled={!isEditTraining}
+                                                    className="flex-1 border rounded px-3 py-2"
+                                                    value={item}
+                                                    onChange={(e) => {
+                                                        const arr = [...trainingForm.trainingMaterials];
+                                                        arr[idx] = e.target.value;
+                                                        setTrainingForm({ ...trainingForm, trainingMaterials: arr });
+                                                    }}
+                                                />
+
+                                                {isEditTraining && (
+                                                    <button
+                                                        onClick={() => {
+                                                            const arr = trainingForm.trainingMaterials.filter(
+                                                                (_, i) => i !== idx
+                                                            );
+                                                            setTrainingForm({ ...trainingForm, trainingMaterials: arr });
+                                                        }}
+                                                        className="text-red-500"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+
+                                        {isEditTraining && (
+                                            <button
+                                                onClick={() =>
+                                                    setTrainingForm({
+                                                        ...trainingForm,
+                                                        trainingMaterials: [...trainingForm.trainingMaterials, ""],
+                                                    })
+                                                }
+                                                className="mt-2 text-blue-600"
+                                            >
+                                                + Add Material
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Facilities */}
+                                    <div className="md:col-span-2">
+                                        <label className="font-semibold">Facilities</label>
+
+                                        {trainingForm.facilities.map((item, idx) => (
+                                            <div key={idx} className="flex gap-2 mt-2">
+                                                <input
+                                                    type="text"
+                                                    disabled={!isEditTraining}
+                                                    className="flex-1 border rounded px-3 py-2"
+                                                    value={item}
+                                                    onChange={(e) => {
+                                                        const arr = [...trainingForm.facilities];
+                                                        arr[idx] = e.target.value;
+                                                        setTrainingForm({ ...trainingForm, facilities: arr });
+                                                    }}
+                                                />
+
+                                                {isEditTraining && (
+                                                    <button
+                                                        onClick={() => {
+                                                            const arr = trainingForm.facilities.filter(
+                                                                (_, i) => i !== idx
+                                                            );
+                                                            setTrainingForm({ ...trainingForm, facilities: arr });
+                                                        }}
+                                                        className="text-red-500"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+
+                                        {isEditTraining && (
+                                            <button
+                                                onClick={() =>
+                                                    setTrainingForm({
+                                                        ...trainingForm,
+                                                        facilities: [...trainingForm.facilities, ""],
+                                                    })
+                                                }
+                                                className="mt-2 text-blue-600"
+                                            >
+                                                + Add Facility
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Certificate */}
+                                    <div className="md:col-span-2">
+                                        <label className="font-semibold">Certificate</label>
+
+                                        {trainingForm.certificate.map((item, idx) => (
+                                            <div key={idx} className="flex gap-2 mt-2">
+                                                <input
+                                                    type="text"
+                                                    disabled={!isEditTraining}
+                                                    className="flex-1 border rounded px-3 py-2"
+                                                    value={item}
+                                                    onChange={(e) => {
+                                                        const arr = [...trainingForm.certificate];
+                                                        arr[idx] = e.target.value;
+                                                        setTrainingForm({ ...trainingForm, certificate: arr });
+                                                    }}
+                                                />
+
+                                                {isEditTraining && (
+                                                    <button
+                                                        onClick={() => {
+                                                            const arr = trainingForm.certificate.filter(
+                                                                (_, i) => i !== idx
+                                                            );
+                                                            setTrainingForm({ ...trainingForm, certificate: arr });
+                                                        }}
+                                                        className="text-red-500"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+
+                                        {isEditTraining && (
+                                            <button
+                                                onClick={() =>
+                                                    setTrainingForm({
+                                                        ...trainingForm,
+                                                        certificate: [...trainingForm.certificate, ""],
+                                                    })
+                                                }
+                                                className="mt-2 text-blue-600"
+                                            >
+                                                + Add Certificate Item
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* ACTION BUTTONS */}
+                                    <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                                        {!isEditTraining && (
+                                            <Button onClick={() => setIsEditTraining(true)}>Edit</Button>
+                                        )}
+
+                                        {isEditTraining && (
+                                            <>
+                                                <Button variant="outline" onClick={() => setIsEditTraining(false)}>
+                                                    Cancel
+                                                </Button>
+                                                <Button onClick={updateTraining}>Save</Button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </DialogContent>
+                    </Dialog>
+
 
                     {/* News Tab */}
                     <TabsContent value="news">
