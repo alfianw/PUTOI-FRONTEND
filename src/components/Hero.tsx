@@ -2,11 +2,42 @@ import { Button } from "./ui/button";
 import { Search, PlayCircle } from "lucide-react";
 import { Input } from "./ui/input";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import homeImage from "../assets/home-image.jpg";
 import '../utils/init-superadmin';
 
 export function Hero() {
+
+  const [countTraining, setCountTraining] = useState(0);
+
+  const fetchTraining = async () => {
+    const body = {
+      sortBy: "id",
+      sortOrder: "desc",
+      limit: "10",
+      page: "1",
+      filters: {
+        trainingTitle: "",
+        author: "",
+      },
+    };
+
+    const res = await fetch("http://localhost:8080/api/training/pagination", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    setCountTraining(data.countData); // <-- SIMPAN COUNT DI STATE
+  };
+
+  useEffect(() => {
+  fetchTraining();
+}, []);
+
+
   return (
     <section id="home" className="relative bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,13 +50,13 @@ export function Hero() {
               </span>
             </h1>
             <p className="text-xl text-gray-600">
-PUTOI merupakan unit pelatihan profesional PNJ yang menyelenggarakan kegiatan pelatihan dan uji kompetensi baik untuk mahasiswa dan alumni maupun masyarakat umum.
+              PUTOI merupakan unit pelatihan profesional PNJ yang menyelenggarakan kegiatan pelatihan dan uji kompetensi baik untuk mahasiswa dan alumni maupun masyarakat umum.
             </p>
 
             {/* Stats */}
             <div className="flex flex-wrap gap-8 pt-4">
               <div>
-                <div className="text-3xl text-blue-900">3+</div>
+                <div className="text-3xl text-blue-900">{countTraining}+</div>
                 <div className="text-gray-600">Pelatihan</div>
               </div>
               <div>
@@ -48,15 +79,7 @@ PUTOI merupakan unit pelatihan profesional PNJ yang menyelenggarakan kegiatan pe
                 className="w-full h-[500px] object-cover"
               />
               {/* Floating Card */}
-              <div className="absolute bottom-8 left-8 bg-white p-6 rounded-xl shadow-lg flex items-center gap-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <PlayCircle className="w-8 h-8 text-blue-900" />
-                </div>
-                <div>
-                  <div className="text-2xl text-gray-900">5,000+</div>
-                  <div className="text-gray-600">Video Tutorial</div>
-                </div>
-              </div>
+
             </div>
 
             {/* Decorative Elements */}

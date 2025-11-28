@@ -154,6 +154,35 @@ export default function SuperAdminDashboard() {
         trainingFee: "",
     });
 
+    // TRAINING PARTICIPANT
+    interface TrainingParticipant {
+        id: number;
+        name: string;
+        participantType: string;
+        identityNumber: string;
+        gender: string;
+        universityName: string;
+        email: string;
+        phoneNumber: string;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+        training: string;
+    }
+
+    const [tpList, setTpList] = useState<TrainingParticipant[]>([]);
+    const [tpPage, setTpPage] = useState(1);
+    const [tpLimit, setTpLimit] = useState(10);
+    const [tpTotalPages, setTpTotalPages] = useState(1);
+    const [tpTotalData, setTpTotalData] = useState(0);
+    const [filterTPName, setFilterTPName] = useState("");
+
+    const [detailTP, setDetailTP] = useState(null);
+    const [tpForm, setTpForm] = useState<any>({});
+    const [showTPModal, setShowTPModal] = useState(false);
+    const [isEditTP, setIsEditTP] = useState(false);
+
+
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
@@ -636,8 +665,6 @@ export default function SuperAdminDashboard() {
         }
     };
 
-
-
     const updateTraining = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -723,6 +750,125 @@ export default function SuperAdminDashboard() {
         }));
     };
 
+    // Fetch Training Participants
+    const fetchTrainingParticipants = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            const res = await fetch(`${API_BASE}/api/training-participants/pagination`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    sortBy: "id",
+                    sortOrder: "desc",
+                    limit: String(tpLimit),
+                    page: String(tpPage),
+                    filters: {
+                        name: filterTPName,
+                        email: "",
+                    }
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.code === "00") {
+                setTpList(data.data || []);
+                setTpTotalPages(data.totalPages || 1);
+                setTpTotalData(data.countData || 0);
+            }
+
+        } catch (e) {
+            console.error("Error fetch training participants:", e);
+        }
+    };
+
+    // GET DETAIL
+    const getDetailTP = async (id: number) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            const res = await fetch(`${API_BASE}/api/training-participants/detail`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ id: String(id) })
+            });
+
+            const data = await res.json();
+
+            if (data.code === "00") {
+                setDetailTP(data.data);
+                setTpForm(data.data);
+                setShowTPModal(true);
+            }
+
+        } catch (e) {
+            console.error("Detail TP error:", e);
+        }
+    };
+
+    // UPDATE STATUS ONLY
+    const updateTP = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            const res = await fetch(`${API_BASE}/api/training-participants/update`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(tpForm)
+            });
+
+            const data = await res.json();
+
+            if (data.code === "00") {
+                setDetailTP(data.data);
+                setIsEditTP(false);
+                fetchTrainingParticipants();
+            }
+
+        } catch (e) {
+            console.error("Update TP error:", e);
+        }
+    };
+
+    // DELETE TP
+    const deleteTP = async (id: number) => {
+        if (!confirm("Hapus participant ini?")) return;
+
+        try {
+            const token = localStorage.getItem("accessToken");
+
+            const res = await fetch(`${API_BASE}/api/training-participants/delete`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ id: String(id) })
+            });
+
+            const data = await res.json();
+            if (data.code === "00") {
+                fetchTrainingParticipants();
+            }
+
+        } catch (e) {
+            console.error("Delete TP error:", e);
+        }
+    };
+
+    useEffect(() => {
+        fetchTrainingParticipants();
+    }, [tpPage, tpLimit, filterTPName]);
 
 
     if (user?.role !== 'superadmin') {
@@ -795,7 +941,7 @@ export default function SuperAdminDashboard() {
                         <TabsTrigger value="courses">Courses</TabsTrigger>
                         <TabsTrigger value="news">News</TabsTrigger>
                         <TabsTrigger value="Jasa">Jasa</TabsTrigger>
-                        <TabsTrigger value="news">Training Participant</TabsTrigger>
+                        <TabsTrigger value="trainingParticipant">Training Participant</TabsTrigger>
                     </TabsList>
 
                     {/* Users Tab */}
@@ -1722,7 +1868,7 @@ export default function SuperAdminDashboard() {
                                     <div className="md:col-span-2">
                                         <label className="font-semibold">Training Materials</label>
 
-                                        {trainingForm.trainingMaterials.map((item, idx) => (
+                                        {trainingForm.trainingMaterials.map((item: string, idx: number) => (
                                             <div key={idx} className="flex gap-2 mt-2">
                                                 <input
                                                     type="text"
@@ -1740,7 +1886,7 @@ export default function SuperAdminDashboard() {
                                                     <button
                                                         onClick={() => {
                                                             const arr = trainingForm.trainingMaterials.filter(
-                                                                (_, i) => i !== idx
+                                                                (_: string, i: number) => i !== idx
                                                             );
                                                             setTrainingForm({ ...trainingForm, trainingMaterials: arr });
                                                         }}
@@ -1771,7 +1917,7 @@ export default function SuperAdminDashboard() {
                                     <div className="md:col-span-2">
                                         <label className="font-semibold">Facilities</label>
 
-                                        {trainingForm.facilities.map((item, idx) => (
+                                        {trainingForm.facilities.map((item: string, idx: number) => (
                                             <div key={idx} className="flex gap-2 mt-2">
                                                 <input
                                                     type="text"
@@ -1789,7 +1935,7 @@ export default function SuperAdminDashboard() {
                                                     <button
                                                         onClick={() => {
                                                             const arr = trainingForm.facilities.filter(
-                                                                (_, i) => i !== idx
+                                                                (_: string, i: number) => i !== idx
                                                             );
                                                             setTrainingForm({ ...trainingForm, facilities: arr });
                                                         }}
@@ -1820,7 +1966,7 @@ export default function SuperAdminDashboard() {
                                     <div className="md:col-span-2">
                                         <label className="font-semibold">Certificate</label>
 
-                                        {trainingForm.certificate.map((item, idx) => (
+                                        {trainingForm.certificate.map((item: string, idx: number) => (
                                             <div key={idx} className="flex gap-2 mt-2">
                                                 <input
                                                     type="text"
@@ -1838,7 +1984,7 @@ export default function SuperAdminDashboard() {
                                                     <button
                                                         onClick={() => {
                                                             const arr = trainingForm.certificate.filter(
-                                                                (_, i) => i !== idx
+                                                                (_: string, i: number) => i !== idx
                                                             );
                                                             setTrainingForm({ ...trainingForm, certificate: arr });
                                                         }}
@@ -2312,6 +2458,161 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
+                    <TabsContent value="trainingParticipant">
+                        <Card className="p-6">
+
+                            {/* Header + Filter */}
+                            <div className="flex items-center justify-between mb-6">
+
+                                <h2 className="text-xl text-gray-900">Training Participants</h2>
+
+                                <div className="flex items-center gap-3 ml-auto">
+                                    <input
+                                        type="text"
+                                        placeholder="Filter name..."
+                                        value={filterTPName}
+                                        onChange={(e) => {
+                                            setFilterTPName(e.target.value);
+                                            setTpPage(1);
+                                        }}
+                                        className="border rounded px-3 py-2 text-sm w-60"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* TABLE */}
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Phone</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Training</TableHead>
+                                        <TableHead>Created</TableHead>
+                                        <TableHead>Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+
+                                <TableBody>
+                                    {tpList.map((p) => (
+                                        <TableRow key={p.id}>
+                                            <TableCell>{p.name}</TableCell>
+                                            <TableCell>{p.participantType}</TableCell>
+                                            <TableCell>{p.email}</TableCell>
+                                            <TableCell>{p.phoneNumber}</TableCell>
+                                            <TableCell>{p.status}</TableCell>
+                                            <TableCell>{p.training}</TableCell>
+                                            <TableCell>{new Date(p.createdAt).toLocaleString()}</TableCell>
+
+                                            <TableCell className="flex gap-2">
+                                                <Button variant="ghost" size="sm" onClick={() => getDetailTP(p.id)}>
+                                                    <Eye className="w-4 h-4" />
+                                                </Button>
+                                                <Button variant="ghost" size="sm" onClick={() => deleteTP(p.id)}>
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+
+                            {/* Pagination */}
+                            <div className="flex justify-end items-center gap-4 mt-4">
+                                <select
+                                    value={tpLimit}
+                                    onChange={(e) => {
+                                        setTpLimit(Number(e.target.value));
+                                        setTpPage(1);
+                                    }}
+                                    className="border rounded px-2 py-1"
+                                >
+                                    <option value={10}>10</option>
+                                    <option value={50}>50</option>
+                                    <option value={100}>100</option>
+                                </select>
+
+                                <Button
+                                    onClick={() => setTpPage((p) => Math.max(1, p - 1))}
+                                    disabled={tpPage === 1}
+                                    variant="outline"
+                                >
+                                    Prev
+                                </Button>
+
+                                <span className="text-sm text-gray-600">
+                                    Page {tpPage} of {tpTotalPages}
+                                </span>
+
+                                <Button
+                                    onClick={() => setTpPage((p) => Math.min(tpTotalPages, p + 1))}
+                                    disabled={tpPage === tpTotalPages}
+                                    variant="outline"
+                                >
+                                    Next
+                                </Button>
+                            </div>
+
+                        </Card>
+                    </TabsContent>
+
+                    <Dialog open={showTPModal} onOpenChange={(v) => {
+                        setShowTPModal(v);
+                        if (!v) setIsEditTP(false);
+                    }}>
+                        <DialogContent className="max-w-lg">
+                            <DialogHeader>
+                                <DialogTitle>Participant Detail</DialogTitle>
+                            </DialogHeader>
+
+                            {detailTP && (
+                                <div className="space-y-3 text-sm">
+
+                                    <div>
+                                        <label className="block mb-1">Name</label>
+                                        <input
+                                            type="text"
+                                            disabled
+                                            value={tpForm.name}
+                                            className="w-full border rounded px-3 py-2 bg-gray-100"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block mb-1">Status</label>
+                                        <select
+                                            disabled={!isEditTP}
+                                            value={tpForm.status}
+                                            onChange={(e) => setTpForm({ ...tpForm, status: e.target.value })}
+                                            className="w-full border rounded px-3 py-2"
+                                        >
+                                            <option value="REGISTERED">REGISTERED</option>
+                                            <option value="DONE">DONE</option>
+                                            <option value="CANCELLED">CANCELLED</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="flex justify-end gap-3 mt-4">
+                                        {!isEditTP && (
+                                            <Button onClick={() => setIsEditTP(true)}>Edit</Button>
+                                        )}
+
+                                        {isEditTP && (
+                                            <>
+                                                <Button variant="outline" onClick={() => setIsEditTP(false)}>
+                                                    Cancel
+                                                </Button>
+                                                <Button onClick={updateTP}>Save</Button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </DialogContent>
+                    </Dialog>
+
 
                 </Tabs>
             </div>
@@ -2439,73 +2740,3 @@ function CreateCourseDialog({ onSuccess, accessToken }: { onSuccess: () => void;
         </Dialog>
     );
 }
-
-// Create News Dialog Component
-// function CreateNewsDialog({ onSuccess, accessToken }: { onSuccess: () => void; accessToken: string | null }) {
-//     const [open, setOpen] = useState(false);
-//     const [formData, setFormData] = useState({
-//         title: '',
-//         content: '',
-//     });
-
-//     const handleSubmit = async (e: React.FormEvent) => {
-//         e.preventDefault();
-//         try {
-//             const response = await fetch(
-//                 `https://${projectId}.supabase.co/functions/v1/make-server-d9e5996a/news`,
-//                 {
-//                     method: 'POST',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         Authorization: `Bearer ${accessToken}`,
-//                     },
-//                     body: JSON.stringify(formData),
-//                 }
-//             );
-//             if (response.ok) {
-//                 setOpen(false);
-//                 setFormData({ title: '', content: '' });
-//                 onSuccess();
-//             }
-//         } catch (error) {
-//             console.error('Failed to create news:', error);
-//         }
-//     };
-
-// return (
-//     <Dialog open={open} onOpenChange={setOpen}>
-//         <DialogTrigger asChild>
-//             <Button className="gap-2">
-//                 <Plus className="w-4 h-4" />
-//                 Add News
-//             </Button>
-//         </DialogTrigger>
-//         <DialogContent>
-//             <DialogHeader>
-//                 <DialogTitle>Create News Article</DialogTitle>
-//                 <DialogDescription>Add a new news article to the platform</DialogDescription>
-//             </DialogHeader>
-//             <form onSubmit={handleSubmit} className="space-y-4">
-//                 <div>
-//                     <Label>Title</Label>
-//                     <Input
-//                         value={formData.title}
-//                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-//                         required
-//                     />
-//                 </div>
-//                 <div>
-//                     <Label>Content</Label>
-//                     <textarea
-//                         className="w-full min-h-[150px] px-3 py-2 border rounded-md"
-//                         value={formData.content}
-//                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-//                         required
-//                     />
-//                 </div>
-//                 <Button type="submit" className="w-full">Create News</Button>
-//             </form>
-//         </DialogContent>
-//     </Dialog>
-// );
-// }

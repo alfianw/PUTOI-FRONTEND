@@ -1,179 +1,372 @@
 import { useState, useEffect } from "react";
 import { Card } from "./ui/card";
-import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { Star, Clock, Users, BookOpen } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { projectId, publicAnonKey } from "../utils/supabase/info";
-
-const defaultImage = "https://images.unsplash.com/photo-1652696290920-ee4c836c711e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9ncmFtbWluZyUyMGNvZGUlMjBsYXB0b3B8ZW58MXx8fHwxNzYwNDE0ODU2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+import { Input } from "./ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import homeImage from "../assets/home-image.jpg";
+import { Check, Clock, Users, Calendar } from "lucide-react";
 
 export function FeaturedCourses() {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [trainings, setTrainings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filterTitle, setFilterTitle] = useState("");
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+  const [showDetail, setShowDetail] = useState(false);
+  const [detailData, setDetailData] = useState<any>(null);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-  const fetchCourses = async () => {
+  const fetchTraining = async () => {
+    setLoading(true);
+
+    const body = {
+      sortBy: "id",
+      sortOrder: "desc",
+      limit: "6",
+      page,
+      filters: {
+        trainingTitle: filterTitle,
+        author: "",
+      },
+    };
+
+    const res = await fetch(`${API_BASE}/api/training/pagination`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    setTrainings(data.data || []);
+    setTotalPages(data.totalPages || 1);
+    setLoading(false);
+  };
+
+  const fetchDetail = async (id: number) => {
+    const res = await fetch(`${API_BASE}/api/training/detail`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    const data = await res.json();
+    setDetailData(data.data);
+    setShowDetail(true);
+
+    checkRegistered(id);
+  };
+
+  const daftarPelatihan = async (id: number) => {
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-d9e5996a/courses`,
-        {
-          headers: { Authorization: `Bearer ${publicAnonKey}` },
-        }
-      );
-      
-      if (!response.ok) {
-        console.warn('Courses API not available yet');
-        setCourses([]);
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        alert("Anda harus login terlebih dahulu!");
         return;
       }
-      
+
+      const response = await fetch(`${API_BASE}/api/training-participants/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ trainingId: id }),
+      });
+
       const data = await response.json();
-      setCourses(data.courses || []);
+      console.log("Create result:", data);
+
+      if (response.status === 401 || response.status === 403) {
+        alert("Token invalid atau expired. Silakan login ulang.");
+        return;
+      }
+
+      if (data.code === "00") {
+        alert("Berhasil daftar pelatihan!");
+        setShowDetail(false);
+      } else {
+        alert(data.message || "Gagal daftar pelatihan.");
+      }
     } catch (error) {
-      // Silently handle error - API might not be deployed yet
-      setCourses([]);
-    } finally {
-      setLoading(false);
+      console.error("Daftar pelatihan error: ", error);
     }
   };
 
-  if (loading) {
-    return (
-      <section id="courses" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl text-gray-900 mb-4">
-              Pelatihan
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Pilihan kursus terbaik dari berbagai kategori dengan rating tertinggi
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="overflow-hidden animate-pulse">
-                <div className="h-48 bg-gray-300"></div>
-                <div className="p-6 space-y-4">
-                  <div className="h-4 bg-gray-300 rounded"></div>
-                  <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-                  <div className="h-3 bg-gray-300 rounded w-1/2"></div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const checkRegistered = async (trainingId: number) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const res = await fetch(`${API_BASE}/api/training-participants/check`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ trainingId: String(trainingId) }),
+      });
+
+      const data = await res.json();
+      setIsRegistered(data.data.registered);
+    } catch (error) {
+      console.error("Check registered error:", error);
+      setIsRegistered(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTraining();
+  }, [page]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setPage(1);
+      fetchTraining();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [filterTitle]);
+
   return (
     <section id="courses" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* HEADER */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl text-gray-900 mb-4">
-            Pelatihan
-          </h2>
+          <h2 className="text-3xl lg:text-4xl text-gray-900 mb-4">Pelatihan</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Pilihan pelatihan terbaik dengan kategori beragam
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.length > 0 ? (
-            courses.slice(0, 6).map((course) => (
+        {/* FILTER */}
+        <div className="flex justify-end mb-6">
+          <Input
+            placeholder="Cari title pelatihan..."
+            className="w-80 shadow-sm"
+            value={filterTitle}
+            onChange={(e) => setFilterTitle(e.target.value)}
+          />
+        </div>
+
+        {/* CARD GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading ? (
+            <>
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i} className="overflow-hidden animate-pulse">
+                  <div className="h-48 bg-gray-300"></div>
+                  <div className="p-6 space-y-4">
+                    <div className="h-4 bg-gray-300 rounded"></div>
+                    <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+                    <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                  </div>
+                </Card>
+              ))}
+            </>
+          ) : trainings.length === 0 ? (
+            <div className="col-span-full text-center py-20 text-gray-600 text-xl">
+              Data tidak ditemukan
+            </div>
+          ) : (
+            trainings.map((item: any) => (
               <Card
-                key={course.id}
-                className="overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer border-0"
+                key={item.id}
+                className="relative p-0 cursor-pointer text-white rounded-xl overflow-hidden group shadow-lg"
+                onClick={() => fetchDetail(item.id)}
               >
-                <div className="relative overflow-hidden">
-                  <ImageWithFallback
-                    src={course.image || defaultImage}
-                    alt={course.title}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <Badge className="absolute top-3 left-3 bg-white text-gray-900">
-                    {course.category}
-                  </Badge>
-                  <Badge className="absolute top-3 right-3 bg-blue-900">
-                    {course.level || 'Pemula'}
-                  </Badge>
-                </div>
+                <div className="relative h-[380px] bg-blue-900 p-6 flex flex-col justify-end">
+                  <h3 className="text-2xl font-bold mb-4">{item.trainingTitle}</h3>
 
-                <div className="p-6 space-y-4">
-                  <h3 className="text-lg text-gray-900 line-clamp-2 group-hover:text-blue-900 transition-colors">
-                    {course.title}
-                  </h3>
-
-                  <div className="text-sm text-gray-600">{course.instructor}</div>
-
-                  {course.rating && (
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1 text-blue-500">
-                        <Star className="w-4 h-4 fill-current" />
-                        <span className="text-gray-900">{course.rating}</span>
-                      </div>
-                      {course.students && (
-                        <div className="flex items-center gap-1 text-gray-600">
-                          <Users className="w-4 h-4" />
-                          {course.students.toLocaleString()}
-                        </div>
-                      )}
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Clock size={18} className="text-white opacity-90" />
+                      <span>
+                        <strong>Duration:</strong> {item.duration}
+                      </span>
                     </div>
-                  )}
 
-                  {course.duration && (
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {course.duration}
-                      </div>
-                      {course.lessons && (
-                        <div className="flex items-center gap-1">
-                          <BookOpen className="w-4 h-4" />
-                          {course.lessons} pelajaran
-                        </div>
-                      )}
+                    <div className="flex items-center gap-2">
+                      <Users size={18} className="text-white opacity-90" />
+                      <span>
+                        <strong>Participants:</strong> {item.minimumParticipants}
+                      </span>
                     </div>
-                  )}
 
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <div>
-                      <div className="text-2xl text-blue-900">{course.price}</div>
-                      {course.originalPrice && (
-                        <div className="text-sm text-gray-400 line-through">
-                          {course.originalPrice}
-                        </div>
-                      )}
+                    <div className="flex items-center gap-2">
+                      <Calendar size={18} className="text-white opacity-90" />
+                      <span>
+                        <strong>Schedule:</strong>{" "}
+                        {item.implementationSchedule}
+                      </span>
                     </div>
-                    <Button className="bg-gradient-to-r from-blue-900 to-blue-600 hover:from-blue-800 hover:to-blue-500">
-                      Lihat Detail
-                    </Button>
                   </div>
                 </div>
               </Card>
             ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl text-gray-600 mb-2">Belum Ada Kursus</h3>
-              <p className="text-gray-500">
-                Kursus akan ditampilkan di sini setelah admin menambahkannya
-              </p>
-            </div>
           )}
         </div>
 
-        <div className="text-center mt-12">
+        {/* PAGINATION */}
+        <div className="flex justify-between pt-4">
           <Button
             variant="outline"
-            className="px-8 border-2 border-blue-900 text-blue-900 hover:bg-blue-50 hover:text-blue-800"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
           >
-            Lihat Semua Kursus
+            Previous
+          </Button>
+
+          <div className="text-gray-700">Page {page} of {totalPages}</div>
+
+          <Button
+            variant="outline"
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
           </Button>
         </div>
+
+        {/* DETAIL MODAL */}
+        <Dialog open={showDetail} onOpenChange={setShowDetail}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Detail Pelatihan</DialogTitle>
+            </DialogHeader>
+
+            {detailData && (
+              <div className="space-y-4 text-gray-800">
+
+                <h2 className="text-xl font-bold">
+                  {detailData.trainingTitle}
+                </h2>
+
+                <p className="text-sm">{detailData.description}</p>
+
+                {/* Info Section with Icons */}
+                <div className="space-y-3 text-sm">
+
+                  <div className="flex items-center gap-2">
+                    <Clock className="text-blue-700" size={18} />
+                    <span>
+                      <strong>Duration:</strong> {detailData.duration}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Users className="text-blue-700" size={18} />
+                    <span>
+                      <strong>Participants:</strong>{" "}
+                      {detailData.minimumParticipants}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Calendar className="text-blue-700" size={18} />
+                    <span>
+                      <strong>Schedule:</strong>{" "}
+                      {detailData.implementationSchedule}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 text-blue-700"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M15 5H9a2 2 0 0 0-2 2v0a2 2 0 0 1-2 2v6a2 2 0 0 1 2 2v0a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v0a2 2 0 0 1 2-2V9a2 2 0 0 1-2-2v0a2 2 0 0 0-2-2z" />
+                    </svg>
+                    <span>
+                      <strong>Fee:</strong> {detailData.trainingFee}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Materials */}
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 text-blue-700"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <line x1="8" y1="6" x2="21" y2="6" />
+                      <line x1="8" y1="12" x2="21" y2="12" />
+                      <line x1="8" y1="18" x2="21" y2="18" />
+                      <line x1="3" y1="6" x2="3.01" y2="6" />
+                      <line x1="3" y1="12" x2="3.01" y2="12" />
+                      <line x1="3" y1="18" x2="3.01" y2="18" />
+                    </svg>
+                    <strong>Materials:</strong>
+                  </div>
+
+                  <ul className="list-disc ml-5 text-sm">
+                    {detailData.trainingMaterials?.map((m: any, idx: number) => (
+                      <li key={idx}>{m}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Facilities */}
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 text-blue-700"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M3 21h18" />
+                      <path d="M9 8h6" />
+                      <path d="M10 21V12h4v9" />
+                      <path d="M3 21V7l9-4 9 4v14" />
+                    </svg>
+                    <strong>Facilities:</strong>
+                  </div>
+
+                  <ul className="list-disc ml-5 text-sm">
+                    {detailData.facilities?.map((f: any, idx: number) => (
+                      <li key={idx}>{f}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Register Status */}
+                {isRegistered ? (
+                  <div className="flex items-center justify-center gap-2 mt-4 text-green-600 font-semibold">
+                    <span>Sudah Terdaftar</span>
+                    <Check className="w-5 h-5" />
+                  </div>
+                ) : (
+                  <Button
+                    className="w-full mt-4 bg-blue-900 hover:bg-blue-700 text-white"
+                    onClick={() => daftarPelatihan(detailData.id)}
+                  >
+                    Daftar Pelatihan
+                  </Button>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
