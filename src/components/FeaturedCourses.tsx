@@ -8,7 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import homeImage from "../assets/home-image.jpg";
+
+import { AuthModal } from "./AuthModal"; // ⬅ IMPORT MODAL LOGIN
+
 import { Check, Clock, Users, Calendar } from "lucide-react";
 
 export function FeaturedCourses() {
@@ -21,8 +23,19 @@ export function FeaturedCourses() {
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState<any>(null);
   const [isRegistered, setIsRegistered] = useState(false);
+
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
+  // 🔥 AUTH MODAL STATE
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const openAuthModal = (mode: 'signin' | 'signup') => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
+
+  // ===================== FETCH TRAINING =====================
   const fetchTraining = async () => {
     setLoading(true);
 
@@ -50,6 +63,7 @@ export function FeaturedCourses() {
     setLoading(false);
   };
 
+  // ===================== FETCH DETAIL =====================
   const fetchDetail = async (id: number) => {
     const res = await fetch(`${API_BASE}/api/training/detail`, {
       method: "POST",
@@ -64,11 +78,14 @@ export function FeaturedCourses() {
     checkRegistered(id);
   };
 
+  // ===================== DAFTAR PELATIHAN =====================
   const daftarPelatihan = async (id: number) => {
     try {
       const token = localStorage.getItem("accessToken");
+
+      // 🔥 BUKA MODAL LOGIN JIKA BELUM LOGIN
       if (!token) {
-        alert("Anda harus login terlebih dahulu!");
+        openAuthModal("signin");
         return;
       }
 
@@ -82,10 +99,9 @@ export function FeaturedCourses() {
       });
 
       const data = await response.json();
-      console.log("Create result:", data);
 
       if (response.status === 401 || response.status === 403) {
-        alert("Token invalid atau expired. Silakan login ulang.");
+        openAuthModal("signin");
         return;
       }
 
@@ -95,11 +111,12 @@ export function FeaturedCourses() {
       } else {
         alert(data.message || "Gagal daftar pelatihan.");
       }
-    } catch (error) {
-      console.error("Daftar pelatihan error: ", error);
+    } catch (err) {
+      console.error("Daftar pelatihan error:", err);
     }
   };
 
+  // ===================== CHECK REGISTERED =====================
   const checkRegistered = async (trainingId: number) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -116,7 +133,6 @@ export function FeaturedCourses() {
       const data = await res.json();
       setIsRegistered(data.data.registered);
     } catch (error) {
-      console.error("Check registered error:", error);
       setIsRegistered(false);
     }
   };
@@ -130,13 +146,19 @@ export function FeaturedCourses() {
       setPage(1);
       fetchTraining();
     }, 500);
-
     return () => clearTimeout(delay);
   }, [filterTitle]);
 
   return (
     <section id="courses" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* ===================== AUTH MODAL ===================== */}
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          mode={authMode}
+        />
 
         {/* HEADER */}
         <div className="text-center mb-12">
@@ -161,8 +183,14 @@ export function FeaturedCourses() {
           {loading ? (
             <>
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <Card key={i} className="overflow-hidden animate-pulse">
-                  <div className="h-48 bg-gray-300"></div>
+                <Card
+                  key={i}
+                  className="overflow-hidden animate-pulse rounded-xl shadow-lg"
+                >
+                  {/* Bagian gambar/card */}
+                  <div className="h-[380px] bg-gray-300"></div>
+
+                  {/* Bagian detail */}
                   <div className="p-6 space-y-4">
                     <div className="h-4 bg-gray-300 rounded"></div>
                     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
@@ -245,78 +273,40 @@ export function FeaturedCourses() {
             {detailData && (
               <div className="space-y-4 text-gray-800">
 
-                <h2 className="text-xl font-bold">
+                <h2 className="text-xl font-bold text-center mb-3">
                   {detailData.trainingTitle}
                 </h2>
 
-                <p className="text-sm">{detailData.description}</p>
+                <p className="text-sm leading-relaxed">{detailData.description}</p>
 
-                {/* Info Section with Icons */}
+                {/* Info Section */}
                 <div className="space-y-3 text-sm">
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Clock className="text-blue-700" size={18} />
-                    <span>
-                      <strong>Duration:</strong> {detailData.duration}
-                    </span>
+                    <span><strong>Duration:</strong> {detailData.duration}</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Users className="text-blue-700" size={18} />
-                    <span>
-                      <strong>Participants:</strong>{" "}
-                      {detailData.minimumParticipants}
-                    </span>
+                    <span><strong>Participants:</strong> {detailData.minimumParticipants}</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Calendar className="text-blue-700" size={18} />
-                    <span>
-                      <strong>Schedule:</strong>{" "}
-                      {detailData.implementationSchedule}
-                    </span>
+                    <span><strong>Schedule:</strong> {detailData.implementationSchedule}</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-blue-700"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M15 5H9a2 2 0 0 0-2 2v0a2 2 0 0 1-2 2v6a2 2 0 0 1 2 2v0a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v0a2 2 0 0 1 2-2V9a2 2 0 0 1-2-2v0a2 2 0 0 0-2-2z" />
-                    </svg>
-                    <span>
-                      <strong>Fee:</strong> {detailData.trainingFee}
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-blue-700 font-bold">Fee:</span>
+                    <span>{detailData.trainingFee}</span>
                   </div>
                 </div>
 
                 {/* Materials */}
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-blue-700"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <line x1="8" y1="6" x2="21" y2="6" />
-                      <line x1="8" y1="12" x2="21" y2="12" />
-                      <line x1="8" y1="18" x2="21" y2="18" />
-                      <line x1="3" y1="6" x2="3.01" y2="6" />
-                      <line x1="3" y1="12" x2="3.01" y2="12" />
-                      <line x1="3" y1="18" x2="3.01" y2="18" />
-                    </svg>
-                    <strong>Materials:</strong>
-                  </div>
-
-                  <ul className="list-disc ml-5 text-sm">
+                  <strong className="text-blue-700">Materials:</strong>
+                  <ul className="list-disc ml-5 mt-1 text-sm">
                     {detailData.trainingMaterials?.map((m: any, idx: number) => (
                       <li key={idx}>{m}</li>
                     ))}
@@ -325,33 +315,17 @@ export function FeaturedCourses() {
 
                 {/* Facilities */}
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-blue-700"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M3 21h18" />
-                      <path d="M9 8h6" />
-                      <path d="M10 21V12h4v9" />
-                      <path d="M3 21V7l9-4 9 4v14" />
-                    </svg>
-                    <strong>Facilities:</strong>
-                  </div>
-
-                  <ul className="list-disc ml-5 text-sm">
+                  <strong className="text-blue-700">Facilities:</strong>
+                  <ul className="list-disc ml-5 mt-1 text-sm">
                     {detailData.facilities?.map((f: any, idx: number) => (
                       <li key={idx}>{f}</li>
                     ))}
                   </ul>
                 </div>
 
-                {/* Register Status */}
+                {/* Status / Button */}
                 {isRegistered ? (
-                  <div className="flex items-center justify-center gap-2 mt-4 text-green-600 font-semibold">
+                  <div className="flex items-center justify-center gap-2 mt-4 bg-green-100 py-3 rounded-md text-green-700 font-semibold">
                     <span>Sudah Terdaftar</span>
                     <Check className="w-5 h-5" />
                   </div>

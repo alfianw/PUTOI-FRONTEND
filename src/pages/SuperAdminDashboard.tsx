@@ -70,15 +70,22 @@ export default function SuperAdminDashboard() {
     const [filterTitle, setFilterTitle] = useState("");
     const [newTitle, setNewTitle] = useState("");
     const [newDescription, setNewDescription] = useState("");
-    const [detailNews, setDetailNews] = useState(null);
     const [showNewsModal, setShowNewsModal] = useState(false);
     const [isEditNews, setIsEditNews] = useState(false);
-    const [newsForm, setNewsForm] = useState({});
     const [filterNewsTitle, setFilterNewsTitle] = useState("");
     const [showAddNewsModal, setShowAddNewsModal] = useState(false);
+    const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
     const [addNewsData, setAddNewsData] = useState({
         title: "",
         description: "",
+    });
+    const [newsForm, setNewsForm] = useState<NewsItem>({
+        id: 0,
+        title: "",
+        description: "",
+        author: "",
+        createdAt: "",
+        updateAt: "",
     });
 
     //jasa
@@ -105,10 +112,29 @@ export default function SuperAdminDashboard() {
         description: "",
         category: ""
     });
-    const [detailProduct, setDetailProduct] = useState(null);
-    const [productForm, setProductForm] = useState({});
     const [showProductModal, setShowProductModal] = useState(false);
     const [isEditProduct, setIsEditProduct] = useState(false);
+    interface ProductItem {
+        id: number;
+        title: string;
+        description: string;
+        category: string;
+        author: string;
+        createdAt: string;
+        updateAt: string;
+    }
+    const [detailProduct, setDetailProduct] = useState<ProductItem | null>(null);
+    const [productForm, setProductForm] = useState<ProductItem>({
+        id: 0,
+        title: "",
+        description: "",
+        category: "",
+        author: "",
+        createdAt: "",
+        updateAt: "",
+    });
+
+
 
     // TRAINING
     interface TrainingItem {
@@ -1724,7 +1750,6 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
-
                     {/* Detail Training Modal */}
                     <Dialog
                         open={showTrainingModal}
@@ -2031,7 +2056,6 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
-
                     {/* News Tab */}
                     <TabsContent value="news">
                         <Card className="p-6">
@@ -2077,7 +2101,9 @@ export default function SuperAdminDashboard() {
                                     {newsList.map((n) => (
                                         <TableRow key={n.id}>
                                             <TableCell>{n.title}</TableCell>
-                                            <TableCell>{n.description}</TableCell>
+                                            <TableCell className="max-w-[250px] whitespace-normal break-words">
+                                                {n.description}
+                                            </TableCell>
                                             <TableCell>{n.author}</TableCell>
                                             <TableCell>{new Date(n.createdAt).toLocaleString()}</TableCell>
                                             <TableCell>{new Date(n.updateAt).toLocaleString()}</TableCell>
