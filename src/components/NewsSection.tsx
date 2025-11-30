@@ -21,6 +21,7 @@ export function NewsSection() {
 
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState<any>(null);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   // ===================== FETCH NEWS =====================
   const fetchNews = async () => {
@@ -37,7 +38,7 @@ export function NewsSection() {
       },
     };
 
-    const res = await fetch("http://localhost:8080/api/news/paginaton", {
+    const res = await fetch(`${API_BASE}/api/news/paginaton`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -52,7 +53,7 @@ export function NewsSection() {
 
   // ===================== FETCH DETAIL =====================
   const fetchDetail = async (id: number) => {
-    const res = await fetch("http://localhost:8080/api/news/detail", {
+    const res = await fetch(`${API_BASE}/api/news/detail`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
@@ -143,8 +144,10 @@ export function NewsSection() {
                     {item.title}
                   </h3>
 
-                  {/* DESCRIPTION */}
-                  <p className="text-gray-600 line-clamp-3">{item.description}</p>
+                  <div
+                    className="text-gray-600 line-clamp-3 prose prose-sm max-w-full break-words"
+                    dangerouslySetInnerHTML={{ __html: item.description }}
+                  />
 
                   {/* Optional File Description */}
                   {item.fileDescription && (
@@ -208,7 +211,10 @@ export function NewsSection() {
                   {detailData.title}
                 </h2>
 
-                <p className="text-sm leading-relaxed">{detailData.description}</p>
+                <div
+                  className="text-sm leading-relaxed max-w-full break-words card-description"
+                  dangerouslySetInnerHTML={{ __html: detailData.description }}
+                />
 
                 <div className="border-t pt-3 text-sm space-y-2">
                   <p><strong>Author:</strong> {detailData.author}</p>

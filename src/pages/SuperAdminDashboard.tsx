@@ -31,6 +31,15 @@ import {
 } from '../components/ui/select';
 import { Users, BookOpen, Newspaper, Trash2, Edit, Plus, ArrowLeft, Eye } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
+import { RichTextEditor } from "@mantine/tiptap";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import '@mantine/core/styles.css';
+import '@mantine/tiptap/styles.css';
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import ListItem from "@tiptap/extension-list-item";
+
 
 export default function SuperAdminDashboard() {
     const { user, accessToken } = useAuth();
@@ -133,8 +142,6 @@ export default function SuperAdminDashboard() {
         createdAt: "",
         updateAt: "",
     });
-
-
 
     // TRAINING
     interface TrainingItem {
@@ -443,7 +450,10 @@ export default function SuperAdminDashboard() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(addNewsData)
+                body: JSON.stringify({
+                    title: addNewsData.title,
+                    description: addNewsData.description
+                })
             });
 
             const data = await res.json();
@@ -461,6 +471,68 @@ export default function SuperAdminDashboard() {
     useEffect(() => {
         fetchNews();
     }, [newsPage, newsLimit, filterNewsTitle]);
+
+    useEffect(() => {
+        if (showAddNewsModal) {
+            setAddNewsData({ title: "", description: "" });
+
+            // Reset editor content jika sudah ada
+            if (editor) {
+                editor.commands.setContent("");
+            }
+        }
+    }, [showAddNewsModal]);
+
+    const [isEditorFocused, setIsEditorFocused] = useState(false);
+
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            BulletList,
+            OrderedList,
+            ListItem
+        ],
+        content: addNewsData.description,
+        onUpdate: ({ editor }) => {
+            setAddNewsData(prev => ({
+                ...prev,
+                description: editor.getHTML()
+            }));
+        }
+    });
+
+    const [detailEditor, setDetailEditor] = useState<any>(null);
+
+    const editorDetail = useEditor({
+        extensions: [StarterKit],
+        editable: isEditNews,
+        onUpdate: ({ editor }) => {
+            setNewsForm(prev => ({
+                ...prev,
+                description: editor.getHTML(),
+            }));
+        },
+    });
+
+    useEffect(() => {
+        if (editorDetail) {
+            editorDetail.setEditable(isEditNews);
+        }
+    }, [isEditNews, editorDetail]);
+
+    useEffect(() => {
+        if (editorDetail && detailNews) {
+            // Set content hanya sekali saat modal dibuka
+            editorDetail.commands.setContent(detailNews.description || "");
+        }
+    }, [editorDetail, detailNews])
+
+    useEffect(() => {
+        setDetailEditor(editorDetail);
+    }, [editorDetail]);
+
+
+    if (!editorDetail && isEditNews) return <p>Loading editor...</p>;
 
     //jasa state
     const fetchProducts = async () => {
@@ -896,6 +968,12 @@ export default function SuperAdminDashboard() {
         fetchTrainingParticipants();
     }, [tpPage, tpLimit, filterTPName]);
 
+    const stripHtml = (html: string) => {
+        const temp = document.createElement("div");
+        temp.innerHTML = html;
+        return temp.textContent || temp.innerText || "";
+    };
+
 
     if (user?.role !== 'superadmin') {
         return (
@@ -964,10 +1042,10 @@ export default function SuperAdminDashboard() {
                 <Tabs defaultValue="users" className="space-y-4">
                     <TabsList>
                         <TabsTrigger value="users">Users</TabsTrigger>
-                        <TabsTrigger value="courses">Courses</TabsTrigger>
-                        <TabsTrigger value="news">News</TabsTrigger>
+                        <TabsTrigger value="courses">Pelatihan</TabsTrigger>
+                        <TabsTrigger value="news">Berita</TabsTrigger>
                         <TabsTrigger value="Jasa">Jasa</TabsTrigger>
-                        <TabsTrigger value="trainingParticipant">Training Participant</TabsTrigger>
+                        <TabsTrigger value="trainingParticipant">Peserta Pelatihan</TabsTrigger>
                     </TabsList>
 
                     {/* Users Tab */}
@@ -2101,27 +2179,39 @@ export default function SuperAdminDashboard() {
                                     {newsList.map((n) => (
                                         <TableRow key={n.id}>
                                             <TableCell>{n.title}</TableCell>
-                                            <TableCell className="max-w-[250px] whitespace-normal break-words">
-                                                {n.description}
+
+                                            <TableCell
+                                                className=" max-w-[220px] whitespace-normal break-words line-clamp-2 overflow-hidden text-ellipsis"
+                                            >
+                                                {n.description.replace(/<[^>]+>/g, "")}
                                             </TableCell>
+
                                             <TableCell>{n.author}</TableCell>
                                             <TableCell>{new Date(n.createdAt).toLocaleString()}</TableCell>
                                             <TableCell>{new Date(n.updateAt).toLocaleString()}</TableCell>
 
                                             <TableCell className="flex gap-2">
-                                                <Button variant="ghost" size="sm" onClick={() => getDetailNews(n.id)}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => getDetailNews(n.id)}
+                                                >
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
 
-                                                <Button variant="ghost" size="sm" onClick={() => deleteNews(n.id)}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => deleteNews(n.id)}
+                                                >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
-
                             </Table>
+
 
                             {/* Pagination */}
                             <div className="flex justify-end items-center gap-4 mt-4">
@@ -2165,13 +2255,14 @@ export default function SuperAdminDashboard() {
 
                     {/* Add News Modal */}
                     <Dialog open={showAddNewsModal} onOpenChange={setShowAddNewsModal}>
-                        <DialogContent className="max-w-md">
+                        <DialogContent className="max-w-lg">
                             <DialogHeader>
                                 <DialogTitle>Add News</DialogTitle>
                             </DialogHeader>
 
                             <div className="space-y-3 text-sm">
 
+                                {/* Title */}
                                 <div>
                                     <label className="block mb-1">Title</label>
                                     <input
@@ -2184,17 +2275,55 @@ export default function SuperAdminDashboard() {
                                     />
                                 </div>
 
-                                <div>
+                                {/* Description WYSIWYG */}
+                                <div className="mb-4">
                                     <label className="block mb-1">Description</label>
-                                    <textarea
-                                        value={addNewsData.description}
-                                        onChange={(e) =>
-                                            setAddNewsData({ ...addNewsData, description: e.target.value })
-                                        }
-                                        className="w-full border rounded px-3 py-2 h-32"
-                                    ></textarea>
+
+                                    <RichTextEditor
+                                        editor={editor}
+                                        className={`rounded-md p-2 space-y-2 transition-all duration-150
+            ${isEditorFocused ? "border-2 border-blue-500 shadow-md" : "border"}
+        `}
+                                    >
+                                        {/* Toolbar */}
+                                        <RichTextEditor.Toolbar
+                                            className={`
+                transition-all rounded-md p-1
+                ${isEditorFocused ? "ring-2 ring-blue-500 bg-blue-50" : "bg-gray-50"}
+            `}
+                                        >
+                                            <RichTextEditor.ControlsGroup>
+                                                <RichTextEditor.Bold active={editor?.isActive("bold")} />
+                                                <RichTextEditor.Italic active={editor?.isActive("italic")} />
+                                                <RichTextEditor.Underline active={editor?.isActive("underline")} />
+                                                <RichTextEditor.Strikethrough active={editor?.isActive("strike")} />
+                                            </RichTextEditor.ControlsGroup>
+
+                                            <RichTextEditor.ControlsGroup>
+                                                <RichTextEditor.H1 active={editor?.isActive("heading", { level: 1 })} />
+                                                <RichTextEditor.H2 active={editor?.isActive("heading", { level: 2 })} />
+                                                <RichTextEditor.H3 active={editor?.isActive("heading", { level: 3 })} />
+                                            </RichTextEditor.ControlsGroup>
+
+                                            <RichTextEditor.ControlsGroup>
+                                                <RichTextEditor.BulletList active={editor?.isActive("bulletList")} />
+                                                <RichTextEditor.OrderedList active={editor?.isActive("orderedList")} />
+                                            </RichTextEditor.ControlsGroup>
+
+                                            <RichTextEditor.ControlsGroup>
+                                                <RichTextEditor.Undo />
+                                                <RichTextEditor.Redo />
+                                            </RichTextEditor.ControlsGroup>
+                                        </RichTextEditor.Toolbar>
+
+                                        {/* Content */}
+                                        <RichTextEditor.Content
+                                            className="card-editor min-h-[150px] rounded-md p-3 border border-gray-300"
+                                        />
+                                    </RichTextEditor>
                                 </div>
 
+                                {/* Buttons */}
                                 <div className="flex justify-end gap-3 mt-4">
                                     <Button variant="outline" onClick={() => setShowAddNewsModal(false)}>
                                         Batal
@@ -2207,6 +2336,7 @@ export default function SuperAdminDashboard() {
                             </div>
                         </DialogContent>
                     </Dialog>
+
 
                     {/* Detail News Modal */}
                     <Dialog open={showNewsModal} onOpenChange={(v) => {
@@ -2221,6 +2351,7 @@ export default function SuperAdminDashboard() {
                             {detailNews && (
                                 <div className="space-y-3 text-sm">
 
+                                    {/* Title */}
                                     <div>
                                         <label className="block mb-1">Title</label>
                                         <input
@@ -2232,16 +2363,49 @@ export default function SuperAdminDashboard() {
                                         />
                                     </div>
 
+                                    {/* Description WYSIWYG */}
                                     <div>
                                         <label className="block mb-1">Description</label>
-                                        <textarea
-                                            disabled={!isEditNews}
-                                            value={newsForm.description}
-                                            onChange={(e) => setNewsForm({ ...newsForm, description: e.target.value })}
-                                            className="w-full border rounded px-3 py-2"
-                                        />
+
+                                        {editorDetail && (
+                                            <RichTextEditor editor={editorDetail}>
+
+                                                {/* Toolbar hanya muncul saat edit */}
+                                                {isEditNews && (
+                                                    <RichTextEditor.Toolbar className="transition-all rounded-md p-1 ring-2 ring-blue-500 bg-blue-50">
+                                                        <RichTextEditor.ControlsGroup>
+                                                            <RichTextEditor.Bold active={editorDetail.isActive("bold")} />
+                                                            <RichTextEditor.Italic active={editorDetail.isActive("italic")} />
+                                                            <RichTextEditor.Underline active={editorDetail.isActive("underline")} />
+                                                            <RichTextEditor.Strikethrough active={editorDetail.isActive("strike")} />
+                                                        </RichTextEditor.ControlsGroup>
+
+                                                        <RichTextEditor.ControlsGroup>
+                                                            <RichTextEditor.H1 active={editorDetail.isActive("heading", { level: 1 })} />
+                                                            <RichTextEditor.H2 active={editorDetail.isActive("heading", { level: 2 })} />
+                                                            <RichTextEditor.H3 active={editorDetail.isActive("heading", { level: 3 })} />
+                                                        </RichTextEditor.ControlsGroup>
+
+                                                        <RichTextEditor.ControlsGroup>
+                                                            <RichTextEditor.BulletList active={editorDetail.isActive("bulletList")} />
+                                                            <RichTextEditor.OrderedList active={editorDetail.isActive("orderedList")} />
+                                                        </RichTextEditor.ControlsGroup>
+
+                                                        <RichTextEditor.ControlsGroup>
+                                                            <RichTextEditor.Undo />
+                                                            <RichTextEditor.Redo />
+                                                        </RichTextEditor.ControlsGroup>
+                                                    </RichTextEditor.Toolbar>
+                                                )}
+
+                                                {/* Content */}
+                                                <RichTextEditor.Content className="card-editor min-h-[150px] rounded-md p-3 border border-gray-300" />
+
+                                            </RichTextEditor>
+                                        )}
                                     </div>
 
+                                    {/* Author */}
                                     <div>
                                         <label className="block mb-1">Author</label>
                                         <input
@@ -2252,16 +2416,14 @@ export default function SuperAdminDashboard() {
                                         />
                                     </div>
 
+                                    {/* Buttons */}
                                     <div className="flex justify-end gap-3 mt-4">
                                         {!isEditNews && (
                                             <Button onClick={() => setIsEditNews(true)}>Edit</Button>
                                         )}
-
                                         {isEditNews && (
                                             <>
-                                                <Button variant="outline" onClick={() => setIsEditNews(false)}>
-                                                    Cancel
-                                                </Button>
+                                                <Button variant="outline" onClick={() => setIsEditNews(false)}>Cancel</Button>
                                                 <Button onClick={updateNews}>Save</Button>
                                             </>
                                         )}
@@ -2367,7 +2529,7 @@ export default function SuperAdminDashboard() {
 
                     {/* Add Jasa Modal */}
                     <Dialog open={showAddProductModal} onOpenChange={setShowAddProductModal}>
-                        <DialogContent className="max-w-md">
+                        <DialogContent className="max-w-lg">
                             <DialogHeader>
                                 <DialogTitle>Add Jasa</DialogTitle>
                             </DialogHeader>

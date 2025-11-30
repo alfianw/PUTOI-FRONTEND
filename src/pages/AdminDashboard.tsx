@@ -286,26 +286,41 @@ export default function AdminDashboard() {
                                     accessToken={accessToken}
                                 />
                             </div>
+
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead>Title</TableHead>
+                                            <TableHead className="w-[200px]">Title</TableHead>
+                                            <TableHead className="w-[250px]">Description</TableHead>
                                             <TableHead>Author</TableHead>
                                             <TableHead>Created At</TableHead>
                                             <TableHead>Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
+
                                     <TableBody>
                                         {news.map((item) => (
                                             <TableRow key={item.id}>
+                                                {/* Title */}
                                                 <TableCell>{item.title}</TableCell>
-                                                <TableCell>{item.author}</TableCell>
-                                                <TableCell>
-                                                    {new Date(
-                                                        item.createdAt,
-                                                    ).toLocaleDateString()}
+
+                                                {/* Description (preview 1 baris, strip HTML) */}
+                                                <TableCell className="max-w-[250px]">
+                                                    <p className="truncate text-gray-600">
+                                                        {stripHtml(item.description)}
+                                                    </p>
                                                 </TableCell>
+
+                                                {/* Author */}
+                                                <TableCell>{item.author}</TableCell>
+
+                                                {/* Created */}
+                                                <TableCell>
+                                                    {new Date(item.createdAt).toLocaleDateString()}
+                                                </TableCell>
+
+                                                {/* Actions */}
                                                 <TableCell>
                                                     <Button
                                                         variant="ghost"
@@ -317,14 +332,14 @@ export default function AdminDashboard() {
                                                 </TableCell>
                                             </TableRow>
                                         ))}
+
                                         {news.length === 0 && (
                                             <TableRow>
                                                 <TableCell
-                                                    colSpan={4}
+                                                    colSpan={5}
                                                     className="text-center text-gray-500"
                                                 >
-                                                    Belum ada berita. Tambahkan berita
-                                                    pertama Anda!
+                                                    Belum ada berita. Tambahkan berita pertama Anda!
                                                 </TableCell>
                                             </TableRow>
                                         )}
@@ -333,6 +348,7 @@ export default function AdminDashboard() {
                             </div>
                         </Card>
                     </TabsContent>
+
                 </Tabs>
             </div>
         </div>

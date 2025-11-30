@@ -77,7 +77,7 @@ export function ServicesSection() {
             Hubungi kami untuk informasi lebih lanjut mengenai pelatihan dan jasa kalibrasi
           </p>
           <a
-            href="#contact"
+            href="https://wa.me/6285755450598?text=Halo%20saya%20ingin%20menanyakan%20tentang%20Pelatihan%20dan%20Jasa"
             className="inline-block bg-white text-blue-900 px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors"
           >
             Hubungi Kami
