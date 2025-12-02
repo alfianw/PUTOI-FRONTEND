@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Menu, X, Search, User, Droplet, LogOut, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../../utils/auth-context";
 import { AuthModal } from "../AuthModal";
+import { ProfileModal } from "../ProfileModal";
 import logo from "../../assets/pnj-logo.avif";
 import {
   DropdownMenu,
@@ -17,23 +19,30 @@ export function NavbarPUTOI() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [profileUserEmail, setProfileUserEmail] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('');
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const openAuthModal = (mode: 'signin' | 'signup') => {
     setAuthMode(mode);
     setAuthModalOpen(true);
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    window.location.href = '#/';
+  const openProfileModal = () => {
+    setProfileUserEmail(user?.email || null);
+    setProfileModalOpen(true);
   };
 
-  const getDashboardLink = () => {
-    if (user?.role === 'superadmin') return '#/superadmin';
-    return '#/';
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
   };
+
+  const getDashboardLink = () => user?.role === 'superadmin' ? '/superadmin' : '/';
+
+  const canAccessProfile = user?.role === 'superadmin' || user?.role === 'student';
 
   const navLinks = [
     { id: 'about', label: 'Tentang' },
@@ -92,7 +101,7 @@ export function NavbarPUTOI() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors">
-              Home
+              Beranda
             </a>
             {navLinks.map(link => (
               <button
@@ -109,39 +118,48 @@ export function NavbarPUTOI() {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    <User className="w-4 h-4" />
-                    {user.name}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>
-                    <div>
-                      <div>{user.name}</div>
-                      <div className="text-xs text-gray-500">{user.email}</div>
-                      <div className="text-xs text-blue-900 capitalize mt-1">
-                        Role: {user.role}
+              canAccessProfile ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="gap-2">
+                      <User className="w-4 h-4" />
+                      {user.name || user.email}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                      <div>
+                        <div>{user.name || user.email}</div>
+                        <div className="text-xs text-gray-500">{user.email}</div>
+                        <div className="text-xs text-blue-900 capitalize mt-1">Role: {user.role}</div>
                       </div>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {(user.role === 'superadmin') && (
-                    <>
-                      <DropdownMenuItem onClick={() => window.location.href = getDashboardLink()} className="cursor-pointer">
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Dashboard
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                  )}
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Keluar
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+
+                    {/* Profile */}
+                    <DropdownMenuItem onClick={openProfileModal} className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </DropdownMenuItem>
+
+                    {user.role === 'superadmin' && (
+                      <>
+                        <DropdownMenuItem onClick={() => navigate(getDashboardLink())} className="cursor-pointer">
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          Dashboard
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+
+                    {/* Logout */}
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Keluar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : null
             ) : (
               <>
                 <Button variant="outline" className="gap-2" onClick={() => openAuthModal('signin')}>
@@ -174,7 +192,7 @@ export function NavbarPUTOI() {
               href="#/"
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             >
-              Home
+              Beranda
             </a>
             {navLinks.map(link => (
               <button
@@ -187,41 +205,23 @@ export function NavbarPUTOI() {
               </button>
             ))}
             <div className="flex flex-col gap-2 pt-4 border-t">
-              {user ? (
+              {user && canAccessProfile && (
                 <>
-                  <div className="px-4 py-2 bg-gray-50 rounded-lg">
-                    <div className="text-sm">{user.name}</div>
-                    <div className="text-xs text-gray-500">{user.email}</div>
-                    <div className="text-xs text-blue-900 capitalize mt-1">
-                      Role: {user.role}
-                    </div>
-                  </div>
-                  {(user.role === 'superadmin') && (
-                    <Button
-                      variant="outline"
-                      className="w-full gap-2"
-                      onClick={() => window.location.href = getDashboardLink()}
-                    >
+                  <Button variant="outline" className="w-full gap-2" onClick={openProfileModal}>
+                    <User className="w-4 h-4" />
+                    Profile
+                  </Button>
+
+                  {user.role === 'superadmin' && (
+                    <Button variant="outline" className="w-full gap-2" onClick={() => navigate(getDashboardLink())}>
                       <LayoutDashboard className="w-4 h-4" />
                       Dashboard
                     </Button>
                   )}
+
                   <Button variant="outline" className="w-full gap-2" onClick={handleSignOut}>
                     <LogOut className="w-4 h-4" />
                     Keluar
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" className="w-full gap-2" onClick={() => openAuthModal('signin')}>
-                    <User className="w-4 h-4" />
-                    Masuk
-                  </Button>
-                  <Button
-                    className="w-full bg-gradient-to-r from-blue-900 to-blue-600"
-                    onClick={() => openAuthModal('signup')}
-                  >
-                    Daftar
                   </Button>
                 </>
               )}
@@ -233,8 +233,15 @@ export function NavbarPUTOI() {
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        defaultMode={authMode}
+        mode={authMode}
       />
+      {canAccessProfile && profileUserEmail && (
+        <ProfileModal
+          isOpen={profileModalOpen}
+          onClose={() => setProfileModalOpen(false)}
+          user={{ email: profileUserEmail }}
+        />
+      )}
     </nav>
   );
 }
