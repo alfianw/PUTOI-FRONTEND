@@ -4,7 +4,7 @@ export function FooterSection() {
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-8">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -50,69 +50,8 @@ export function FooterSection() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-white text-lg mb-4">Link Cepat</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="#about" className="hover:text-blue-400 transition-colors">
-                  Tentang Kami
-                </a>
-              </li>
-              <li>
-                <a href="#organization" className="hover:text-blue-400 transition-colors">
-                  Organisasi
-                </a>
-              </li>
-              <li>
-                <a href="#partners" className="hover:text-blue-400 transition-colors">
-                  Partners
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-blue-400 transition-colors">
-                  Layanan
-                </a>
-              </li>
-              <li>
-                <a href="#products" className="hover:text-blue-400 transition-colors">
-                  Produk
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h3 className="text-white text-lg mb-4">Layanan</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="#services" className="hover:text-blue-400 transition-colors">
-                  Kalibrasi Pressure
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-blue-400 transition-colors">
-                  Kalibrasi Transmitter
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-blue-400 transition-colors">
-                  Pelatihan SCADA IoT
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-blue-400 transition-colors">
-                  Pelatihan LabVIEW
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-blue-400 transition-colors">
-                  Pelatihan Kalibrasi
-                </a>
-              </li>
-            </ul>
-          </div>
+          {/* Spacer */}
+          <div></div>
 
           {/* Contact */}
           <div>
@@ -143,17 +82,6 @@ export function FooterSection() {
           <p className="text-gray-400 text-sm">
             © 2024 PUTOI - Politeknik Negeri Jakarta. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm">
-            <a href="#" className="hover:text-blue-400 transition-colors">
-              Kebijakan Privasi
-            </a>
-            <a href="#" className="hover:text-blue-400 transition-colors">
-              Syarat & Ketentuan
-            </a>
-            <a href="#contact" className="hover:text-blue-400 transition-colors">
-              Hubungi Kami
-            </a>
-          </div>
         </div>
       </div>
     </footer>

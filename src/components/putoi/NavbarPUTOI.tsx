@@ -225,6 +225,20 @@ export function NavbarPUTOI() {
                   </Button>
                 </>
               )}
+              {!user && (
+                <>
+                  <Button variant="outline" className="w-full gap-2" onClick={() => openAuthModal('signin')}>
+                    <User className="w-4 h-4" />
+                    Masuk
+                  </Button>
+                  <Button
+                    className="w-full bg-gradient-to-r from-blue-900 to-blue-600 hover:from-blue-800 hover:to-blue-500"
+                    onClick={() => openAuthModal('signup')}
+                  >
+                    Daftar
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}
