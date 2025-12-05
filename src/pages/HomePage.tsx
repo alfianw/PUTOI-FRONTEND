@@ -2,9 +2,10 @@ import { Navbar } from "../components/Navbar";
 import { Hero } from "../components/Hero";
 import { Categories } from "../components/Categories";
 import { FeaturedCourses } from "../components/FeaturedCourses";
-import { Features } from "../components/Features";
+import { ServicesSection } from "../components/ServicesSection";
 import { Stats } from "../components/Stats";
 import { NewsSection } from "../components/NewsSection";
+import { GallerySection } from "../components/GallerySection";
 import { Testimonials } from "../components/Testimonials";
 import { Newsletter } from "../components/Newsletter";
 import { Footer } from "../components/Footer";
@@ -19,7 +20,8 @@ export default function HomePage() {
                 <Hero />
                 {/* <Categories /> */}
                 <FeaturedCourses />
-                <Features />
+                <ServicesSection />
+                <GallerySection />
                 <NewsSection />
                 <Stats />
                 {/* <Testimonials /> */}

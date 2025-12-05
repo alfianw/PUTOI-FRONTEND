@@ -207,33 +207,69 @@ export function FeaturedCourses() {
             trainings.map((item: any) => (
               <Card
                 key={item.id}
-                className="relative p-0 cursor-pointer text-white rounded-xl overflow-hidden group shadow-lg"
+                className="relative p-0 cursor-pointer rounded-xl overflow-hidden group shadow-lg"
                 onClick={() => fetchDetail(item.id)}
               >
-                <div className="relative h-[380px] bg-blue-900 p-6 flex flex-col justify-end">
-                  <h3 className="text-2xl font-bold mb-4">{item.trainingTitle}</h3>
+                <div className="lg:flex">
+                  {/* Visual / header area */}
+                  <div className="relative lg:w-1/2 h-[260px] lg:h-[380px] bg-blue-900 p-6 flex flex-col justify-end">
+                    <h3 className="text-2xl font-bold mb-2 text-white">{item.trainingTitle}</h3>
 
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock size={18} className="text-white opacity-90" />
-                      <span>
-                        <strong>Duration:</strong> {item.duration}
-                      </span>
+                    {/* Description placed under title */}
+                    <p className="text-sm text-white mb-4 line-clamp-3">
+                      {item.description || item.shortDescription || "Deskripsi singkat tidak tersedia."}
+                    </p>
+
+                    <div className="space-y-3 text-sm text-white">
+                      <div className="flex items-center gap-2">
+                        <Clock size={18} className="text-white opacity-90" />
+                        <span>
+                          <strong>Duration:</strong> {item.duration}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Users size={18} className="text-white opacity-90" />
+                        <span>
+                          <strong>Participants:</strong> {item.minimumParticipants}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Calendar size={18} className="text-white opacity-90" />
+                        <span>
+                          <strong>Schedule:</strong>{" "}
+                          {item.implementationSchedule}
+                        </span>
+                      </div>
                     </div>
+                  </div>
 
-                    <div className="flex items-center gap-2">
-                      <Users size={18} className="text-white opacity-90" />
-                      <span>
-                        <strong>Participants:</strong> {item.minimumParticipants}
-                      </span>
-                    </div>
+                  {/* Description + actions */}
+                  <div className="lg:w-1/2 bg-white p-6 flex flex-col justify-between text-gray-800">
+                      <div className="flex items-center justify-between mt-4">
+                      <div className="text-sm text-gray-600">{item.implementationSchedule}</div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            fetchDetail(item.id);
+                          }}
+                        >
+                          Detail
+                        </Button>
 
-                    <div className="flex items-center gap-2">
-                      <Calendar size={18} className="text-white opacity-90" />
-                      <span>
-                        <strong>Schedule:</strong>{" "}
-                        {item.implementationSchedule}
-                      </span>
+                        <Button
+                          className="bg-blue-900 hover:bg-blue-700 text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            daftarPelatihan(item.id);
+                          }}
+                        >
+                          Daftar
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>

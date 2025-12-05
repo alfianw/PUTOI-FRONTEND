@@ -1,7 +1,19 @@
 import { Droplet, Award, FlaskConical, Zap } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import heroPutoi from "../../assets/hero-putoi.JPG";
 
 export function HeroSection() {
+  // Scroll ke section dengan id
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 text-white overflow-hidden">
       {/* Background Pattern */}
@@ -18,7 +30,7 @@ export function HeroSection() {
           <div className="text-center lg:text-left">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
               <Droplet className="w-4 h-4" />
-              <span className="text-sm">Water Treatment Plant PNJ</span>
+              <span className="text-sm">PNJ Water Treatment</span>
             </div>
             
             <h1 className="text-5xl md:text-6xl mb-6">
@@ -34,18 +46,20 @@ export function HeroSection() {
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-12">
-              <a
-                href="#about"
-                className="bg-white text-blue-900 px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center gap-2"
+              <button
+                type="button"
+                onClick={() => scrollToSection("about")}
+                className="bg-white text-blue-900 px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
                 Tentang Kami
-              </a>
-              <a
-                href="#products"
-                className="border-2 border-white px-8 py-3 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-2"
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection("products")}
+                className="border-2 border-white px-8 py-3 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
                 Lihat Produk
-              </a>
+              </button>
             </div>
 
             {/* Stats */}
@@ -78,7 +92,7 @@ export function HeroSection() {
           <div className="relative">
             <div className="relative">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1748002757537-00ab5114135b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwZmlsdHJhdGlvbiUyMHN5c3RlbXxlbnwxfHx8fDE3NjIyMDc4MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                src={heroPutoi}
                 alt="PUTOI Water Treatment Facility"
                 className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
               />

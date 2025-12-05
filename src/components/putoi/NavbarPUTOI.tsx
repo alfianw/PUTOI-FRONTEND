@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
-import { Menu, X, Search, User, Droplet, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, Search, User, UserPlus, Droplet, LogOut, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../../utils/auth-context";
 import { AuthModal } from "../AuthModal";
 import { ProfileModal } from "../ProfileModal";
-import logo from "../../assets/pnj-logo.avif";
+import logo from "../../assets/logo-putoi.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -89,25 +89,21 @@ export function NavbarPUTOI() {
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo (visible on mobile and desktop) */}
           <a href="#/putoi" className="flex items-center gap-2">
-            <img src={logo} alt="PNJ Logo" className="h-10 w-auto" />
-            <div>
-              <span className="text-xl bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent block">PUTOI</span>
-              <span className="text-xs text-gray-500">PNJ Water Treatment</span>
-            </div>
+            <img src={logo} alt="PUTOI Logo" className="h-10 w-auto" />
           </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors">
+            <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors cursor-pointer">
               Beranda
             </a>
             {navLinks.map(link => (
               <button
                 key={link.id}
                 onClick={() => scrollToSection(link.id)}
-                className={`text-gray-700 hover:text-blue-900 transition-colors ${activeSection === link.id ? 'text-blue-900 font-medium' : ''
+                className={`text-gray-700 hover:text-blue-900 transition-colors cursor-pointer ${activeSection === link.id ? 'text-blue-900 font-medium' : ''
                   }`}
               >
                 {link.label}
@@ -162,14 +158,12 @@ export function NavbarPUTOI() {
               ) : null
             ) : (
               <>
-                <Button variant="outline" className="gap-2" onClick={() => openAuthModal('signin')}>
+                <Button variant="outline" className="gap-2 cursor-pointer" onClick={() => openAuthModal('signin')}>
                   <User className="w-4 h-4" />
                   Masuk
                 </Button>
-                <Button
-                  className="bg-gradient-to-r from-blue-900 to-blue-600 hover:from-blue-800 hover:to-blue-500"
-                  onClick={() => openAuthModal('signup')}
-                >
+                <Button className="bg-gradient-to-r from-blue-900 to-blue-600 cursor-pointer" onClick={() => openAuthModal('signup')}>
+                  <UserPlus className="w-4 h-4" />
                   Daftar
                 </Button>
               </>
@@ -190,7 +184,7 @@ export function NavbarPUTOI() {
           <div className="md:hidden py-4 space-y-4">
             <a
               href="#/"
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
               Beranda
             </a>
@@ -198,7 +192,7 @@ export function NavbarPUTOI() {
               <button
                 key={link.id}
                 onClick={() => scrollToSection(link.id)}
-                className={`block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg ${activeSection === link.id ? 'bg-blue-50 text-blue-900' : ''
+                className={`block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer ${activeSection === link.id ? 'bg-blue-50 text-blue-900' : ''
                   }`}
               >
                 {link.label}
@@ -227,14 +221,12 @@ export function NavbarPUTOI() {
               )}
               {!user && (
                 <>
-                  <Button variant="outline" className="w-full gap-2" onClick={() => openAuthModal('signin')}>
+                  <Button variant="outline" className="w-full gap-2 cursor-pointer" onClick={() => openAuthModal('signin')}>
                     <User className="w-4 h-4" />
                     Masuk
                   </Button>
-                  <Button
-                    className="w-full bg-gradient-to-r from-blue-900 to-blue-600 hover:from-blue-800 hover:to-blue-500"
-                    onClick={() => openAuthModal('signup')}
-                  >
+                  <Button variant="outline" className="w-full gap-2 cursor-pointer" onClick={() => openAuthModal('signup')}>
+                    <UserPlus className="w-4 h-4" />
                     Daftar
                   </Button>
                 </>

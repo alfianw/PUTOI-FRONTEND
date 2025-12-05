@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Menu, X, Search, User, BookOpen, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, Search, User, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "../utils/auth-context";
 import { AuthModal } from "./AuthModal";
 import { ProfileModal } from "./ProfileModal";
-import logo from "../assets/pnj-putoi-logo-v2.png";
+import logo from "../assets/logo-putoi.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -112,16 +112,17 @@ export function Navbar() {
               ) : null
             ) : (
               <>
-                <Button variant="outline" className="gap-2" onClick={() => openAuthModal('signin')}>
-                  <User className="w-4 h-4" />
-                  Masuk
-                </Button>
-                <Button
-                  className="bg-gradient-to-r from-blue-900 to-blue-600 hover:from-blue-800 hover:to-blue-500"
-                  onClick={() => openAuthModal('signup')}
-                >
-                  Daftar
-                </Button>
+                    <Button variant="outline" className="gap-2 cursor-pointer" onClick={() => openAuthModal('signin')}>
+                      <User className="w-4 h-4" />
+                      Masuk
+                    </Button>
+                    <Button
+                      className="bg-gradient-to-r from-blue-900 to-blue-600 cursor-pointer"
+                      onClick={() => openAuthModal('signup')}
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      Daftar
+                    </Button>
               </>
             )}
           </div>
@@ -176,14 +177,12 @@ export function Navbar() {
               )}
               {!user && (
                 <>
-                  <Button variant="outline" className="w-full gap-2" onClick={() => openAuthModal('signin')}>
+                  <Button variant="outline" className="w-full gap-2 cursor-pointer" onClick={() => openAuthModal('signin')}>
                     <User className="w-4 h-4" />
                     Masuk
                   </Button>
-                  <Button
-                    className="w-full bg-gradient-to-r from-blue-900 to-blue-600 hover:from-blue-800 hover:to-blue-500"
-                    onClick={() => openAuthModal('signup')}
-                  >
+                  <Button variant="outline" className="w-full gap-2 cursor-pointer" onClick={() => openAuthModal('signup')}>
+                    <UserPlus className="w-4 h-4" />
                     Daftar
                   </Button>
                 </>

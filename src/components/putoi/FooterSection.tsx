@@ -1,4 +1,5 @@
-import { Droplet, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import logo from "../../assets/logo-putoi-footer.png";
 
 export function FooterSection() {
   return (
@@ -7,11 +8,8 @@ export function FooterSection() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-8">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="bg-gradient-to-r from-blue-900 to-blue-600 p-2 rounded-lg">
-                <Droplet className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl text-white">PUTOI</span>
+            <div className="flex items-center gap-4 mb-4">
+              <img src={logo} alt="PNJ Logo" className="h-10 w-auto" />
             </div>
             <p className="text-gray-400 mb-4">
               Water Treatment Plant berstandar industri milik Jurusan Teknik Elektro – Politeknik Negeri Jakarta.
