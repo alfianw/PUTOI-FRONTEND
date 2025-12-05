@@ -17,11 +17,11 @@ export default function PUTOIPage() {
             <main>
                 <HeroSection />
                 <AboutSection />
-                <WhyChooseUsSection />
-                <ServicesSection />
-                <ProductsSection />
                 <OrganizationSection />
                 <PartnersSection />
+                <WhyChooseUsSection />
+                {/* <ServicesSection /> */}
+                <ProductsSection />
                 <ContactSection />
             </main>
             <FooterSection />

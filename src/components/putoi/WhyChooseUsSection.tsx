@@ -17,7 +17,7 @@ export function WhyChooseUsSection() {
     {
       icon: Award,
       title: "Quality Assurance & Standardization",
-      desc: "Sistem operasional mengacu pada standar Permenkes No. 492/2010 (Kualitas Air Minum), ISO 9001:2015 (Manajemen Mutu), dan SNI 01-3553-2015 (Air Minum Dalam Kemasan).",
+      desc: "Sistem operasional mengacu pada standar:\nPermenkes No. 492/2010 (Kualitas Air Minum)\nISO 9001:2015 (Manajemen Mutu)\nSNI 01-3553-2015 (Air Minum Dalam Kemasan)",
       gradient: "from-blue-700 to-blue-500"
     },
     {

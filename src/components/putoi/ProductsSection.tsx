@@ -7,22 +7,29 @@ export function ProductsSection() {
       icon: Package,
       title: "Air Minum Kemasan 600 ml",
       desc: "Air minum dalam kemasan 600 ml merupakan varian utama produksi PUTOI. Dikemas dengan desain ergonomis dan higienis, cocok untuk aktivitas harian, rapat, pelatihan, maupun kegiatan kampus.",
-      image: "https://images.unsplash.com/photo-1683533893978-70a5a6f613e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGJvdHRsZSUyMHByb2R1Y3R8ZW58MXx8fHwxNzYyMTUyODAzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      image: "/src/assets/produk/botol-besar-kecil.png",
       gradient: "from-blue-900 to-blue-700"
     },
     {
       icon: Package,
       title: "Air Minum Kemasan 300 ml",
       desc: "Air minum 300 ml dirancang untuk kebutuhan kegiatan formal, seminar, dan pertemuan skala besar. Kemasan praktis dan ekonomis menjadikannya pilihan ideal untuk instansi maupun acara kampus.",
-      image: "https://images.unsplash.com/photo-1683533893978-70a5a6f613e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGJvdHRsZSUyMHByb2R1Y3R8ZW58MXx8fHwxNzYyMTUyODAzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      image: "/src/assets/produk/botol-besar-kecil.png",
       gradient: "from-blue-800 to-blue-600"
     },
     {
       icon: Cylinder,
       title: "Air Galon 19 Liter",
       desc: "Air galon 19 liter merupakan varian air isi ulang berkualitas tinggi hasil proses RO, Ozonisasi, dan UV. Produk ini diperuntukkan bagi kebutuhan kantor, laboratorium, dan industri kecil menengah.",
-      image: "https://images.unsplash.com/photo-1662647344062-b0cdb1ed7227?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdhbGxvbiUyMGRpc3BlbnNlcnxlbnwxfHx8fDE3NjIyMDc4MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      image: "/src/assets/produk/galon-botol-besar-kecil.png",
       gradient: "from-blue-700 to-blue-500"
+    },
+    {
+      icon: Package,
+      title: "Botol Kemasan 600ml & 300ml",
+      desc: "Kami menawarkan produksi botol kemasan 600ml dan 300ml siap pakai dengan desain modern dan kemasan yang ramah lingkungan untuk kebutuhan retail dan distribusi.",
+      image: "/src/assets/produk/botol-besar-kecil.png",
+      gradient: "from-blue-600 to-blue-400"
     }
   ];
 
@@ -40,7 +47,7 @@ export function ProductsSection() {
             Air Bersih Berkualitas – Dari Laboratorium ke Masyarakat
           </p>
           <p className="text-gray-600 max-w-3xl mx-auto">
-            PUTOI menghadirkan produk air minum hasil proses Water Treatment Plant berstandar industri. Setiap tetes air melalui sistem filtrasi bertahap, Reverse Osmosis (RO), Ozonisasi, dan Sterilisasi UV, menghasilkan air yang jernih, higienis, dan sesuai standar Permenkes No. 492/MENKES/PER/IV/2010.
+            PUTOI menghadirkan produk air minum hasil proses Water Treatment Plant berstandar industri. Setiap tetes air melalui sistem filtrasi bertahap, Reverse Osmosis (RO), Ozonisasi, dan Sterilisasi UV, menghasilkan air yang jernih, higienis, dan sesuai Standar. Produk kami digunakan untuk mendukung kegiatan pendidikan, riset, dan kebutuhan masyarakat umum.
           </p>
         </div>
 
@@ -59,7 +66,7 @@ export function ProductsSection() {
                   <ImageWithFallback
                     src={product.image}
                     alt={product.title}
-                    className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
+                    className="rounded-2xl shadow-2xl w-full h-auto object-contain"
                   />
                 </div>
                 <div className={isEven ? 'lg:order-2' : 'lg:order-1'}>
@@ -77,9 +84,9 @@ export function ProductsSection() {
         {/* Quality Assurance */}
         <div className="mt-16 bg-white rounded-2xl p-8 md:p-12 shadow-xl text-center">
           <Droplet className="w-16 h-16 text-blue-900 mx-auto mb-6" />
-          <h3 className="text-2xl text-blue-900 mb-4">Jaminan Kualitas</h3>
+          <h3 className="text-2xl text-blue-900 mb-4">Komitmen Kami</h3>
           <p className="text-gray-700 leading-relaxed max-w-3xl mx-auto">
-            Produk kami digunakan untuk mendukung kegiatan pendidikan, riset, dan kebutuhan masyarakat umum. Setiap produk melalui kontrol kualitas ketat untuk memastikan kesegaran dan keamanan air yang Anda konsumsi.
+            Setiap produk melalui kontrol kualitas ketat untuk memastikan kesegaran dan keamanan air yang Anda konsumsi sesuai dengan standar industri internasional.
           </p>
         </div>
       </div>

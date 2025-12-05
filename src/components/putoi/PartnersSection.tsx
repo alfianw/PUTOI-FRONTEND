@@ -3,31 +3,27 @@ import { ImageWithFallback } from "../figma/ImageWithFallback";
 
 export function PartnersSection() {
   const akademik = [
-    "Politeknik Negeri Jakarta – Jurusan Teknik Elektro",
-    "Universitas Indonesia"
+    "Politeknik Negeri Jakarta – Jurusan Teknik Elektro"
   ];
 
   const industri = [
     {
       name: "PT Juara Teknologi Elok",
-      desc: "Pengembangan sistem otomasi industri dan integrasi data berbasis IoT"
+      desc: "Pengembangan sistem otomasi industri dan integrasi data berbasis IoT."
     },
     {
       name: "PT Yokogawa Indonesia",
-      desc: "Penyedia solusi instrumentasi dan kontrol industri berskala global"
-    },
-    {
-      name: "PT Halia",
-      desc: "Pengembangan sistem monitoring air dan teknologi lingkungan berkelanjutan"
+      desc: "Penyedia solusi instrumentasi dan kontrol industri berskala global."
     },
     {
       name: "PT Nutech Integrasi",
-      desc: "Integrator otomasi dan SCADA industri"
+      desc: "Integrator otomasi dan SCADA industri."
     }
   ];
 
   const pemerintah = [
-    "Program Matching Fund & Kampus Merdeka – Kolaborasi riset dan inovasi energi bersih"
+    "PROGRAM HIBAH KOMPETISI PENGEMBANGAN MUTU PENDIDIKAN POLITEKNIK (PHK-PMPP) POLYTECHNIC EDUCATION DEVELOPMENT PROJECT (PEDP) ADB LOAN 2928-INO",
+    "PROGRAM REVITALISASI PERGURUAN TINGGI NEGERI VOKASI (PR-PTNV) TAHUN 2025"
   ];
 
   return (
@@ -41,7 +37,7 @@ export function PartnersSection() {
           </div>
           <h2 className="text-4xl mb-4 text-blue-900">Our Partners</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Kolaborasi strategis untuk memastikan keberlanjutan inovasi dan peningkatan mutu layanan
+            PUTOI menjalin kemitraan strategis dengan berbagai pihak, baik dari dunia pendidikan, industri, maupun lembaga pemerintah. Kolaborasi ini memastikan keberlanjutan inovasi dan peningkatan mutu layanan.
           </p>
         </div>
 

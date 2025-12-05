@@ -3,7 +3,6 @@ import { Hero } from "../components/Hero";
 import { Categories } from "../components/Categories";
 import { FeaturedCourses } from "../components/FeaturedCourses";
 import { ServicesSection } from "../components/ServicesSection";
-import { Stats } from "../components/Stats";
 import { NewsSection } from "../components/NewsSection";
 import { GallerySection } from "../components/GallerySection";
 import { Testimonials } from "../components/Testimonials";
@@ -23,7 +22,6 @@ export default function HomePage() {
                 <ServicesSection />
                 <GallerySection />
                 <NewsSection />
-                <Stats />
                 {/* <Testimonials /> */}
                 {/* <Newsletter /> */}
             </main>

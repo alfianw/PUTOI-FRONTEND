@@ -5,33 +5,39 @@ export function OrganizationSection() {
   const struktur = [
     {
       icon: Award,
-      title: "Penanggung Jawab",
-      desc: "Ketua Jurusan Teknik Elektro PNJ",
+      title: "Ketua",
+      desc: "Hariyanto, S.Pd., M.Eng",
       color: "from-blue-900 to-blue-700"
     },
     {
       icon: FlaskConical,
-      title: "Kepala Laboratorium PUTOI",
-      desc: "Dosen ahli bidang Water Treatment & Control System",
+      title: "Divisi Pelatihan",
+      desc: "Ajeng Bening Kusumaningtyas, S.S.T., M.Tr.T.",
       color: "from-blue-800 to-blue-600"
     },
     {
       icon: Cog,
-      title: "Koordinator Operasional",
-      desc: "Teknisi senior berpengalaman dalam pengolahan air industri",
+      title: "Divisi Kalibrasi",
+      desc: "Rizdam Firly Muzakki, S.Pd., M.T.",
       color: "from-blue-700 to-blue-500"
     },
     {
       icon: FlaskConical,
-      title: "Tim Peneliti & Pengembang",
-      desc: "Dosen dan mahasiswa yang aktif dalam riset dan inovasi",
+      title: "Divisi Jasa Penyewaan",
+      desc: "Dezetty Monika, S.T., M.T.",
       color: "from-blue-600 to-blue-400"
     },
     {
       icon: Wrench,
-      title: "Tim Layanan & Kalibrasi",
-      desc: "Teknisi bersertifikat yang menangani pemeliharaan dan uji kualitas",
+      title: "Divisi Produksi",
+      desc: "Toto Supriyanto, S.T., M.T.",
       color: "from-blue-500 to-blue-300"
+    },
+    {
+      icon: Cog,
+      title: "Divisi Operasi dan Pemeliharaan",
+      desc: "Shita Herfiah, S.Pd., M.T.",
+      color: "from-blue-400 to-blue-200"
     }
   ];
 
@@ -54,20 +60,17 @@ export function OrganizationSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           <div className="order-2 lg:order-1">
             <p className="text-gray-700 mb-6 leading-relaxed">
-              PUTOI berada di bawah pengelolaan Jurusan Teknik Elektro, Politeknik Negeri Jakarta, sebagai bagian dari <span className="text-blue-900">Center of Excellence</span> dalam bidang Instrumentasi, Kontrol, dan Teknologi Lingkungan.
-            </p>
-            <p className="text-gray-700 mb-6 leading-relaxed">
-              Struktur organisasi dibentuk untuk menjamin kesinambungan fungsi edukasi, layanan industri, dan pengembangan riset terapan.
+              PUTOI berada di bawah pengelolaan Jurusan Teknik Elektro, Politeknik Negeri Jakarta, sebagai bagian dari <span className="text-blue-900">Center of Excellence</span>. Struktur organisasi dibentuk untuk menjamin kesinambungan fungsi edukasi, layanan industri, dan pengembangan riset terapan.
             </p>
             <div className="bg-blue-900 text-white rounded-xl p-6">
               <p className="leading-relaxed">
-                Organisasi ini berjalan dengan prinsip <span className="font-semibold">Academic–Industrial Collaboration</span>, di mana kegiatan operasional dan layanan industri juga menjadi sarana pembelajaran berbasis proyek (Project-Based Learning) bagi mahasiswa vokasi.
+                Organisasi ini berjalan dengan prinsip <span className="font-semibold">Academic–Industrial Collaboration</span>, di mana kegiatan operasional dan layanan industri juga menjadi sarana pembelajaran berbasis proyek (Project-Based Learning) bagi mahasiswa.
               </p>
             </div>
           </div>
           <div className="order-1 lg:order-2">
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1743385779347-1549dabf1320?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvcmdhbml6YXRpb24lMjB0ZWFtJTIwc3RydWN0dXJlfGVufDF8fHx8MTc2MjE1ODQ4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+              src="/src/assets/organisasi.jpeg"
               alt="Organization Structure"
               className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
             />

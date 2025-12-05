@@ -1,12 +1,12 @@
 import { useState } from "react";
-import gallery1 from "../assets/gallery/gallery-1.png";
-import gallery2 from "../assets/gallery/gallery-2.png";
-import gallery3 from "../assets/gallery/gallery-3.png";
+import galeri1 from "../assets/galeri/galeri-1.png";
+import galeri2 from "../assets/galeri/galeri-2.png";
+import galeri3 from "../assets/galeri/galeri-3.png";
 
 const images = [
-  { src: gallery1, alt: "Gallery image 1", caption: "Kegiatan PUTOI 1" },
-  { src: gallery2, alt: "Gallery image 2", caption: "Kegiatan PUTOI 2" },
-  { src: gallery3, alt: "Gallery image 3", caption: "Kegiatan PUTOI 3" },
+  { src: galeri1, alt: "galeri image 1", caption: "Kegiatan PUTOI 1" },
+  { src: galeri2, alt: "galeri image 2", caption: "Kegiatan PUTOI 2" },
+  { src: galeri3, alt: "galeri image 3", caption: "Kegiatan PUTOI 3" },
 ];
 
 export function GallerySection() {

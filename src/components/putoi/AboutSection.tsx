@@ -28,9 +28,9 @@ export function AboutSection() {
             <Droplet className="w-4 h-4" />
             <span className="text-sm">Tentang Kami</span>
           </div>
-          <h2 className="text-4xl mb-4 text-blue-900">PUTOI</h2>
+          <h2 className="text-4xl mb-4 text-blue-900">PUTOI-TIK</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Polytechnic Utility Treatment of Industrial Water
+            Water Treatment Plant
           </p>
         </div>
 
@@ -38,20 +38,17 @@ export function AboutSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
           <div>
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1615797534094-7fde0a4861f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMHRyZWF0bWVudCUyMHBsYW50JTIwaW5kdXN0cmlhbHxlbnwxfHx8fDE3NjIwOTA1MDV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+              src="/src/assets/tentang-kami.png"
               alt="PUTOI Water Treatment Plant"
               className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
             />
           </div>
           <div>
             <p className="text-gray-700 mb-6 leading-relaxed">
-              PUTOI (Polytechnic Utility Treatment of Industrial Water) merupakan Water Treatment Plant berstandar industri yang dimiliki oleh Jurusan Teknik Elektro – Politeknik Negeri Jakarta (PNJ).
-            </p>
-            <p className="text-gray-700 mb-6 leading-relaxed">
-              Didirikan sebagai bagian dari upaya modernisasi fasilitas pembelajaran dan layanan industri, PUTOI berfungsi sebagai pusat pelatihan, riset, jasa kalibrasi, dan produksi air minum dalam kemasan yang mengedepankan kualitas, inovasi, dan keberlanjutan lingkungan.
+              PUTOI-TIK merupakan Water Treatment Plant berstandar industri yang dimiliki oleh Jurusan Teknik Elektro – Politeknik Negeri Jakarta (PNJ). Didirikan sebagai bagian dari upaya modernisasi fasilitas pembelajaran dan layanan industri, PUTOI berfungsi sebagai pusat pelatihan, riset, jasa kalibrasi, dan produksi air minum dalam kemasan yang mengedepankan kualitas, inovasi, dan keberlanjutan lingkungan.
             </p>
             <p className="text-gray-700 leading-relaxed">
-              PUTOI dirancang dengan sistem pengolahan Reverse Osmosis (RO), filtrasi multi-tahap otomatis, serta teknologi ozonisasi dan ultraviolet (UV) untuk menghasilkan air murni berkualitas tinggi sesuai dengan Permenkes No. 492/MENKES/PER/IV/2010.
+              PUTOI dirancang dengan sistem pengolahan Reverse Osmosis (RO), filtrasi multi-tahap otomatis, serta teknologi ozonisasi dan ultraviolet (UV) untuk menghasilkan air murni berkualitas tinggi sesuai dengan Permenkes No. 492/MENKES/PER/IV/2010. Fasilitas ini tidak hanya berfungsi sebagai sarana pembelajaran industrial-grade, tetapi juga sebagai model laboratorium cerdas untuk transformasi teknologi lingkungan dan energi bersih di Indonesia.
             </p>
           </div>
         </div>
@@ -80,23 +77,23 @@ export function AboutSection() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Mengembangkan fasilitas water treatment berteknologi tinggi untuk pelatihan dan sertifikasi</span>
+                <span className="text-gray-700">Mengembangkan fasilitas water treatment berteknologi tinggi untuk pelatihan dan sertifikasi.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Menyediakan layanan kalibrasi dan pengujian kualitas air sesuai standar industri</span>
+                <span className="text-gray-700">Menyediakan layanan kalibrasi dan pengujian kualitas air sesuai standar industri.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Menghasilkan produk air minum dalam kemasan yang aman, higienis, dan berstandar nasional</span>
+                <span className="text-gray-700">Menghasilkan produk air minum dalam kemasan yang aman, higienis, dan berstandar nasional.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Mendukung kolaborasi riset antara akademisi, industri, dan pemerintah</span>
+                <span className="text-gray-700">Mendukung kolaborasi riset antara akademisi, industri, dan pemerintah dalam bidang pengolahan air dan efisiensi energi.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Meningkatkan kompetensi mahasiswa melalui hands-on project dan problem-based learning</span>
+                <span className="text-gray-700">Meningkatkan kompetensi mahasiswa melalui hands-on project dan problem-based learning berbasis teknologi proses nyata.</span>
               </li>
             </ul>
           </div>
@@ -119,7 +116,7 @@ export function AboutSection() {
             {technologies.map((tech, index) => (
               <div
                 key={index}
-                className="bg-white border border-gray-200 rounded-xl p-6 hover:border-blue-900 hover:shadow-lg transition-all"
+                className="bg-blue-50 border border-blue-200 rounded-xl p-6 hover:border-blue-900 hover:shadow-lg transition-all"
               >
                 <div className="flex items-start gap-3">
                   <div className="bg-blue-50 p-2 rounded-lg mt-1">
