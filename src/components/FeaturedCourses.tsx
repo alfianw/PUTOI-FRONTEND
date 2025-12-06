@@ -12,6 +12,11 @@ import {
 import { AuthModal } from "./AuthModal"; // ⬅ IMPORT MODAL LOGIN
 
 import { Check, Clock, Users, Calendar } from "lucide-react";
+import galeri1 from "../assets/galeri/galeri-1.png";
+import galeri2 from "../assets/galeri/galeri-2.png";
+import galeri3 from "../assets/galeri/galeri-3.png";
+
+const galeriImages = [galeri1, galeri2, galeri3];
 
 export function FeaturedCourses() {
   const [trainings, setTrainings] = useState<any[]>([]);
@@ -204,72 +209,68 @@ export function FeaturedCourses() {
               Data tidak ditemukan
             </div>
           ) : (
-            trainings.map((item: any) => (
+            trainings.map((item: any, idx: number) => (
               <Card
                 key={item.id}
-                className="relative p-0 cursor-pointer rounded-xl overflow-hidden group shadow-lg"
+                className="relative p-0 cursor-pointer rounded-xl overflow-hidden group shadow-lg h-[400px]"
                 onClick={() => fetchDetail(item.id)}
+                style={{
+                  backgroundImage: `url(${galeriImages[idx % 3]})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
               >
-                <div className="lg:flex">
-                  {/* Visual / header area */}
-                  <div className="relative lg:w-1/2 h-[260px] lg:h-[380px] bg-blue-900 p-6 flex flex-col justify-end">
-                    <h3 className="text-2xl font-bold mb-2 text-white">{item.trainingTitle}</h3>
-
-                    {/* Description placed under title */}
-                    <p className="text-sm text-white mb-4 line-clamp-3">
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-85 group-hover:bg-opacity-90 transition-all duration-300" />
+                
+                {/* Content */}
+                <div className="relative h-full p-6 flex flex-col justify-between text-white">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">{item.trainingTitle}</h3>
+                    <p className="text-sm mb-4 line-clamp-2">
                       {item.description || item.shortDescription || "Deskripsi singkat tidak tersedia."}
                     </p>
-
-                    <div className="space-y-3 text-sm text-white">
-                      <div className="flex items-center gap-2">
-                        <Clock size={18} className="text-white opacity-90" />
-                        <span>
-                          <strong>Duration:</strong> {item.duration}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Users size={18} className="text-white opacity-90" />
-                        <span>
-                          <strong>Participants:</strong> {item.minimumParticipants}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Calendar size={18} className="text-white opacity-90" />
-                        <span>
-                          <strong>Schedule:</strong>{" "}
-                          {item.implementationSchedule}
-                        </span>
-                      </div>
-                    </div>
                   </div>
 
-                  {/* Description + actions */}
-                  <div className="lg:w-1/2 bg-white p-6 flex flex-col justify-between text-gray-800">
-                      <div className="flex items-center justify-between mt-4">
-                      <div className="text-sm text-gray-600">{item.implementationSchedule}</div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            fetchDetail(item.id);
-                          }}
-                        >
-                          Detail
-                        </Button>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Clock size={16} className="text-white opacity-90" />
+                      <span><strong>Duration:</strong> {item.duration}</span>
+                    </div>
 
-                        <Button
-                          className="bg-blue-900 hover:bg-blue-700 text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            daftarPelatihan(item.id);
-                          }}
-                        >
-                          Daftar
-                        </Button>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <Users size={16} className="text-white opacity-90" />
+                      <span><strong>Participants:</strong> {item.minimumParticipants}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Calendar size={16} className="text-white opacity-90" />
+                      <span><strong>Schedule:</strong> {item.implementationSchedule}</span>
+                    </div>
+
+                    <div className="flex gap-2 mt-4">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fetchDetail(item.id);
+                        }}
+                        className="bg-white text-blue-900 hover:bg-gray-100"
+                      >
+                        Detail
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        className="bg-blue-900 hover:bg-blue-700 text-white"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          daftarPelatihan(item.id);
+                        }}
+                      >
+                        Daftar
+                      </Button>
                     </div>
                   </div>
                 </div>

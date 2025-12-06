@@ -1,21 +1,27 @@
 import { Gauge, Wifi, Monitor, FlaskConical, GraduationCap, Wrench, Zap, Droplets } from "lucide-react";
+import galeri1 from "../../assets/galeri/galeri-1.png";
+import galeri2 from "../../assets/galeri/galeri-2.png";
+import galeri3 from "../../assets/galeri/galeri-3.png";
 
 export function ServicesSection() {
   const trainings = [
     {
       icon: Wifi,
       title: "Pelatihan SCADA IoT",
-      desc: "Tingkatkan kompetensi dalam membangun sistem pengawasan dan kendali jarak jauh berbasis SCADA (Supervisory Control and Data Acquisition) yang terintegrasi dengan teknologi Internet of Things (IoT). Peserta akan mempelajari arsitektur SCADA modern, komunikasi sensor–gateway, dashboard real-time, hingga implementasi pada industri. Cocok bagi teknisi, engineer, dan instansi yang ingin mengadopsi otomasi berbasis IoT."
+      desc: "Tingkatkan kompetensi dalam membangun sistem pengawasan dan kendali jarak jauh berbasis SCADA (Supervisory Control and Data Acquisition) yang terintegrasi dengan teknologi Internet of Things (IoT). Peserta akan mempelajari arsitektur SCADA modern, komunikasi sensor–gateway, dashboard real-time, hingga implementasi pada industri. Cocok bagi teknisi, engineer, dan instansi yang ingin mengadopsi otomasi berbasis IoT.",
+      image: galeri1
     },
     {
       icon: Monitor,
       title: "Pelatihan LabVIEW",
-      desc: "Kuasai pemrograman grafis menggunakan NI LabVIEW untuk aplikasi otomasi, akuisisi data, kontrol instrumen, dan sistem monitoring real-time. Pelatihan dirancang praktis dengan modul latihan langsung menggunakan sensor, DAQ, serta pembuatan GUI profesional. Sangat sesuai untuk praktisi laboratorium, akademisi, dan industri yang membutuhkan solusi instrumentasi cerdas."
+      desc: "Kuasai pemrograman grafis menggunakan NI LabVIEW untuk aplikasi otomasi, akuisisi data, kontrol instrumen, dan sistem monitoring real-time. Pelatihan dirancang praktis dengan modul latihan langsung menggunakan sensor, DAQ, serta pembuatan GUI profesional. Sangat sesuai untuk praktisi laboratorium, akademisi, dan industri yang membutuhkan solusi instrumentasi cerdas.",
+      image: galeri2
     },
     {
       icon: GraduationCap,
       title: "Pelatihan Kalibrasi dan Pengukuran",
-      desc: "Pelatihan ini membekali peserta dengan kompetensi standar industri terkait kalibrasi alat ukur, teknik pengukuran yang benar, perhitungan ketidakpastian, serta dokumentasi sesuai standar ISO/IEC 17025. Dirancang untuk teknisi laboratorium, quality control, maupun industri yang membutuhkan akurasi dan keandalan alat ukur dalam proses produksi."
+      desc: "Pelatihan ini membekali peserta dengan kompetensi standar industri terkait kalibrasi alat ukur, teknik pengukuran yang benar, perhitungan ketidakpastian, serta dokumentasi sesuai standar ISO/IEC 17025. Dirancang untuk teknisi laboratorium, quality control, maupun industri yang membutuhkan akurasi dan keandalan alat ukur dalam proses produksi.",
+      image: galeri3
     }
   ];
 
@@ -82,14 +88,23 @@ export function ServicesSection() {
               return (
                 <div
                   key={index}
-                  className="bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-blue-900 hover:shadow-2xl transition-all duration-300"
+                  className="relative rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 group h-[400px]"
+                  style={{
+                    backgroundImage: `url(${training.image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}
                 >
-                  <div className="bg-gradient-to-br from-blue-900 to-blue-700 p-8 text-white">
-                    <Icon className="w-12 h-12 mb-4" />
-                    <h4 className="text-xl">{training.title}</h4>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-gray-700 leading-relaxed text-sm">{training.desc}</p>
+                  {/* Dark overlay */}
+                  <div className="absolute inset-0 bg-black bg-opacity-75 group-hover:bg-opacity-80 transition-all duration-300" />
+                  
+                  {/* Content */}
+                  <div className="relative h-full p-8 flex flex-col justify-between text-white">
+                    <div>
+                      <Icon className="w-12 h-12 mb-4" />
+                      <h4 className="text-2xl font-bold mb-4">{training.title}</h4>
+                    </div>
+                    <p className="text-sm leading-relaxed line-clamp-4">{training.desc}</p>
                   </div>
                 </div>
               );

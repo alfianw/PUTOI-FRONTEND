@@ -2255,7 +2255,7 @@ export default function SuperAdminDashboard() {
 
                     {/* Add News Modal */}
                     <Dialog open={showAddNewsModal} onOpenChange={setShowAddNewsModal}>
-                        <DialogContent className="max-w-lg">
+                        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Add News</DialogTitle>
                             </DialogHeader>
@@ -2343,7 +2343,7 @@ export default function SuperAdminDashboard() {
                         setShowNewsModal(v);
                         if (!v) setIsEditNews(false);
                     }}>
-                        <DialogContent className="max-w-lg">
+                        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Detail News</DialogTitle>
                             </DialogHeader>

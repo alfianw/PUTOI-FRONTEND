@@ -602,7 +602,7 @@ function CreateNewsDialog({
                     Add News
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto" style={{ maxHeight: "600px", overflowY: "auto" }}>
                 <DialogHeader>
                     <DialogTitle>Create News Article</DialogTitle>
                     <DialogDescription>
