@@ -39,6 +39,7 @@ import '@mantine/tiptap/styles.css';
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
+import DeleteConfirmModal from '../components/ui/DeleteConfirmModal';
 
 
 export default function SuperAdminDashboard() {
@@ -60,7 +61,15 @@ export default function SuperAdminDashboard() {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [formData, setFormData] = useState<any>({});
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteTitle, setDeleteTitle] = useState("");
+    const [onConfirmDelete, setOnConfirmDelete] = useState<() => void>(() => { });
 
+    const openDeleteModal = (title: string, onConfirm: () => void) => {
+        setDeleteTitle(title);
+        setOnConfirmDelete(() => onConfirm);
+        setShowDeleteModal(true);
+    };
     // NEWS
     interface NewsItem {
         id: number;
@@ -160,6 +169,8 @@ export default function SuperAdminDashboard() {
         author: string;
         createdAt: string;
         updateAt: string;
+        startDate: string;
+        endDate: string;
     }
 
     const [trainingList, setTrainingList] = useState<TrainingItem[]>([]);
@@ -185,6 +196,8 @@ export default function SuperAdminDashboard() {
         competencyTestPlace: "",
         certificate: [""],
         trainingFee: "",
+        startDate: "",
+        endDate: "",
     });
 
     // TRAINING PARTICIPANT
@@ -215,6 +228,16 @@ export default function SuperAdminDashboard() {
     const [showTPModal, setShowTPModal] = useState(false);
     const [isEditTP, setIsEditTP] = useState(false);
 
+    const [toast, setToast] = useState<{ type: string; message: string } | null>(null);
+
+    // fungsi helper untuk menampilkan toast
+    const showToast = (type: "success" | "error", message: string) => {
+        setToast({ type, message });
+
+        setTimeout(() => {
+            setToast(null);
+        }, 3000); // hilang 3 detik
+    };
 
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -228,6 +251,7 @@ export default function SuperAdminDashboard() {
         await Promise.all([fetchUsers(), fetchTraining(), fetchNews()]);
     };
 
+    //user state
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -261,8 +285,6 @@ export default function SuperAdminDashboard() {
     };
 
     const deleteUser = async (email: string) => {
-        if (!confirm("Apakah Anda yakin ingin menghapus user ini?")) return;
-
         try {
             const token = localStorage.getItem("accessToken");
 
@@ -279,8 +301,12 @@ export default function SuperAdminDashboard() {
 
             if (data.code === "00") {
                 await fetchUsers();
+                showToast("success", "User berhasil dihapus");
+            } else {
+                showToast("error", data.message || "Gagal menghapus user");
             }
         } catch (error) {
+            showToast("error", "Terjadi kesalahan sistem");
             console.error("Failed to delete user:", error);
         }
     };
@@ -329,8 +355,12 @@ export default function SuperAdminDashboard() {
                 setDetailUser(data.data);
                 setIsEdit(false);
                 await fetchUsers();
+                showToast("success", "User berhasil diperbarui"); // ✅ notifikasi success
+            } else {
+                showToast("error", data.message || "Gagal memperbarui user"); // ✅ notifikasi error
             }
         } catch (error) {
+            showToast("error", "Terjadi kesalahan sistem"); // ✅ notifikasi error
             console.error("Failed to update", error);
         }
     };
@@ -392,7 +422,7 @@ export default function SuperAdminDashboard() {
         try {
             const token = localStorage.getItem("accessToken");
 
-            const response = await fetch(`${API_BASE}/api/news/update`, {
+            const res = await fetch(`${API_BASE}/api/news/update`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -401,26 +431,28 @@ export default function SuperAdminDashboard() {
                 body: JSON.stringify(newsForm)
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
             if (data.code === "00") {
                 setDetailNews(data.data);
                 setIsEditNews(false);
                 await fetchNews();
+                showToast("success", "Berita berhasil diperbarui");
+            } else {
+                showToast("error", data.message || "Gagal memperbarui berita");
             }
 
         } catch (err) {
             console.error("Update news error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
     const deleteNews = async (id: number) => {
-        if (!confirm("Hapus berita ini?")) return;
-
         try {
             const token = localStorage.getItem("accessToken");
 
-            const response = await fetch(`${API_BASE}/api/news/delete`, {
+            const res = await fetch(`${API_BASE}/api/news/delete`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -429,14 +461,18 @@ export default function SuperAdminDashboard() {
                 body: JSON.stringify({ id: String(id) })
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
             if (data.code === "00") {
                 await fetchNews();
+                showToast("success", "Berita berhasil dihapus");
+            } else {
+                showToast("error", data.message || "Gagal menghapus berita");
             }
 
         } catch (err) {
             console.error("Delete news error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
@@ -461,10 +497,15 @@ export default function SuperAdminDashboard() {
             if (data.code === "00") {
                 setShowAddNewsModal(false);
                 setAddNewsData({ title: "", description: "" });
-                fetchNews();
+                await fetchNews();
+                showToast("success", "Berita berhasil dibuat");
+            } else {
+                showToast("error", data.message || "Gagal membuat berita");
             }
-        } catch (e) {
-            console.error("Failed create news:", e);
+
+        } catch (err) {
+            console.error("Create news error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
@@ -601,11 +642,15 @@ export default function SuperAdminDashboard() {
             if (data.code === "00") {
                 setShowAddProductModal(false);
                 setAddProductData({ title: "", description: "", category: "Jasa" });
-                fetchProducts();
+                await fetchProducts();
+                showToast("success", "Produk berhasil dibuat");
+            } else {
+                showToast("error", data.message || "Gagal membuat produk");
             }
 
         } catch (err) {
             console.error("Create product error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
@@ -625,17 +670,19 @@ export default function SuperAdminDashboard() {
             const data = await res.json();
             if (data.code === "00") {
                 setIsEditProduct(false);
-                fetchProducts();
+                await fetchProducts();
+                showToast("success", "Produk berhasil diperbarui");
+            } else {
+                showToast("error", data.message || "Gagal memperbarui produk");
             }
 
         } catch (err) {
             console.error("Update product error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
     const deleteProduct = async (id: number) => {
-        if (!confirm("Hapus jasa ini?")) return;
-
         try {
             const token = localStorage.getItem("accessToken");
 
@@ -649,12 +696,19 @@ export default function SuperAdminDashboard() {
             });
 
             const data = await res.json();
-            if (data.code === "00") fetchProducts();
+            if (data.code === "00") {
+                await fetchProducts();
+                showToast("success", "Produk berhasil dihapus");
+            } else {
+                showToast("error", data.message || "Gagal menghapus produk");
+            }
 
         } catch (err) {
             console.error("Delete product error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
+
 
     useEffect(() => {
         fetchProducts();
@@ -687,6 +741,16 @@ export default function SuperAdminDashboard() {
         }
     };
 
+    const parseSchedule = (schedule: string) => {
+        if (!schedule) return { start: "", end: "" };
+
+        const parts = schedule.split(" s/d ");
+
+        return {
+            start: parts[0] || "",
+            end: parts[1] || ""
+        };
+    };
 
     const getDetailTraining = async (id: number) => {
         try {
@@ -699,8 +763,18 @@ export default function SuperAdminDashboard() {
             const data = await response.json();
 
             if (data.code === "00") {
-                setDetailTraining(data.data);
-                setTrainingForm(data.data);
+                const d = data.data;
+
+                const { start, end } = parseSchedule(d.implementationSchedule);
+
+                setDetailTraining(d);
+
+                setTrainingForm({
+                    ...d,
+                    startDate: start,
+                    endDate: end
+                });
+
                 setShowTrainingModal(true);
             }
 
@@ -715,7 +789,7 @@ export default function SuperAdminDashboard() {
 
             // VALIDASI WAJIB
             if (!addTrainingData.competencyTestPlace.trim()) {
-                alert("Competency Test Place wajib diisi");
+                showToast("error", "Competency Test Place wajib diisi");
                 return;
             }
 
@@ -740,9 +814,10 @@ export default function SuperAdminDashboard() {
 
             if (data.code === "00") {
                 setShowAddTrainingModal(false);
-                fetchTraining();
+                await fetchTraining();
+                showToast("success", "Training berhasil dibuat");
 
-                // RESET
+                // RESET FORM
                 setAddTrainingData({
                     trainingTitle: "",
                     description: "",
@@ -754,12 +829,17 @@ export default function SuperAdminDashboard() {
                     implementationSchedule: "",
                     competencyTestPlace: "",
                     certificate: [""],
-                    trainingFee: ""
+                    trainingFee: "",
+                    startDate: "",
+                    endDate: "",
                 });
+            } else {
+                showToast("error", data.message || "Gagal membuat training");
             }
 
-        } catch (e) {
-            console.error("Create training error:", e);
+        } catch (err) {
+            console.error("Create training error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
@@ -781,16 +861,19 @@ export default function SuperAdminDashboard() {
             if (data.code === "00") {
                 setIsEditTraining(false);
                 setDetailTraining(data.data);
-                fetchTraining();
+                await fetchTraining();
+                showToast("success", "Training berhasil diperbarui");
+            } else {
+                showToast("error", data.message || "Gagal memperbarui training");
             }
+
         } catch (err) {
             console.error("Update training error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
     const deleteTraining = async (id: number) => {
-        if (!confirm("Hapus training ini?")) return;
-
         try {
             const token = localStorage.getItem("accessToken");
 
@@ -806,11 +889,15 @@ export default function SuperAdminDashboard() {
             const data = await res.json();
 
             if (data.code === "00") {
-                fetchTraining();
+                await fetchTraining();
+                showToast("success", "Training berhasil dihapus");
+            } else {
+                showToast("error", data.message || "Gagal menghapus training");
             }
 
         } catch (err) {
             console.error("Delete training error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
@@ -911,7 +998,6 @@ export default function SuperAdminDashboard() {
         }
     };
 
-    // UPDATE STATUS ONLY
     const updateTP = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -930,18 +1016,19 @@ export default function SuperAdminDashboard() {
             if (data.code === "00") {
                 setDetailTP(data.data);
                 setIsEditTP(false);
-                fetchTrainingParticipants();
+                await fetchTrainingParticipants();
+                showToast("success", "Participant berhasil diperbarui");
+            } else {
+                showToast("error", data.message || "Gagal memperbarui participant");
             }
 
-        } catch (e) {
-            console.error("Update TP error:", e);
+        } catch (err) {
+            console.error("Update TP error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
-    // DELETE TP
     const deleteTP = async (id: number) => {
-        if (!confirm("Hapus participant ini?")) return;
-
         try {
             const token = localStorage.getItem("accessToken");
 
@@ -955,12 +1042,17 @@ export default function SuperAdminDashboard() {
             });
 
             const data = await res.json();
+
             if (data.code === "00") {
-                fetchTrainingParticipants();
+                await fetchTrainingParticipants();
+                showToast("success", "Participant berhasil dihapus");
+            } else {
+                showToast("error", data.message || "Gagal menghapus participant");
             }
 
-        } catch (e) {
-            console.error("Delete TP error:", e);
+        } catch (err) {
+            console.error("Delete TP error:", err);
+            showToast("error", "Terjadi kesalahan server!");
         }
     };
 
@@ -993,6 +1085,28 @@ export default function SuperAdminDashboard() {
         <div className="min-h-screen bg-gray-50">
             <Navbar />
 
+            {toast && (
+                <div
+                    className={`fixed top-5 right-5 min-w-[250px] px-4 py-3 rounded-lg shadow-lg border flex items-center gap-3 transition-all bg-white`}
+                    style={{ zIndex: 9999 }}
+                >
+                    {toast.type === "success" ? (
+                        <span className="text-green-600 text-xl">✔️</span>
+                    ) : (
+                        <span className="text-red-600 text-xl">❌</span>
+                    )}
+
+                    <span className="text-gray-800 font-medium">{toast.message}</span>
+                </div>
+            )}
+
+            <DeleteConfirmModal
+                open={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={onConfirmDelete}
+                title={deleteTitle}
+            />
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8">
                     <Button
@@ -1012,7 +1126,7 @@ export default function SuperAdminDashboard() {
                     <Card className="p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-600">Total Users</p>
+                                <p className="text-sm text-gray-600">Total Pengguna</p>
                                 <p className="text-3xl text-gray-900 mt-2">{totalUsers}</p>
                             </div>
                             <Users className="w-12 h-12 text-purple-600" />
@@ -1021,7 +1135,7 @@ export default function SuperAdminDashboard() {
                     <Card className="p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-600">Total Courses</p>
+                                <p className="text-sm text-gray-600">Total Pelatihan</p>
                                 <p className="text-3xl text-gray-900 mt-2">{trainingTotalData}</p>
                             </div>
                             <BookOpen className="w-12 h-12 text-blue-600" />
@@ -1030,7 +1144,7 @@ export default function SuperAdminDashboard() {
                     <Card className="p-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-600">Total News</p>
+                                <p className="text-sm text-gray-600">Total Berita</p>
                                 <p className="text-3xl text-gray-900 mt-2">{newsTotalData}</p>
                             </div>
                             <Newspaper className="w-12 h-12 text-green-600" />
@@ -1041,7 +1155,7 @@ export default function SuperAdminDashboard() {
                 {/* Tabs */}
                 <Tabs defaultValue="users" className="space-y-4">
                     <TabsList>
-                        <TabsTrigger value="users">Users</TabsTrigger>
+                        <TabsTrigger value="users">Pengguna</TabsTrigger>
                         <TabsTrigger value="courses">Pelatihan</TabsTrigger>
                         <TabsTrigger value="news">Berita</TabsTrigger>
                         <TabsTrigger value="Jasa">Jasa</TabsTrigger>
@@ -1052,11 +1166,11 @@ export default function SuperAdminDashboard() {
                     <TabsContent value="users">
                         <Card className="p-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl text-gray-900">Manage Users</h2>
+                                <h2 className="text-xl text-gray-900">Kelola Pengguna</h2>
                                 {/* Filter Nama */}
                                 <input
                                     type="text"
-                                    placeholder="Filter by name..."
+                                    placeholder="Filter berdasarkan nama..."
                                     value={filterNama}
                                     onChange={(e) => {
                                         setFilterNama(e.target.value);
@@ -1069,20 +1183,20 @@ export default function SuperAdminDashboard() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Name</TableHead>
+                                        <TableHead>Nama</TableHead>
                                         <TableHead>Email</TableHead>
-                                        <TableHead>Phone</TableHead>
-                                        <TableHead>Role</TableHead>
-                                        <TableHead>Participant</TableHead>
-                                        <TableHead>Identity No</TableHead>
-                                        <TableHead>Gender</TableHead>
-                                        <TableHead>University</TableHead>
-                                        <TableHead>Education Field</TableHead>
-                                        <TableHead>Major</TableHead>
-                                        <TableHead>City</TableHead>
-                                        <TableHead>Created At</TableHead>
-                                        <TableHead>Updated At</TableHead>
-                                        <TableHead>Actions</TableHead>
+                                        <TableHead>No. Telepon</TableHead>
+                                        <TableHead>Peran</TableHead>
+                                        <TableHead>Peserta</TableHead>
+                                        <TableHead>No. Identitas</TableHead>
+                                        <TableHead>Jenis Kelamin</TableHead>
+                                        <TableHead>Universitas</TableHead>
+                                        <TableHead>Bidang Pendidikan</TableHead>
+                                        <TableHead>Jurusan</TableHead>
+                                        <TableHead>Kota</TableHead>
+                                        <TableHead>Dibuat Pada</TableHead>
+                                        <TableHead>Diperbarui Pada</TableHead>
+                                        <TableHead>Aksi</TableHead>
                                     </TableRow>
                                 </TableHeader>
 
@@ -1124,13 +1238,15 @@ export default function SuperAdminDashboard() {
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
-
-                                                {/* Delete */}
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => deleteUser(u.email)}
-                                                    disabled={u.id === user?.id}
+                                                    onClick={() =>
+                                                        openDeleteModal("Apakah Anda yakin ingin menghapus user ini?", async () => {
+                                                            await deleteUser(u.email); // panggil fungsi delete sesuai jenis data
+                                                            setShowDeleteModal(false);
+                                                        })
+                                                    }
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
@@ -1163,12 +1279,12 @@ export default function SuperAdminDashboard() {
                                     disabled={userPage === 1}
                                     variant="outline"
                                 >
-                                    Prev
+                                    Sebelumnya
                                 </Button>
 
                                 {/* Page Indicator */}
                                 <span className="text-sm text-gray-600">
-                                    Page {userPage} of {userTotalPages}
+                                    Halaman {userPage} dari {userTotalPages}
                                 </span>
 
                                 {/* Next Button */}
@@ -1177,87 +1293,102 @@ export default function SuperAdminDashboard() {
                                     disabled={userPage === userTotalPages}
                                     variant="outline"
                                 >
-                                    Next
+                                    Selanjutnya
                                 </Button>
                             </div>
                         </Card>
                     </TabsContent>
 
+                    {/* === DETAIL USER DENGAN 2 KOLOM === */}
                     <Dialog open={showDetailModal} onOpenChange={(v) => {
                         setShowDetailModal(v);
                         if (!v) setIsEdit(false);
                     }}>
-                        <DialogContent className="max-w-lg">
+                        <DialogContent className="max-w">  {/* perbesar modal */}
                             <DialogHeader>
-                                <DialogTitle>Detail User</DialogTitle>
+                                <DialogTitle>Detail Pengguna</DialogTitle>
                             </DialogHeader>
 
                             {detailUser && (
-                                <div className="space-y-3 text-sm">
+                                <div className="space-y-4 text-sm">
 
-                                    {/* NAMA */}
-                                    <div>
-                                        <label className="block mb-1">Nama</label>
-                                        <input
-                                            type="text"
-                                            disabled={!isEdit}
-                                            value={formData.name || ""}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full border rounded px-3 py-2"
-                                        />
+                                    {/* ==== 2 KOLOM ==== */}
+                                    <div className="flex gap-4">
+
+                                        {/* KOLOM KIRI */}
+                                        <div className="flex-1 space-y-3">
+
+                                            {/* Nama */}
+                                            <div>
+                                                <label className="block mb-1">Nama</label>
+                                                <input
+                                                    type="text"
+                                                    disabled={!isEdit}
+                                                    value={formData.name || ""}
+                                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                    className="w-full border rounded px-3 py-2"
+                                                />
+                                            </div>
+
+                                            {/* No HP */}
+                                            <div>
+                                                <label className="block mb-1">No. HP</label>
+                                                <input
+                                                    type="text"
+                                                    disabled={!isEdit}
+                                                    value={formData.phoneNumber || ""}
+                                                    onChange={(e) =>
+                                                        setFormData({ ...formData, phoneNumber: e.target.value })
+                                                    }
+                                                    className="w-full border rounded px-3 py-2"
+                                                />
+                                            </div>
+
+                                        </div>
+
+                                        {/* KOLOM KANAN */}
+                                        <div className="flex-1 space-y-3">
+
+                                            {/* Email */}
+                                            <div>
+                                                <label className="block mb-1">Email</label>
+                                                <input
+                                                    type="text"
+                                                    disabled
+                                                    value={formData.email}
+                                                    className="w-full border bg-gray-100 rounded px-3 py-2"
+                                                />
+                                            </div>
+
+                                            {/* Tipe Peserta */}
+                                            <div>
+                                                <label className="block mb-1">Tipe Peserta</label>
+                                                <select
+                                                    disabled={!isEdit}
+                                                    value={formData.participantType || ""}
+                                                    onChange={(e) =>
+                                                        setFormData({ ...formData, participantType: e.target.value })
+                                                    }
+                                                    className="w-full border rounded px-3 py-2"
+                                                >
+                                                    <option value="Dosen">Dosen</option>
+                                                    <option value="Umum">Umum</option>
+                                                    <option value="Industri">Industri</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
                                     </div>
 
-                                    {/* EMAIL read only */}
-                                    <div>
-                                        <label className="block mb-1">Email</label>
-                                        <input
-                                            type="text"
-                                            disabled
-                                            value={formData.email}
-                                            className="w-full border bg-gray-100 rounded px-3 py-2"
-                                        />
-                                    </div>
+                                    {/* ==== SISANYA TURUN KE BAWAH ==== */}
 
-                                    {/* PHONE */}
+                                    {/* Gender */}
                                     <div>
-                                        <label className="block mb-1">No HP</label>
-                                        <input
-                                            type="text"
-                                            disabled={!isEdit}
-                                            value={formData.phoneNumber || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, phoneNumber: e.target.value })
-                                            }
-                                            className="w-full border rounded px-3 py-2"
-                                        />
-                                    </div>
-
-                                    {/* PARTICIPANT TYPE */}
-                                    <div>
-                                        <label className="block mb-1">Participant Type</label>
-                                        <select
-                                            disabled={!isEdit}
-                                            value={formData.participantType || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, participantType: e.target.value })
-                                            }
-                                            className="w-full border rounded px-3 py-2"
-                                        >
-                                            <option value="Dosen">Dosen</option>
-                                            <option value="Umum">Umum</option>
-                                            <option value="Industri">Industri</option>
-                                        </select>
-                                    </div>
-
-                                    {/* GENDER */}
-                                    <div>
-                                        <label className="block mb-1">Gender</label>
+                                        <label className="block mb-1">Jenis Kelamin</label>
                                         <select
                                             disabled={!isEdit}
                                             value={formData.gender || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, gender: e.target.value })
-                                            }
+                                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                                             className="w-full border rounded px-3 py-2"
                                         >
                                             <option value="Laki-laki">Laki-laki</option>
@@ -1265,82 +1396,71 @@ export default function SuperAdminDashboard() {
                                         </select>
                                     </div>
 
-                                    {/* Identity */}
+                                    {/* No Identitas */}
                                     <div>
-                                        <label className="block mb-1">Identity Number</label>
+                                        <label className="block mb-1">No. Identitas</label>
                                         <input
                                             type="text"
                                             disabled={!isEdit}
                                             value={formData.identityNumber || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, identityNumber: e.target.value })
-                                            }
+                                            onChange={(e) => setFormData({ ...formData, identityNumber: e.target.value })}
                                             className="w-full border rounded px-3 py-2"
                                         />
                                     </div>
 
-                                    {/* University */}
+                                    {/* Universitas */}
                                     <div>
                                         <label className="block mb-1">Universitas</label>
                                         <input
                                             type="text"
                                             disabled={!isEdit}
                                             value={formData.universityName || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, universityName: e.target.value })
-                                            }
+                                            onChange={(e) => setFormData({ ...formData, universityName: e.target.value })}
                                             className="w-full border rounded px-3 py-2"
                                         />
                                     </div>
 
-                                    {/* Education */}
+                                    {/* Bidang Pendidikan */}
                                     <div>
                                         <label className="block mb-1">Bidang Pendidikan</label>
                                         <input
                                             type="text"
                                             disabled={!isEdit}
                                             value={formData.lastEducationField || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, lastEducationField: e.target.value })
-                                            }
+                                            onChange={(e) => setFormData({ ...formData, lastEducationField: e.target.value })}
                                             className="w-full border rounded px-3 py-2"
                                         />
                                     </div>
 
-                                    {/* Major */}
+                                    {/* Program Studi */}
                                     <div>
                                         <label className="block mb-1">Program Studi</label>
                                         <input
                                             type="text"
                                             disabled={!isEdit}
                                             value={formData.majorStudyProgram || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, majorStudyProgram: e.target.value })
-                                            }
+                                            onChange={(e) => setFormData({ ...formData, majorStudyProgram: e.target.value })}
                                             className="w-full border rounded px-3 py-2"
                                         />
                                     </div>
 
-                                    {/* City */}
+                                    {/* Kota */}
                                     <div>
                                         <label className="block mb-1">Kota Domisili</label>
                                         <input
                                             type="text"
                                             disabled={!isEdit}
                                             value={formData.cityOfResidence || ""}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, cityOfResidence: e.target.value })
-                                            }
+                                            onChange={(e) => setFormData({ ...formData, cityOfResidence: e.target.value })}
                                             className="w-full border rounded px-3 py-2"
                                         />
                                     </div>
 
-                                    {/* BUTTON ACTIONS */}
+                                    {/* Aksi */}
                                     <div className="flex justify-end gap-3 mt-4">
-
                                         {!isEdit && (
                                             <Button onClick={() => setIsEdit(true)} variant="default">
-                                                Edit User
+                                                Edit Pengguna
                                             </Button>
                                         )}
 
@@ -1349,7 +1469,6 @@ export default function SuperAdminDashboard() {
                                                 <Button onClick={() => setIsEdit(false)} variant="outline">
                                                     Batal
                                                 </Button>
-
                                                 <Button onClick={updateUser} variant="default">
                                                     Simpan
                                                 </Button>
@@ -1362,18 +1481,19 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
+
                     {/* training Tab */}
                     <TabsContent value="courses">
                         <Card className="p-6">
 
                             {/* HEADER + FILTER */}
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl text-gray-900">Manage Training</h2>
+                                <h2 className="text-xl text-gray-900">Kelola Pelatihan</h2>
 
                                 <div className="flex items-center gap-3 ml-auto">
                                     <input
                                         type="text"
-                                        placeholder="Filter title..."
+                                        placeholder="Filter berdasarkan judul..."
                                         value={filterTrainingTitle}
                                         onChange={(e) => {
                                             setFilterTrainingTitle(e.target.value);
@@ -1383,7 +1503,7 @@ export default function SuperAdminDashboard() {
                                     />
 
                                     <Button onClick={() => setShowAddTrainingModal(true)}>
-                                        Add Training
+                                        Tambah Pelatihan
                                     </Button>
                                 </div>
                             </div>
@@ -1393,21 +1513,21 @@ export default function SuperAdminDashboard() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>ID</TableHead>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead>Materials</TableHead>
-                                        <TableHead>Institution</TableHead>
-                                        <TableHead>Duration</TableHead>
-                                        <TableHead>Min Participants</TableHead>
-                                        <TableHead>Facilities</TableHead>
-                                        <TableHead>Schedule</TableHead>
-                                        <TableHead>Competency Test Place</TableHead>
-                                        <TableHead>Certificate</TableHead>
-                                        <TableHead>Training Fee</TableHead>
-                                        <TableHead>Author</TableHead>
-                                        <TableHead>Created</TableHead>
-                                        <TableHead>Updated</TableHead>
-                                        <TableHead>Actions</TableHead>
+                                        <TableHead>Judul</TableHead>
+                                        <TableHead>Deskripsi</TableHead>
+                                        <TableHead>Materi</TableHead>
+                                        <TableHead>Institusi</TableHead>
+                                        <TableHead>Durasi</TableHead>
+                                        <TableHead>Minimal Peserta</TableHead>
+                                        <TableHead>Fasilitas</TableHead>
+                                        <TableHead>Jadwal</TableHead>
+                                        <TableHead>Lokasi Uji Kompetensi</TableHead>
+                                        <TableHead>Sertifikat</TableHead>
+                                        <TableHead>Biaya Pelatihan</TableHead>
+                                        <TableHead>Pembuat</TableHead>
+                                        <TableHead>Dibuat Pada</TableHead>
+                                        <TableHead>Diperbarui Pada</TableHead>
+                                        <TableHead>Aksi</TableHead>
                                     </TableRow>
                                 </TableHeader>
 
@@ -1437,7 +1557,6 @@ export default function SuperAdminDashboard() {
 
                                             <TableCell>{t.minimumParticipants}</TableCell>
 
-                                            {/* FACILITIES turun ke bawah */}
                                             <TableCell>
                                                 {Array.isArray(t.facilities) && t.facilities.length > 0 ? (
                                                     <ul className="list-disc pl-4">
@@ -1452,7 +1571,6 @@ export default function SuperAdminDashboard() {
 
                                             <TableCell>{t.competencyTestPlace}</TableCell>
 
-                                            {/* CERTIFICATE turun ke bawah */}
                                             <TableCell>
                                                 {Array.isArray(t.certificate) && t.certificate.length > 0 ? (
                                                     <ul className="list-disc pl-4">
@@ -1479,16 +1597,24 @@ export default function SuperAdminDashboard() {
                                                 <Button variant="ghost" size="sm" onClick={() => getDetailTraining(t.id)}>
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="sm" onClick={() => deleteTraining(t.id)}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openDeleteModal("Apakah Anda yakin ingin menghapus training ini?", async () => {
+                                                            await deleteTraining(t.id);
+                                                            setShowDeleteModal(false);
+                                                        })
+                                                    }
+                                                >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
+
                                             </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
-
-
 
                             {/* PAGINATION */}
                             <div className="flex justify-end items-center gap-4 mt-4">
@@ -1510,11 +1636,11 @@ export default function SuperAdminDashboard() {
                                     disabled={trainingPage === 1}
                                     variant="outline"
                                 >
-                                    Prev
+                                    Sebelumnya
                                 </Button>
 
                                 <span className="text-sm text-gray-600">
-                                    Page {trainingPage} of {trainingTotalPages}
+                                    Halaman {trainingPage} dari {trainingTotalPages}
                                 </span>
 
                                 <Button
@@ -1522,7 +1648,7 @@ export default function SuperAdminDashboard() {
                                     disabled={trainingPage === trainingTotalPages}
                                     variant="outline"
                                 >
-                                    Next
+                                    Selanjutnya
                                 </Button>
                             </div>
 
@@ -1533,7 +1659,7 @@ export default function SuperAdminDashboard() {
                     <Dialog open={showAddTrainingModal} onOpenChange={setShowAddTrainingModal}>
                         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                                <DialogTitle>Create Training</DialogTitle>
+                                <DialogTitle>Buat Pelatihan</DialogTitle>
                             </DialogHeader>
 
                             {/* FORM 2 COLUMN */}
@@ -1541,7 +1667,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Training Title */}
                                 <div>
-                                    <label className="block mb-1">Training Title</label>
+                                    <label className="block mb-1">Judul Pelatihan</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2"
@@ -1557,7 +1683,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Institution */}
                                 <div>
-                                    <label className="block mb-1">Institution Name</label>
+                                    <label className="block mb-1">Nama Institusi</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2"
@@ -1573,7 +1699,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Description */}
                                 <div className="md:col-span-2">
-                                    <label className="block mb-1">Description</label>
+                                    <label className="block mb-1">Deskripsi</label>
                                     <textarea
                                         className="w-full border rounded px-3 py-2 h-24"
                                         value={addTrainingData.description}
@@ -1588,7 +1714,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Training Materials */}
                                 <div className="md:col-span-2">
-                                    <label className="block mb-1">Training Materials</label>
+                                    <label className="block mb-1">Materi Pelatihan</label>
 
                                     {addTrainingData.trainingMaterials.map((val, idx) => (
                                         <div key={idx} className="flex gap-2 mb-2">
@@ -1634,13 +1760,13 @@ export default function SuperAdminDashboard() {
                                             })
                                         }
                                     >
-                                        + Add Material
+                                        + Tambah Materi
                                     </button>
                                 </div>
 
                                 {/* Duration */}
                                 <div>
-                                    <label className="block mb-1">Duration</label>
+                                    <label className="block mb-1">Durasi</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2"
@@ -1656,7 +1782,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Minimum Participants */}
                                 <div>
-                                    <label className="block mb-1">Minimum Participants</label>
+                                    <label className="block mb-1">Minimal Peserta</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2"
@@ -1672,7 +1798,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Facilities */}
                                 <div className="md:col-span-2">
-                                    <label className="block mb-1">Facilities</label>
+                                    <label className="block mb-1">Fasilitas</label>
 
                                     {addTrainingData.facilities.map((val, idx) => (
                                         <div key={idx} className="flex gap-2 mb-2">
@@ -1715,30 +1841,71 @@ export default function SuperAdminDashboard() {
                                             })
                                         }
                                     >
-                                        + Add Facility
+                                        + Tambah Fasilitas
                                     </button>
                                 </div>
 
                                 {/* Schedule */}
                                 <div>
-                                    <label className="block mb-1">Implementation Schedule</label>
+                                    <label className="block mb-1 font-medium">Jadwal Pelaksanaan</label>
+
+                                    {/* Label Mulai */}
+                                    <span className="text-xs text-gray-600">Tanggal Mulai</span>
                                     <input
-                                        type="text"
-                                        className="w-full border rounded px-3 py-2"
-                                        placeholder="2025-12-01 s/d 2025-12-05"
-                                        value={addTrainingData.implementationSchedule}
-                                        onChange={(e) =>
+                                        type="date"
+                                        className="w-full border rounded px-3 py-2 mb-3"
+                                        value={addTrainingData.startDate || ""}
+                                        onChange={(e) => {
+                                            const start = e.target.value;
+                                            const end = addTrainingData.endDate || "";
+
+                                            // Validasi jika end sudah diisi
+                                            if (end && new Date(end) < new Date(start)) {
+                                                alert("Tanggal selesai tidak boleh sebelum tanggal mulai!");
+                                                return;
+                                            }
+
                                             setAddTrainingData({
                                                 ...addTrainingData,
-                                                implementationSchedule: e.target.value,
-                                            })
-                                        }
+                                                startDate: start,
+                                                implementationSchedule: end
+                                                    ? `${start} s/d ${end}`
+                                                    : start,
+                                            });
+                                        }}
+                                    />
+
+                                    {/* Label Selesai */}
+                                    <span className="text-xs text-gray-600">Tanggal Selesai</span>
+                                    <input
+                                        type="date"
+                                        className="w-full border rounded px-3 py-2"
+                                        value={addTrainingData.endDate || ""}
+                                        onChange={(e) => {
+                                            const end = e.target.value;
+                                            const start = addTrainingData.startDate || "";
+
+                                            // Validasi tanggal selesai < tanggal mulai
+                                            if (start && new Date(end) < new Date(start)) {
+                                                alert("Tanggal selesai tidak boleh sebelum tanggal mulai!");
+                                                return;
+                                            }
+
+                                            setAddTrainingData({
+                                                ...addTrainingData,
+                                                endDate: end,
+                                                implementationSchedule: start
+                                                    ? `${start} s/d ${end}`
+                                                    : end,
+                                            });
+                                        }}
                                     />
                                 </div>
 
+
                                 {/* Competency Test Place */}
                                 <div>
-                                    <label className="block mb-1">Competency Test Place</label>
+                                    <label className="block mb-1">Tempat Uji Kompetensi</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2"
@@ -1754,7 +1921,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Certificate */}
                                 <div className="md:col-span-2">
-                                    <label className="block mb-1">Certificate</label>
+                                    <label className="block mb-1">Sertifikat</label>
 
                                     {addTrainingData.certificate.map((val, idx) => (
                                         <div key={idx} className="flex gap-2 mb-2">
@@ -1797,13 +1964,13 @@ export default function SuperAdminDashboard() {
                                             })
                                         }
                                     >
-                                        + Add Certificate
+                                        + Tambah Sertifikat
                                     </button>
                                 </div>
 
                                 {/* Training Fee */}
                                 <div className="md:col-span-2">
-                                    <label className="block mb-1">Training Fee</label>
+                                    <label className="block mb-1">Biaya Pelatihan</label>
                                     <input
                                         type="number"
                                         className="w-full border rounded px-3 py-2"
@@ -1820,10 +1987,11 @@ export default function SuperAdminDashboard() {
                                 {/* Buttons */}
                                 <div className="md:col-span-2 flex justify-end gap-3 mt-4">
                                     <Button variant="outline" onClick={() => setShowAddTrainingModal(false)}>
-                                        Cancel
+                                        Batal
                                     </Button>
-                                    <Button onClick={createTraining}>Save</Button>
+                                    <Button onClick={createTraining}>Simpan</Button>
                                 </div>
+
                             </div>
                         </DialogContent>
                     </Dialog>
@@ -1838,7 +2006,7 @@ export default function SuperAdminDashboard() {
                     >
                         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                                <DialogTitle>Detail Training</DialogTitle>
+                                <DialogTitle>Detail Pelatihan</DialogTitle>
                             </DialogHeader>
 
                             {detailTraining && (
@@ -1846,7 +2014,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Training Title */}
                                     <div>
-                                        <label className="block mb-1">Training Title</label>
+                                        <label className="block mb-1">Judul Pelatihan</label>
                                         <input
                                             type="text"
                                             disabled={!isEditTraining}
@@ -1860,7 +2028,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Institution Name */}
                                     <div>
-                                        <label className="block mb-1">Institution Name</label>
+                                        <label className="block mb-1">Nama Institusi</label>
                                         <input
                                             type="text"
                                             disabled={!isEditTraining}
@@ -1874,7 +2042,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Description */}
                                     <div className="md:col-span-2">
-                                        <label className="block mb-1">Description</label>
+                                        <label className="block mb-1">Deskripsi</label>
                                         <textarea
                                             disabled={!isEditTraining}
                                             className="w-full border rounded px-3 py-2 h-24"
@@ -1887,7 +2055,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Duration */}
                                     <div>
-                                        <label className="block mb-1">Duration</label>
+                                        <label className="block mb-1">Durasi</label>
                                         <input
                                             type="text"
                                             disabled={!isEditTraining}
@@ -1901,7 +2069,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Minimum Participants */}
                                     <div>
-                                        <label className="block mb-1">Minimum Participants</label>
+                                        <label className="block mb-1">Jumlah Peserta Minimum</label>
                                         <input
                                             type="number"
                                             disabled={!isEditTraining}
@@ -1918,24 +2086,55 @@ export default function SuperAdminDashboard() {
 
                                     {/* Implementation Schedule */}
                                     <div>
-                                        <label className="block mb-1">Implementation Schedule</label>
+                                        <label className="block mb-1">Jadwal Pelaksanaan</label>
+
+                                        {/* Tanggal Mulai */}
+                                        <label className="text-sm text-gray-600">Tanggal Mulai</label>
                                         <input
-                                            type="text"
+                                            type="date"
                                             disabled={!isEditTraining}
-                                            className="w-full border rounded px-3 py-2"
-                                            value={trainingForm.implementationSchedule}
-                                            onChange={(e) =>
+                                            className="w-full border rounded px-3 py-2 mb-2"
+                                            value={trainingForm.startDate || ""}
+                                            onChange={(e) => {
+                                                const start = e.target.value;
+                                                const end = trainingForm.endDate || "";
+
                                                 setTrainingForm({
                                                     ...trainingForm,
-                                                    implementationSchedule: e.target.value,
-                                                })
-                                            }
+                                                    startDate: start,
+                                                    implementationSchedule: end ? `${start} s/d ${end}` : start,
+                                                });
+                                            }}
+                                        />
+
+                                        {/* Tanggal Selesai */}
+                                        <label className="text-sm text-gray-600">Tanggal Selesai</label>
+                                        <input
+                                            type="date"
+                                            disabled={!isEditTraining}
+                                            className="w-full border rounded px-3 py-2"
+                                            value={trainingForm.endDate || ""}
+                                            onChange={(e) => {
+                                                const end = e.target.value;
+                                                const start = trainingForm.startDate || "";
+
+                                                if (start && end < start) {
+                                                    alert("Tanggal selesai tidak boleh lebih kecil dari tanggal mulai");
+                                                    return;
+                                                }
+
+                                                setTrainingForm({
+                                                    ...trainingForm,
+                                                    endDate: end,
+                                                    implementationSchedule: start ? `${start} s/d ${end}` : end,
+                                                });
+                                            }}
                                         />
                                     </div>
 
                                     {/* Competency Test Place */}
                                     <div>
-                                        <label className="block mb-1">Competency Test Place</label>
+                                        <label className="block mb-1">Lokasi Uji Kompetensi</label>
                                         <input
                                             type="text"
                                             disabled={!isEditTraining}
@@ -1952,7 +2151,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Training Fee */}
                                     <div className="md:col-span-2">
-                                        <label className="block mb-1">Training Fee</label>
+                                        <label className="block mb-1">Biaya Pelatihan</label>
                                         <input
                                             type="number"
                                             disabled={!isEditTraining}
@@ -1969,7 +2168,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Training Materials */}
                                     <div className="md:col-span-2">
-                                        <label className="font-semibold">Training Materials</label>
+                                        <label className="font-semibold">Materi Pelatihan</label>
 
                                         {trainingForm.trainingMaterials.map((item: string, idx: number) => (
                                             <div key={idx} className="flex gap-2 mt-2">
@@ -2011,14 +2210,14 @@ export default function SuperAdminDashboard() {
                                                 }
                                                 className="mt-2 text-blue-600"
                                             >
-                                                + Add Material
+                                                + Tambah Materi
                                             </button>
                                         )}
                                     </div>
 
                                     {/* Facilities */}
                                     <div className="md:col-span-2">
-                                        <label className="font-semibold">Facilities</label>
+                                        <label className="font-semibold">Fasilitas</label>
 
                                         {trainingForm.facilities.map((item: string, idx: number) => (
                                             <div key={idx} className="flex gap-2 mt-2">
@@ -2060,14 +2259,14 @@ export default function SuperAdminDashboard() {
                                                 }
                                                 className="mt-2 text-blue-600"
                                             >
-                                                + Add Facility
+                                                + Tambah Fasilitas
                                             </button>
                                         )}
                                     </div>
 
                                     {/* Certificate */}
                                     <div className="md:col-span-2">
-                                        <label className="font-semibold">Certificate</label>
+                                        <label className="font-semibold">Sertifikat</label>
 
                                         {trainingForm.certificate.map((item: string, idx: number) => (
                                             <div key={idx} className="flex gap-2 mt-2">
@@ -2109,7 +2308,7 @@ export default function SuperAdminDashboard() {
                                                 }
                                                 className="mt-2 text-blue-600"
                                             >
-                                                + Add Certificate Item
+                                                + Tambah Item Sertifikat
                                             </button>
                                         )}
                                     </div>
@@ -2123,9 +2322,9 @@ export default function SuperAdminDashboard() {
                                         {isEditTraining && (
                                             <>
                                                 <Button variant="outline" onClick={() => setIsEditTraining(false)}>
-                                                    Cancel
+                                                    Batal
                                                 </Button>
-                                                <Button onClick={updateTraining}>Save</Button>
+                                                <Button onClick={updateTraining}>Simpan</Button>
                                             </>
                                         )}
                                     </div>
@@ -2141,12 +2340,12 @@ export default function SuperAdminDashboard() {
                             {/* Header + filter */}
                             <div className="flex items-center justify-between mb-6">
 
-                                <h2 className="text-xl text-gray-900">Manage News</h2>
+                                <h2 className="text-xl text-gray-900">Kelola Berita</h2>
 
                                 <div className="flex items-center gap-3 ml-auto">
                                     <input
                                         type="text"
-                                        placeholder="Filter title..."
+                                        placeholder="Filter berdasarkan judul..."
                                         value={filterNewsTitle}
                                         onChange={(e) => {
                                             setFilterNewsTitle(e.target.value);
@@ -2156,7 +2355,7 @@ export default function SuperAdminDashboard() {
                                     />
 
                                     <Button onClick={() => setShowAddNewsModal(true)}>
-                                        Add News
+                                        Tambah Berita
                                     </Button>
                                 </div>
 
@@ -2166,12 +2365,12 @@ export default function SuperAdminDashboard() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead>Author</TableHead>
-                                        <TableHead>Created</TableHead>
-                                        <TableHead>Updated</TableHead>
-                                        <TableHead>Actions</TableHead>
+                                        <TableHead>Judul</TableHead>
+                                        <TableHead>Deskripsi</TableHead>
+                                        <TableHead>Penulis</TableHead>
+                                        <TableHead>Dibuat</TableHead>
+                                        <TableHead>Diperbarui</TableHead>
+                                        <TableHead>Aksi</TableHead>
                                     </TableRow>
                                 </TableHeader>
 
@@ -2202,7 +2401,12 @@ export default function SuperAdminDashboard() {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => deleteNews(n.id)}
+                                                    onClick={() =>
+                                                        openDeleteModal("Apakah Anda yakin ingin menghapus berita ini?", async () => {
+                                                            await deleteNews(n.id);
+                                                            setShowDeleteModal(false);
+                                                        })
+                                                    }
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
@@ -2234,11 +2438,11 @@ export default function SuperAdminDashboard() {
                                     disabled={newsPage === 1}
                                     variant="outline"
                                 >
-                                    Prev
+                                    Sebelumnya
                                 </Button>
 
                                 <span className="text-sm text-gray-600">
-                                    Page {newsPage} of {newsTotalPages}
+                                    Halaman {newsPage} dari {newsTotalPages}
                                 </span>
 
                                 <Button
@@ -2246,7 +2450,7 @@ export default function SuperAdminDashboard() {
                                     disabled={newsPage === newsTotalPages}
                                     variant="outline"
                                 >
-                                    Next
+                                    Selanjutnya
                                 </Button>
                             </div>
 
@@ -2257,14 +2461,14 @@ export default function SuperAdminDashboard() {
                     <Dialog open={showAddNewsModal} onOpenChange={setShowAddNewsModal}>
                         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
-                                <DialogTitle>Add News</DialogTitle>
+                                <DialogTitle>Tambah Berita</DialogTitle>
                             </DialogHeader>
 
                             <div className="space-y-3 text-sm">
 
                                 {/* Title */}
                                 <div>
-                                    <label className="block mb-1">Title</label>
+                                    <label className="block mb-1">Judul</label>
                                     <input
                                         type="text"
                                         value={addNewsData.title}
@@ -2277,7 +2481,7 @@ export default function SuperAdminDashboard() {
 
                                 {/* Description WYSIWYG */}
                                 <div className="mb-4">
-                                    <label className="block mb-1">Description</label>
+                                    <label className="block mb-1">Deskripsi</label>
 
                                     <RichTextEditor
                                         editor={editor}
@@ -2337,7 +2541,6 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
-
                     {/* Detail News Modal */}
                     <Dialog open={showNewsModal} onOpenChange={(v) => {
                         setShowNewsModal(v);
@@ -2345,7 +2548,7 @@ export default function SuperAdminDashboard() {
                     }}>
                         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
-                                <DialogTitle>Detail News</DialogTitle>
+                                <DialogTitle>Detail Berita</DialogTitle>
                             </DialogHeader>
 
                             {detailNews && (
@@ -2353,7 +2556,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Title */}
                                     <div>
-                                        <label className="block mb-1">Title</label>
+                                        <label className="block mb-1">Judul</label>
                                         <input
                                             type="text"
                                             disabled={!isEditNews}
@@ -2365,7 +2568,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Description WYSIWYG */}
                                     <div>
-                                        <label className="block mb-1">Description</label>
+                                        <label className="block mb-1">Deskripsi</label>
 
                                         {editorDetail && (
                                             <RichTextEditor editor={editorDetail}>
@@ -2407,7 +2610,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Author */}
                                     <div>
-                                        <label className="block mb-1">Author</label>
+                                        <label className="block mb-1">Penulis</label>
                                         <input
                                             type="text"
                                             disabled
@@ -2423,8 +2626,8 @@ export default function SuperAdminDashboard() {
                                         )}
                                         {isEditNews && (
                                             <>
-                                                <Button variant="outline" onClick={() => setIsEditNews(false)}>Cancel</Button>
-                                                <Button onClick={updateNews}>Save</Button>
+                                                <Button variant="outline" onClick={() => setIsEditNews(false)}>Batal</Button>
+                                                <Button onClick={updateNews}>Simpan</Button>
                                             </>
                                         )}
                                     </div>
@@ -2438,19 +2641,19 @@ export default function SuperAdminDashboard() {
                         <Card className="p-6">
 
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl text-gray-900">Manage Jasa</h2>
+                                <h2 className="text-xl text-gray-900">Kelola Jasa</h2>
 
                                 <div className="flex items-center gap-3 ml-auto">
                                     <input
                                         type="text"
-                                        placeholder="Filter title..."
+                                        placeholder="Filter berdasarkan judul..."
                                         value={filterProductTitle}
                                         onChange={(e) => { setFilterProductTitle(e.target.value); setProductPage(1); }}
                                         className="border rounded px-3 py-2 text-sm w-60"
                                     />
 
                                     <Button onClick={() => setShowAddProductModal(true)}>
-                                        Add Jasa
+                                        Tambah Jasa
                                     </Button>
                                 </div>
                             </div>
@@ -2458,13 +2661,13 @@ export default function SuperAdminDashboard() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Category</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead>Author</TableHead>
-                                        <TableHead>Created</TableHead>
-                                        <TableHead>Updated</TableHead>
-                                        <TableHead>Actions</TableHead>
+                                        <TableHead>Judul</TableHead>
+                                        <TableHead>Kategori</TableHead>
+                                        <TableHead>Deskripsi</TableHead>
+                                        <TableHead>Penulis</TableHead>
+                                        <TableHead>Dibuat</TableHead>
+                                        <TableHead>Diperbarui</TableHead>
+                                        <TableHead>Aksi</TableHead>
                                     </TableRow>
                                 </TableHeader>
 
@@ -2482,10 +2685,22 @@ export default function SuperAdminDashboard() {
                                                 <Button variant="ghost" size="sm" onClick={() => getDetailProduct(p.id)}>
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
-
-                                                <Button variant="ghost" size="sm" onClick={() => deleteProduct(p.id)}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openDeleteModal(
+                                                            "Apakah Anda yakin ingin menghapus Jasa ini?",
+                                                            async () => {
+                                                                await deleteProduct(p.id);
+                                                                setShowDeleteModal(false);
+                                                            }
+                                                        )
+                                                    }
+                                                >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
+
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -2508,11 +2723,11 @@ export default function SuperAdminDashboard() {
                                     disabled={productPage === 1}
                                     variant="outline"
                                 >
-                                    Prev
+                                    Sebelumnya
                                 </Button>
 
                                 <span className="text-sm text-gray-600">
-                                    Page {productPage} of {productTotalPages}
+                                    Halaman {productPage} dari {productTotalPages}
                                 </span>
 
                                 <Button
@@ -2520,7 +2735,7 @@ export default function SuperAdminDashboard() {
                                     disabled={productPage === productTotalPages}
                                     variant="outline"
                                 >
-                                    Next
+                                    Selanjutnya
                                 </Button>
                             </div>
 
@@ -2531,13 +2746,13 @@ export default function SuperAdminDashboard() {
                     <Dialog open={showAddProductModal} onOpenChange={setShowAddProductModal}>
                         <DialogContent className="max-w-lg">
                             <DialogHeader>
-                                <DialogTitle>Add Jasa</DialogTitle>
+                                <DialogTitle>Tambah Jasa</DialogTitle>
                             </DialogHeader>
 
                             <div className="space-y-3 text-sm">
 
                                 <div>
-                                    <label className="block mb-1">Title</label>
+                                    <label className="block mb-1">Judul</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2"
@@ -2547,7 +2762,7 @@ export default function SuperAdminDashboard() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-1">Category</label>
+                                    <label className="block mb-1">Kategori</label>
                                     <input
                                         type="text"
                                         className="w-full border bg-gray-100 rounded px-3 py-2"
@@ -2557,7 +2772,7 @@ export default function SuperAdminDashboard() {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-1">Description</label>
+                                    <label className="block mb-1">Deskripsi</label>
                                     <textarea
                                         className="w-full border rounded px-3 py-2 h-32"
                                         value={addProductData.description}
@@ -2587,7 +2802,7 @@ export default function SuperAdminDashboard() {
                                 <div className="space-y-3 text-sm">
 
                                     <div>
-                                        <label className="block mb-1">Title</label>
+                                        <label className="block mb-1">Judul</label>
                                         <input
                                             type="text"
                                             disabled={!isEditProduct}
@@ -2598,7 +2813,7 @@ export default function SuperAdminDashboard() {
                                     </div>
 
                                     <div>
-                                        <label className="block mb-1">Category</label>
+                                        <label className="block mb-1">Kategori</label>
                                         <input
                                             type="text"
                                             disabled={!isEditProduct}
@@ -2609,7 +2824,7 @@ export default function SuperAdminDashboard() {
                                     </div>
 
                                     <div>
-                                        <label className="block mb-1">Description</label>
+                                        <label className="block mb-1">Deskripsi</label>
                                         <textarea
                                             disabled={!isEditProduct}
                                             className="w-full border rounded px-3 py-2"
@@ -2619,7 +2834,7 @@ export default function SuperAdminDashboard() {
                                     </div>
 
                                     <div>
-                                        <label className="block mb-1">Author</label>
+                                        <label className="block mb-1">Penulis</label>
                                         <input
                                             type="text"
                                             disabled
@@ -2652,12 +2867,12 @@ export default function SuperAdminDashboard() {
                             {/* Header + Filter */}
                             <div className="flex items-center justify-between mb-6">
 
-                                <h2 className="text-xl text-gray-900">Training Participants</h2>
+                                <h2 className="text-xl text-gray-900">Peserta training</h2>
 
                                 <div className="flex items-center gap-3 ml-auto">
                                     <input
                                         type="text"
-                                        placeholder="Filter name..."
+                                        placeholder="Filter bedasarkan nama..."
                                         value={filterTPName}
                                         onChange={(e) => {
                                             setFilterTPName(e.target.value);
@@ -2672,14 +2887,15 @@ export default function SuperAdminDashboard() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Name</TableHead>
-                                        <TableHead>Type</TableHead>
+                                        <TableHead>Nama</TableHead>
+                                        <TableHead>Jenis</TableHead>
                                         <TableHead>Email</TableHead>
-                                        <TableHead>Phone</TableHead>
+                                        <TableHead>Telepon</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead>Training</TableHead>
-                                        <TableHead>Created</TableHead>
-                                        <TableHead>Actions</TableHead>
+                                        <TableHead>Pelatihan</TableHead>
+                                        <TableHead>Dibuat</TableHead>
+                                        <TableHead>Aksi</TableHead>
+
                                     </TableRow>
                                 </TableHeader>
 
@@ -2698,7 +2914,19 @@ export default function SuperAdminDashboard() {
                                                 <Button variant="ghost" size="sm" onClick={() => getDetailTP(p.id)}>
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="sm" onClick={() => deleteTP(p.id)}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openDeleteModal(
+                                                            "Apakah Anda yakin ingin menghapus peserta training ini?",
+                                                            async () => {
+                                                                await deleteTP(p.id);
+                                                                setShowDeleteModal(false);
+                                                            }
+                                                        )
+                                                    }
+                                                >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
                                             </TableCell>
@@ -2727,11 +2955,11 @@ export default function SuperAdminDashboard() {
                                     disabled={tpPage === 1}
                                     variant="outline"
                                 >
-                                    Prev
+                                    Sebelumnya
                                 </Button>
 
                                 <span className="text-sm text-gray-600">
-                                    Page {tpPage} of {tpTotalPages}
+                                    Halaman {tpPage} dari {tpTotalPages}
                                 </span>
 
                                 <Button
@@ -2739,7 +2967,7 @@ export default function SuperAdminDashboard() {
                                     disabled={tpPage === tpTotalPages}
                                     variant="outline"
                                 >
-                                    Next
+                                    Selanjutnya
                                 </Button>
                             </div>
 
@@ -2752,14 +2980,14 @@ export default function SuperAdminDashboard() {
                     }}>
                         <DialogContent className="max-w-lg">
                             <DialogHeader>
-                                <DialogTitle>Participant Detail</DialogTitle>
+                                <DialogTitle>Detail Peserta</DialogTitle>
                             </DialogHeader>
 
                             {detailTP && (
                                 <div className="space-y-3 text-sm">
 
                                     <div>
-                                        <label className="block mb-1">Name</label>
+                                        <label className="block mb-1">Nama</label>
                                         <input
                                             type="text"
                                             disabled
@@ -2801,130 +3029,8 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
-
                 </Tabs>
             </div>
         </div>
-    );
-}
-
-// Create Course Dialog Component
-function CreateCourseDialog({ onSuccess, accessToken }: { onSuccess: () => void; accessToken: string | null }) {
-    const [open, setOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        category: '',
-        price: '',
-        instructor: '',
-        duration: '',
-        level: 'Pemula',
-    });
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch(
-                `https://${projectId}.supabase.co/functions/v1/make-server-d9e5996a/courses`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
-            if (response.ok) {
-                setOpen(false);
-                setFormData({ title: '', description: '', category: '', price: '', instructor: '', duration: '', level: 'Pemula' });
-                onSuccess();
-            }
-        } catch (error) {
-            console.error('Failed to create course:', error);
-        }
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    Add Course
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle>Create New Course</DialogTitle>
-                    <DialogDescription>Add a new course to the platform</DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <Label>Title</Label>
-                        <Input
-                            value={formData.title}
-                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Description</Label>
-                        <Input
-                            value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Category</Label>
-                        <Input
-                            value={formData.category}
-                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Instructor</Label>
-                        <Input
-                            value={formData.instructor}
-                            onChange={(e) => setFormData({ ...formData, instructor: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Price</Label>
-                        <Input
-                            value={formData.price}
-                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                            placeholder="Rp 299.000"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Duration</Label>
-                        <Input
-                            value={formData.duration}
-                            onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                            placeholder="42 jam"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label>Level</Label>
-                        <Select value={formData.level} onValueChange={(value) => setFormData({ ...formData, level: value })}>
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Pemula">Pemula</SelectItem>
-                                <SelectItem value="Menengah">Menengah</SelectItem>
-                                <SelectItem value="Lanjutan">Lanjutan</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <Button type="submit" className="w-full">Create Course</Button>
-                </form>
-            </DialogContent>
-        </Dialog>
     );
 }

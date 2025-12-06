@@ -9,10 +9,6 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 
-import { AuthModal } from "./AuthModal";
-
-import { Check, Clock, Users, Calendar } from "lucide-react";
-
 export function ServicesSection() {
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,18 +18,8 @@ export function ServicesSection() {
 
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState<any>(null);
-  const [isRegistered, setIsRegistered] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-  // 🔥 AUTH MODAL STATE
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-
-  const openAuthModal = (mode: 'signin' | 'signup') => {
-    setAuthMode(mode);
-    setAuthModalOpen(true);
-  };
 
   // ===================== FETCH SERVICES =====================
   const fetchServices = async () => {
@@ -45,18 +31,20 @@ export function ServicesSection() {
       limit: "6",
       page,
       filters: {
-        serviceTitle: filterTitle,
+        title: filterTitle,
         author: "",
+        category: ""
       },
     };
 
-    const res = await fetch(`${API_BASE}/api/service/pagination`, {
+    const res = await fetch(`${API_BASE}/api/product/pagination`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
     const data = await res.json();
+    console.log("PRODUCT RESPONSE:", data);
 
     setServices(data.data || []);
     setTotalPages(data.totalPages || 1);
@@ -65,7 +53,7 @@ export function ServicesSection() {
 
   // ===================== FETCH DETAIL =====================
   const fetchDetail = async (id: number) => {
-    const res = await fetch(`${API_BASE}/api/service/detail`, {
+    const res = await fetch(`${API_BASE}/api/product/detail`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
@@ -74,67 +62,6 @@ export function ServicesSection() {
     const data = await res.json();
     setDetailData(data.data);
     setShowDetail(true);
-
-    checkRegistered(id);
-  };
-
-  // ===================== ORDER SERVICE =====================
-  const orderService = async (id: number) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-
-      // 🔥 OPEN LOGIN MODAL IF NOT LOGGED IN
-      if (!token) {
-        openAuthModal("signin");
-        return;
-      }
-
-      const response = await fetch(`${API_BASE}/api/service-orders/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ serviceId: id }),
-      });
-
-      const data = await response.json();
-
-      if (response.status === 401 || response.status === 403) {
-        openAuthModal("signin");
-        return;
-      }
-
-      if (data.code === "00") {
-        alert("Berhasil memesan jasa!");
-        setShowDetail(false);
-      } else {
-        alert(data.message || "Gagal memesan jasa.");
-      }
-    } catch (err) {
-      console.error("Order service error:", err);
-    }
-  };
-
-  // ===================== CHECK REGISTERED =====================
-  const checkRegistered = async (serviceId: number) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-
-      const res = await fetch(`${API_BASE}/api/service-orders/check`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ serviceId: String(serviceId) }),
-      });
-
-      const data = await res.json();
-      setIsRegistered(data.data.registered);
-    } catch (error) {
-      setIsRegistered(false);
-    }
   };
 
   useEffect(() => {
@@ -153,25 +80,18 @@ export function ServicesSection() {
     <section id="services" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ===================== AUTH MODAL ===================== */}
-        <AuthModal
-          isOpen={authModalOpen}
-          onClose={() => setAuthModalOpen(false)}
-          mode={authMode}
-        />
-
         {/* HEADER */}
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl text-gray-900 mb-4">Jasa</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Jasa profesional kami untuk mendukung kebutuhan Anda
+            Jasa terbaik yang telah kami siapkan untuk Anda
           </p>
         </div>
 
         {/* FILTER */}
         <div className="flex justify-end mb-6">
           <Input
-            placeholder="Cari jasa..."
+            placeholder="Cari Jasa..."
             className="w-80 shadow-sm"
             value={filterTitle}
             onChange={(e) => setFilterTitle(e.target.value)}
@@ -183,14 +103,8 @@ export function ServicesSection() {
           {loading ? (
             <>
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <Card
-                  key={i}
-                  className="overflow-hidden animate-pulse rounded-xl shadow-lg"
-                >
-                  {/* Card section */}
-                  <div className="h-[380px] bg-gray-300"></div>
-
-                  {/* Detail section */}
+                <Card key={i} className="overflow-hidden animate-pulse rounded-xl shadow-lg">
+                  <div className="h-[200px] bg-gray-300"></div>
                   <div className="p-6 space-y-4">
                     <div className="h-4 bg-gray-300 rounded"></div>
                     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
@@ -210,31 +124,11 @@ export function ServicesSection() {
                 className="relative p-0 cursor-pointer text-white rounded-xl overflow-hidden group shadow-lg"
                 onClick={() => fetchDetail(item.id)}
               >
-                <div className="relative h-[380px] bg-blue-900 p-6 flex flex-col justify-end">
-                  <h3 className="text-2xl font-bold mb-4">{item.serviceTitle}</h3>
-
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock size={18} className="text-white opacity-90" />
-                      <span>
-                        <strong>Durasi:</strong> {item.duration}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <Users size={18} className="text-white opacity-90" />
-                      <span>
-                        <strong>Kapasitas:</strong> {item.capacity}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <Calendar size={18} className="text-white opacity-90" />
-                      <span>
-                        <strong>Schedule:</strong> {item.schedule}
-                      </span>
-                    </div>
-                  </div>
+                <div className="relative h-[200px] bg-blue-900 p-6 flex flex-col justify-end">
+                  <h3 className="text-2xl font-bold">{item.title}</h3>
+                  <p className="text-white opacity-90 text-sm mt-2">
+                    {item.category}
+                  </p>
                 </div>
               </Card>
             ))
@@ -248,98 +142,66 @@ export function ServicesSection() {
             disabled={page === 1}
             onClick={() => setPage(page - 1)}
           >
-            Previous
+            Sebelumnya
           </Button>
 
-          <div className="text-gray-700">Page {page} of {totalPages}</div>
+          <div className="text-gray-700">
+            Halaman {page} dari {totalPages}
+          </div>
 
           <Button
             variant="outline"
             disabled={page === totalPages}
             onClick={() => setPage(page + 1)}
           >
-            Next
+            Selanjutnya
           </Button>
+        </div>
+        {/* HUBUNGI CARD */}
+        <div className="mt-8">
+          <div className="bg-gradient-to-br from-blue-900 to-blue-600 text-white p-8 rounded-2xl flex flex-col items-center text-center gap-4 shadow-lg">
+            <h3 className="text-2xl font-semibold">
+              Ingin informasi lebih lengkap tentang layanan kami?
+            </h3>
+            <p className="text-base">
+              Hubungi kami untuk detail lebih lanjut.
+            </p>
+            <a
+              href="https://wa.me/6285755450598"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-white text-blue-900 font-semibold rounded-lg hover:bg-gray-100 transition"
+            >
+              Hubungi Kami
+            </a>
+          </div>
         </div>
 
         {/* DETAIL MODAL */}
         <Dialog open={showDetail} onOpenChange={setShowDetail}>
           <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Detail Jasa</DialogTitle>
-            </DialogHeader>
 
             {detailData && (
               <div className="space-y-4 text-gray-800">
 
                 <h2 className="text-xl font-bold text-center mb-3">
-                  {detailData.serviceTitle}
+                  {detailData.title}
                 </h2>
 
                 <p className="text-sm leading-relaxed">{detailData.description}</p>
 
-                {/* Info Section */}
-                <div className="space-y-3 text-sm">
-
-                  <div className="flex items-center gap-3">
-                    <Clock className="text-blue-700" size={18} />
-                    <span><strong>Durasi:</strong> {detailData.duration}</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Users className="text-blue-700" size={18} />
-                    <span><strong>Kapasitas:</strong> {detailData.capacity}</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Calendar className="text-blue-700" size={18} />
-                    <span><strong>Schedule:</strong> {detailData.schedule}</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="text-blue-700 font-bold">Harga:</span>
-                    <span>{detailData.price}</span>
-                  </div>
+                <div className="space-y-2 text-sm">
+                  <div><strong>Kategori:</strong> {detailData.category}</div>
+                  <div><strong>Penulis:</strong> {detailData.author}</div>
+                  <div><strong>Dibuat:</strong> {detailData.createdAt}</div>
+                  <div><strong>Diperbarui:</strong> {detailData.updateAt}</div>
                 </div>
 
-                {/* Requirements */}
-                <div>
-                  <strong className="text-blue-700">Persyaratan:</strong>
-                  <ul className="list-disc ml-5 mt-1 text-sm">
-                    {detailData.requirements?.map((r: any, idx: number) => (
-                      <li key={idx}>{r}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Deliverables */}
-                <div>
-                  <strong className="text-blue-700">Hasil:</strong>
-                  <ul className="list-disc ml-5 mt-1 text-sm">
-                    {detailData.deliverables?.map((d: any, idx: number) => (
-                      <li key={idx}>{d}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Status / Button */}
-                {isRegistered ? (
-                  <div className="flex items-center justify-center gap-2 mt-4 bg-green-100 py-3 rounded-md text-green-700 font-semibold">
-                    <span>Sudah Pesan Jasa</span>
-                    <Check className="w-5 h-5" />
-                  </div>
-                ) : (
-                  <Button
-                    className="w-full mt-4 bg-blue-900 hover:bg-blue-700 text-white"
-                    onClick={() => orderService(detailData.id)}
-                  >
-                    Pesan Jasa
-                  </Button>
-                )}
               </div>
             )}
           </DialogContent>
         </Dialog>
+
       </div>
     </section>
   );

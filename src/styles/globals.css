@@ -162,6 +162,55 @@
     }
 }
 
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fade {
+    animation: fade 0.2s ease-out;
+}
+
+[data-headlessui-dialog]>div {
+    max-height: 90vh;
+    /* Maksimal tinggi 90% viewport */
+    overflow-y: auto;
+    /* Scroll vertical otomatis */
+}
+
+/* Tambahan opsional agar padding tetap rapi */
+[data-headlessui-dialog]>div::-webkit-scrollbar {
+    width: 6px;
+}
+
+[data-headlessui-dialog]>div::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
 @layer base {
 
     *,
@@ -205,6 +254,24 @@
     abbr:where([title]) {
         -webkit-text-decoration: underline dotted;
         text-decoration: underline dotted;
+    }
+
+    .red-custom {
+        background-color: red;
+        /* hijau utama */
+        color: white;
+        /* teks putih */
+    }
+
+    .red-custom-dark {
+        background-color: red;
+        /* hijau gelap untuk hover */
+        color: white;
+    }
+
+    /* opsional: hover otomatis */
+    .red-custom:hover {
+        background-color: red;
     }
 
     .card-description h1 {

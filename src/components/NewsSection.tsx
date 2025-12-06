@@ -200,9 +200,6 @@ export function NewsSection() {
         {/* DETAIL MODAL */}
         <Dialog open={showDetail} onOpenChange={setShowDetail}>
           <DialogContent className="max-w-lg">
-            {/* <DialogHeader>
-              <DialogTitle>Detail Berita</DialogTitle>
-            </DialogHeader> */}
 
             {detailData && (
               <div className="space-y-4 text-gray-800">
