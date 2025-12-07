@@ -208,8 +208,7 @@ export function FeaturedCourses() {
               trainings.map((item: any, idx: number) => (
                 <Card
                   key={item.id}
-                  className="relative p-0 cursor-pointer rounded-xl overflow-hidden group shadow-lg h-[400px] transition-all duration-300 hover:shadow-2xl hover:scale-105"
-                  onClick={() => fetchDetail(item.id)}
+                  className="relative p-0 rounded-xl overflow-hidden group shadow-lg h-[400px] transition-all duration-300 hover:shadow-2xl hover:scale-105"
                   style={{
                     backgroundImage: `url(${pelatihanImages[idx % pelatihanImages.length]})`,
                     backgroundSize: 'cover',
@@ -239,16 +238,17 @@ export function FeaturedCourses() {
                         <span><strong>Jadwal:</strong> {item.implementationSchedule}</span>
                       </div>
 
-                      <div className="flex gap-2 mt-4">
+                      <div className="flex justify-between mt-4">
                         <Button
+                          variant="outline"
                           onClick={(e) => { e.stopPropagation(); fetchDetail(item.id); }}
-                          className="border-white text-white bg-transparent hover:bg-white hover:text-blue-900"
+                          className="border-white text-white bg-transparent cursor-pointer hover:bg-transparent hover:text-white hover:border-white"
                         >
                           Detail
                         </Button>
 
                         <Button
-                          className="bg-white text-blue-900 hover:bg-transparent hover:border-white hover:text-white border border-transparent"
+                          className="bg-white text-blue-900 border border-transparent cursor-pointer hover:bg-white hover:text-blue-900"
                           onClick={(e) => {
                             e.stopPropagation();
                             daftarPelatihan(item.id);
@@ -281,7 +281,7 @@ export function FeaturedCourses() {
               {detailData && (
                 <div className="space-y-4 text-gray-800">
 
-                  <h2 className="text-xl font-bold text-center mb-3">
+                  <h2 className="text-xl font-bold text-center mb-3 mt-4">
                     {detailData.trainingTitle}
                   </h2>
 
@@ -292,12 +292,12 @@ export function FeaturedCourses() {
 
                     <div className="flex items-center gap-3">
                       <Clock className="text-blue-700" size={18} />
-                      <span><strong>Durasi:</strong> {detailData.duration}</span>
+                      <span><strong>Durasi:</strong> {detailData.duration} Hari</span>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <Users className="text-blue-700" size={18} />
-                      <span><strong>Peserta Minimal:</strong> {detailData.minimumParticipants}</span>
+                      <span><strong>Peserta Minimal:</strong> {detailData.minimumParticipants} Peserta</span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -305,22 +305,7 @@ export function FeaturedCourses() {
                       <span><strong>Jadwal Pelaksanaan:</strong> {detailData.implementationSchedule}</span>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <span className="text-blue-700 font-bold">Biaya:</span>
-                      <span>{detailData.trainingFee}</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="text-blue-700 font-bold">Institusi:</span>
-                      <span>{detailData.institutionName}</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="text-blue-700 font-bold">Tempat Uji Kompetensi:</span>
-                      <span>{detailData.competencyTestPlace}</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
+                    {/* <div className="flex items-center gap-3">
                       <span className="text-blue-700 font-bold">Pembuat:</span>
                       <span>{detailData.author}</span>
                     </div>
@@ -333,7 +318,31 @@ export function FeaturedCourses() {
                     <div className="flex items-center gap-3">
                       <span className="text-blue-700 font-bold">Diperbarui pada:</span>
                       <span>{new Date(detailData.updateAt).toLocaleDateString()}</span>
-                    </div>
+                    </div> */}
+                  </div>
+
+                  {/* Biaya */}
+                  <div>
+                    <strong className="text-blue-700">Biaya:</strong>
+                    <ul className="list-disc ml-5 mt-1 text-sm">
+                      <li>IDR {Number(detailData.trainingFee).toLocaleString('id-ID')}</li>
+                    </ul>
+                  </div>
+
+                  {/* Institusi */}
+                  <div>
+                    <strong className="text-blue-700">Institusi:</strong>
+                    <ul className="list-disc ml-5 mt-1 text-sm">
+                      <li>{detailData.institutionName}</li>
+                    </ul>
+                  </div>
+
+                  {/* Tempat Uji Kompetensi */}
+                  <div>
+                    <strong className="text-blue-700">Tempat Uji Kompetensi:</strong>
+                    <ul className="list-disc ml-5 mt-1 text-sm">
+                      <li>{detailData.competencyTestPlace}</li>
+                    </ul>
                   </div>
 
                   {/* Materi Pelatihan */}

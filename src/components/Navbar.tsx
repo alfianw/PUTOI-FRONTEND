@@ -87,15 +87,15 @@ export function Navbar() {
                     <DropdownMenuSeparator />
 
                     {/* Profile */}
-                    <DropdownMenuItem onClick={openProfileModal} className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem onClick={openProfileModal} className="cursor-pointer hover:bg-blue-900 hover:text-white group">
+                      <User className="mr-2 h-4 w-4 group-hover:text-white" />
                       Profile
                     </DropdownMenuItem>
 
                     {user.role === 'superadmin' && (
                       <>
-                        <DropdownMenuItem onClick={() => navigate(getDashboardLink())} className="cursor-pointer">
-                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <DropdownMenuItem onClick={() => navigate(getDashboardLink())} className="cursor-pointer hover:bg-blue-900 hover:text-white group">
+                          <LayoutDashboard className="mr-2 h-4 w-4 group-hover:text-white" />
                           Dashboard
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -103,8 +103,8 @@ export function Navbar() {
                     )}
 
                     {/* Logout */}
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                      <LogOut className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer hover:bg-blue-900 hover:text-white group">
+                      <LogOut className="mr-2 h-4 w-4 group-hover:text-white" />
                       Keluar
                     </DropdownMenuItem>
                   </DropdownMenuContent>
