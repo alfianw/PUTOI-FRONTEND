@@ -11,11 +11,9 @@ import {
 
 import { AuthModal } from "./AuthModal";
 import { Check, Clock, Users, Calendar } from "lucide-react";
-import galeri1 from "../assets/galeri/galeri-1.png";
-import galeri2 from "../assets/galeri/galeri-2.png";
-import galeri3 from "../assets/galeri/galeri-3.png";
+import pelatihanBg from "../assets/pelatihan/pelatihan-scada.png";
 
-const galeriImages = [galeri1, galeri2, galeri3];
+const pelatihanImages = [pelatihanBg];
 
 export function FeaturedCourses() {
   const [trainings, setTrainings] = useState<any[]>([]);
@@ -210,10 +208,10 @@ export function FeaturedCourses() {
               trainings.map((item: any, idx: number) => (
                 <Card
                   key={item.id}
-                  className="relative p-0 cursor-pointer rounded-xl overflow-hidden group shadow-lg h-[400px]"
+                  className="relative p-0 cursor-pointer rounded-xl overflow-hidden group shadow-lg h-[400px] transition-all duration-300 hover:shadow-2xl hover:scale-105"
                   onClick={() => fetchDetail(item.id)}
                   style={{
-                    backgroundImage: `url(${galeriImages[idx % 3]})`,
+                    backgroundImage: `url(${pelatihanImages[idx % pelatihanImages.length]})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                   }}
@@ -222,7 +220,7 @@ export function FeaturedCourses() {
                   <div className="relative h-full p-6 flex flex-col justify-between text-white">
                     <div>
                       <h3 className="text-2xl font-bold mb-2">{item.trainingTitle}</h3>
-                      <p className="text-sm mb-4 line-clamp-2">
+                      <p className="text-sm mb-4 line-clamp-4 overflow-hidden" style={{ maxHeight: "84px" }}>
                         {item.description || item.shortDescription || "Deskripsi singkat tidak tersedia."}
                       </p>
                     </div>
@@ -243,17 +241,14 @@ export function FeaturedCourses() {
 
                       <div className="flex gap-2 mt-4">
                         <Button
-                          size="sm"
-                          variant="outline"
                           onClick={(e) => { e.stopPropagation(); fetchDetail(item.id); }}
-                          className="bg-white text-blue-900 hover:bg-gray-100"
+                          className="border-white text-white bg-transparent hover:bg-white hover:text-blue-900"
                         >
                           Detail
                         </Button>
 
                         <Button
-                          size="sm"
-                          className="bg-blue-900 hover:bg-blue-700 text-white"
+                          className="bg-white text-blue-900 hover:bg-transparent hover:border-white hover:text-white border border-transparent"
                           onClick={(e) => {
                             e.stopPropagation();
                             daftarPelatihan(item.id);
@@ -278,7 +273,7 @@ export function FeaturedCourses() {
 
           {/* DETAIL MODAL */}
           <Dialog open={showDetail} onOpenChange={setShowDetail}>
-            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-lg" style={{ maxHeight: "600px", overflowY: "auto" }}>
               <DialogHeader>
                 <DialogTitle>Detail Pelatihan</DialogTitle>
               </DialogHeader>
