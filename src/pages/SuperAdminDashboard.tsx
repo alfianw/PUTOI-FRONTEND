@@ -1187,13 +1187,13 @@ export default function SuperAdminDashboard() {
                                         <TableHead>Email</TableHead>
                                         <TableHead>No. Telepon</TableHead>
                                         <TableHead>Peran</TableHead>
-                                        <TableHead>Peserta</TableHead>
-                                        <TableHead>No. Identitas</TableHead>
+                                        {/* <TableHead>Peserta</TableHead> */}
+                                        {/* <TableHead>No. Identitas</TableHead> */}
                                         <TableHead>Jenis Kelamin</TableHead>
-                                        <TableHead>Universitas</TableHead>
-                                        <TableHead>Bidang Pendidikan</TableHead>
-                                        <TableHead>Jurusan</TableHead>
-                                        <TableHead>Kota</TableHead>
+                                        {/* <TableHead>Universitas</TableHead> */}
+                                        {/* <TableHead>Bidang Pendidikan</TableHead> */}
+                                        {/* <TableHead>Jurusan</TableHead> */}
+                                        {/* <TableHead>Kota</TableHead> */}
                                         <TableHead>Dibuat Pada</TableHead>
                                         <TableHead>Diperbarui Pada</TableHead>
                                         <TableHead>Aksi</TableHead>
@@ -1220,13 +1220,13 @@ export default function SuperAdminDashboard() {
                                                 </span>
                                             </TableCell>
 
-                                            <TableCell>{u.participantType}</TableCell>
-                                            <TableCell>{u.identityNumber}</TableCell>
+                                            {/* <TableCell>{u.participantType}</TableCell> */}
+                                            {/* <TableCell>{u.identityNumber}</TableCell> */}
                                             <TableCell>{u.gender}</TableCell>
-                                            <TableCell>{u.universityName}</TableCell>
-                                            <TableCell>{u.lastEducationField}</TableCell>
-                                            <TableCell>{u.majorStudyProgram}</TableCell>
-                                            <TableCell>{u.cityOfResidence}</TableCell>
+                                            {/* <TableCell>{u.universityName}</TableCell> */}
+                                            {/* <TableCell>{u.lastEducationField}</TableCell> */}
+                                            {/* <TableCell>{u.majorStudyProgram}</TableCell> */}
+                                            {/* <TableCell>{u.cityOfResidence}</TableCell> */}
                                             <TableCell>{new Date(u.createdAt).toLocaleString()}</TableCell>
                                             <TableCell>{new Date(u.updateAt).toLocaleString()}</TableCell>
                                             <TableCell className="flex gap-2">
@@ -1512,19 +1512,19 @@ export default function SuperAdminDashboard() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>ID</TableHead>
+                                        {/* <TableHead>ID</TableHead> */}
                                         <TableHead>Judul</TableHead>
-                                        <TableHead>Deskripsi</TableHead>
+                                        {/* <TableHead>Deskripsi</TableHead> */}
                                         <TableHead>Materi</TableHead>
-                                        <TableHead>Institusi</TableHead>
-                                        <TableHead>Durasi</TableHead>
-                                        <TableHead>Minimal Peserta</TableHead>
-                                        <TableHead>Fasilitas</TableHead>
+                                        {/* <TableHead>Institusi</TableHead> */}
+                                        {/* <TableHead>Durasi</TableHead> */}
+                                        {/* <TableHead>Minimal Peserta</TableHead> */}
+                                        {/* <TableHead>Fasilitas</TableHead> */}
                                         <TableHead>Jadwal</TableHead>
-                                        <TableHead>Lokasi Uji Kompetensi</TableHead>
-                                        <TableHead>Sertifikat</TableHead>
-                                        <TableHead>Biaya Pelatihan</TableHead>
-                                        <TableHead>Pembuat</TableHead>
+                                        {/* <TableHead>Lokasi Uji Kompetensi</TableHead> */}
+                                        {/* <TableHead>Sertifikat</TableHead> */}
+                                        {/* <TableHead>Biaya Pelatihan</TableHead> */}
+                                        {/* <TableHead>Pembuat</TableHead> */}
                                         <TableHead>Dibuat Pada</TableHead>
                                         <TableHead>Diperbarui Pada</TableHead>
                                         <TableHead>Aksi</TableHead>
@@ -1534,11 +1534,11 @@ export default function SuperAdminDashboard() {
                                 <TableBody>
                                     {trainingList.map((t) => (
                                         <TableRow key={t.id}>
-                                            <TableCell>{t.id}</TableCell>
+                                            {/* <TableCell>{t.id}</TableCell> */}
 
                                             <TableCell>{t.trainingTitle}</TableCell>
 
-                                            <TableCell>{t.description}</TableCell>
+                                            {/* <TableCell>{t.description}</TableCell> */}
 
                                             {/* MATERIALS turun ke bawah */}
                                             <TableCell>
@@ -1551,13 +1551,13 @@ export default function SuperAdminDashboard() {
                                                 ) : "-"}
                                             </TableCell>
 
-                                            <TableCell>{t.institutionName}</TableCell>
+                                            {/* <TableCell>{t.institutionName}</TableCell> */}
 
-                                            <TableCell>{t.duration}</TableCell>
+                                            {/* <TableCell>{t.duration}</TableCell> */}
 
-                                            <TableCell>{t.minimumParticipants}</TableCell>
+                                            {/* <TableCell>{t.minimumParticipants}</TableCell> */}
 
-                                            <TableCell>
+                                            {/* <TableCell>
                                                 {Array.isArray(t.facilities) && t.facilities.length > 0 ? (
                                                     <ul className="list-disc pl-4">
                                                         {t.facilities.map((f, i) => (
@@ -1565,13 +1565,13 @@ export default function SuperAdminDashboard() {
                                                         ))}
                                                     </ul>
                                                 ) : "-"}
-                                            </TableCell>
+                                            </TableCell> */}
 
                                             <TableCell>{t.implementationSchedule}</TableCell>
 
-                                            <TableCell>{t.competencyTestPlace}</TableCell>
+                                            {/* <TableCell>{t.competencyTestPlace}</TableCell> */}
 
-                                            <TableCell>
+                                            {/* <TableCell>
                                                 {Array.isArray(t.certificate) && t.certificate.length > 0 ? (
                                                     <ul className="list-disc pl-4">
                                                         {t.certificate.map((c, i) => (
@@ -1579,11 +1579,11 @@ export default function SuperAdminDashboard() {
                                                         ))}
                                                     </ul>
                                                 ) : "-"}
-                                            </TableCell>
+                                            </TableCell> */}
 
-                                            <TableCell>{Number(t.trainingFee).toLocaleString("id-ID")}</TableCell>
+                                            {/* <TableCell>{Number(t.trainingFee).toLocaleString("id-ID")}</TableCell> */}
 
-                                            <TableCell>{t.author}</TableCell>
+                                            {/* <TableCell>{t.author}</TableCell> */}
 
                                             <TableCell>
                                                 {new Date(t.createdAt).toLocaleString()}
@@ -2366,7 +2366,7 @@ export default function SuperAdminDashboard() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Judul</TableHead>
-                                        <TableHead>Deskripsi</TableHead>
+                                        {/* <TableHead>Deskripsi</TableHead> */}
                                         <TableHead>Penulis</TableHead>
                                         <TableHead>Dibuat</TableHead>
                                         <TableHead>Diperbarui</TableHead>
@@ -2379,11 +2379,11 @@ export default function SuperAdminDashboard() {
                                         <TableRow key={n.id}>
                                             <TableCell>{n.title}</TableCell>
 
-                                            <TableCell
+                                            {/* <TableCell
                                                 className=" max-w-[220px] whitespace-normal break-words line-clamp-2 overflow-hidden text-ellipsis"
                                             >
                                                 {n.description.replace(/<[^>]+>/g, "")}
-                                            </TableCell>
+                                            </TableCell> */}
 
                                             <TableCell>{n.author}</TableCell>
                                             <TableCell>{new Date(n.createdAt).toLocaleString()}</TableCell>
@@ -2663,7 +2663,7 @@ export default function SuperAdminDashboard() {
                                     <TableRow>
                                         <TableHead>Judul</TableHead>
                                         <TableHead>Kategori</TableHead>
-                                        <TableHead>Deskripsi</TableHead>
+                                        {/* <TableHead>Deskripsi</TableHead> */}
                                         <TableHead>Penulis</TableHead>
                                         <TableHead>Dibuat</TableHead>
                                         <TableHead>Diperbarui</TableHead>
@@ -2676,7 +2676,7 @@ export default function SuperAdminDashboard() {
                                         <TableRow key={p.id}>
                                             <TableCell>{p.title}</TableCell>
                                             <TableCell>{p.category}</TableCell>
-                                            <TableCell>{p.description}</TableCell>
+                                            {/* <TableCell>{p.description}</TableCell> */}
                                             <TableCell>{p.author}</TableCell>
                                             <TableCell>{new Date(p.createdAt).toLocaleString()}</TableCell>
                                             <TableCell>{new Date(p.updateAt).toLocaleString()}</TableCell>
@@ -2765,7 +2765,7 @@ export default function SuperAdminDashboard() {
                                     <label className="block mb-1">Kategori</label>
                                     <input
                                         type="text"
-                                        className="w-full border bg-gray-100 rounded px-3 py-2"
+                                        className="w-full border rounded px-3 py-2"
                                         value={addProductData.category}
                                         onChange={(e) => setAddProductData({ ...addProductData, category: e.target.value })}
                                     />
@@ -2861,6 +2861,7 @@ export default function SuperAdminDashboard() {
                         </DialogContent>
                     </Dialog>
 
+                    {/* Training Participant Tab */}
                     <TabsContent value="trainingParticipant">
                         <Card className="p-6">
 

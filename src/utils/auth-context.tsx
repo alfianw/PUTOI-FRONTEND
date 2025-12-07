@@ -47,12 +47,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(JSON.parse(savedUser));
             setLoading(false);
         } else if (token) {
-            // kalau hanya token ada, fetch user dari /me
+
             fetchCurrentUser(token);
         } else {
             setLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        if (!accessToken) return;
+
+        const interval = setInterval(() => {
+            fetchCurrentUser(accessToken);
+        }, 30_000); // cek setiap 30 detik
+
+        return () => clearInterval(interval);
+    }, [accessToken]);
 
     const fetchCurrentUser = async (token: string) => {
         try {
@@ -60,26 +70,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
+            if (response.status === 401) {
+                console.log("Token expired → Auto logout");
+                signOut();
+                return;
+            }
+
             if (response.ok) {
                 const data = await response.json();
-
-                console.log("Logged in user (from /me):", data.data.roles);
-
                 setUser({
                     id: String(data.data.id),
                     email: data.data.email,
                     name: data.data.name,
-                    role: data.data.roles as 'superadmin' | 'student'
+                    role: data.data.roles
                 });
             } else {
-                localStorage.removeItem('accessToken');
-                setAccessToken(null);
+                signOut();
             }
-        } catch {
-            localStorage.removeItem('accessToken');
-            setAccessToken(null);
-        } finally {
-            setLoading(false);
+
+        } catch (e) {
+            signOut();
         }
     };
 
