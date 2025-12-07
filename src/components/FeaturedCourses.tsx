@@ -11,9 +11,10 @@ import {
 
 import { AuthModal } from "./AuthModal";
 import { Check, Clock, Users, Calendar } from "lucide-react";
-import pelatihanBg from "../assets/pelatihan/pelatihan-scada.png";
+import pelatihanScada from "../assets/pelatihan/pelatihan-scada.png";
+import pelatihanLabview from "../assets/pelatihan/pelatihan-labview.png";
 
-const pelatihanImages = [pelatihanBg];
+const pelatihanImages = [pelatihanScada, pelatihanLabview];
 
 export function FeaturedCourses() {
   const [trainings, setTrainings] = useState<any[]>([]);
