@@ -59,7 +59,7 @@ function DialogContent({
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
         <DialogPrimitive.Content
           className={cn(
-            "relative bg-background rounded-lg border p-6 shadow-lg w-full max-w-lg max-h-[90vh] overflow-auto",
+            "relative bg-background rounded-lg border p-6 shadow-lg max-w-lg max-h-[90vh] overflow-auto",
             className
           )}
           {...props}

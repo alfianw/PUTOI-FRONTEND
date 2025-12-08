@@ -27,6 +27,10 @@ export function FeaturedCourses() {
   const [detailData, setDetailData] = useState<any>(null);
   const [isRegistered, setIsRegistered] = useState(false);
   const [registeredTrainings, setRegisteredTrainings] = useState<Set<number>>(new Set());
+  
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [selectedTrainingId, setSelectedTrainingId] = useState<number | null>(null);
+  const [selectedTrainingTitle, setSelectedTrainingTitle] = useState<string>("");
 
   // TOAST STATE
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -109,10 +113,13 @@ export function FeaturedCourses() {
   };
 
   // DAFTAR PELATIHAN
-  const daftarPelatihan = async (id: number) => {
+  const daftarPelatihan = async () => {
+    if (!selectedTrainingId) return;
+    
     const token = localStorage.getItem("accessToken");
     if (!token) {
       openAuthModal("signin");
+      setShowConfirmDialog(false);
       return;
     }
 
@@ -123,13 +130,14 @@ export function FeaturedCourses() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ trainingId: id }),
+        body: JSON.stringify({ trainingId: selectedTrainingId }),
       });
 
       if (!response.ok) {
         // Tangani error dari backend
         const errorData = await response.json();
         showToast("error", errorData.message || "Gagal daftar pelatihan.");
+        setShowConfirmDialog(false);
         return;
       }
 
@@ -138,15 +146,30 @@ export function FeaturedCourses() {
       if (data.code === "00") {
         showToast("success", "Berhasil daftar pelatihan!");
         setShowDetail(false);
+        setShowConfirmDialog(false);
         // Update registered trainings set
-        setRegisteredTrainings(prev => new Set(prev).add(id));
+        setRegisteredTrainings(prev => new Set(prev).add(selectedTrainingId));
       } else {
         showToast("error", data.message || "Gagal daftar pelatihan.");
+        setShowConfirmDialog(false);
       }
     } catch (err: any) {
       console.error(err);
       showToast("error", err.message || "Terjadi kesalahan saat mendaftar pelatihan.");
+      setShowConfirmDialog(false);
     }
+  };
+
+  // HANDLE DAFTAR CLICK
+  const handleDaftarClick = (id: number, title: string) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      openAuthModal("signin");
+      return;
+    }
+    setSelectedTrainingId(id);
+    setSelectedTrainingTitle(title);
+    setShowConfirmDialog(true);
   };
 
   // CHECK REGISTERED
@@ -286,7 +309,7 @@ export function FeaturedCourses() {
                           onClick={(e) => {
                             e.stopPropagation();
                             if (!registeredTrainings.has(item.id)) {
-                              daftarPelatihan(item.id);
+                              handleDaftarClick(item.id, item.trainingTitle);
                             }
                           }}
                         >
@@ -309,7 +332,7 @@ export function FeaturedCourses() {
 
           {/* DETAIL MODAL */}
           <Dialog open={showDetail} onOpenChange={setShowDetail}>
-            <DialogContent className="max-w-lg" style={{ maxHeight: "600px", overflowY: "auto" }}>
+            <DialogContent className="max-w-lg z-[9999]" style={{ maxHeight: "600px", overflowY: "auto" }}>
               <DialogHeader>
                 <DialogTitle>Detail Pelatihan</DialogTitle>
               </DialogHeader>
@@ -422,13 +445,41 @@ export function FeaturedCourses() {
                   ) : (
                     <Button
                       className="w-full mt-4 bg-blue-900 hover:bg-blue-700 text-white"
-                      onClick={() => daftarPelatihan(detailData.id)}
+                      onClick={() => handleDaftarClick(detailData.id, detailData.trainingTitle)}
                     >
                       Daftar Pelatihan
                     </Button>
                   )}
                 </div>
               )}
+            </DialogContent>
+          </Dialog>
+
+          {/* CONFIRM DIALOG */}
+          <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+            <DialogContent className="max-w-sm z-[9999]">
+              <DialogHeader>
+                <DialogTitle>Konfirmasi Pendaftaran</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <p className="text-gray-700">
+                  Apakah Anda ingin mendaftar pelatihan <strong>{selectedTrainingTitle}</strong>?
+                </p>
+                <div className="flex justify-end gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowConfirmDialog(false)}
+                  >
+                    Batal
+                  </Button>
+                  <Button
+                    className="bg-blue-900 hover:bg-blue-700 text-white"
+                    onClick={daftarPelatihan}
+                  >
+                    Ya, Daftar
+                  </Button>
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
 
