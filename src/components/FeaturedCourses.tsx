@@ -26,6 +26,7 @@ export function FeaturedCourses() {
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState<any>(null);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [registeredTrainings, setRegisteredTrainings] = useState<Set<number>>(new Set());
 
   // TOAST STATE
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -68,6 +69,29 @@ export function FeaturedCourses() {
     const data = await res.json();
     setTrainings(data.data || []);
     setTotalPages(data.totalPages || 1);
+    
+    // Check registration status for all trainings
+    const token = localStorage.getItem("accessToken");
+    if (token && data.data) {
+      const registeredSet = new Set<number>();
+      for (const training of data.data) {
+        try {
+          const checkRes = await fetch(`${API_BASE}/api/training-participants/check`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ trainingId: String(training.id) }),
+          });
+          const checkData = await checkRes.json();
+          if (checkData.data.registered) {
+            registeredSet.add(training.id);
+          }
+        } catch {
+          // Ignore errors
+        }
+      }
+      setRegisteredTrainings(registeredSet);
+    }
+    
     setLoading(false);
   };
 
@@ -81,7 +105,7 @@ export function FeaturedCourses() {
     const data = await res.json();
     setDetailData(data.data);
     setShowDetail(true);
-    checkRegistered(id);
+    await checkRegistered(id);
   };
 
   // DAFTAR PELATIHAN
@@ -114,6 +138,8 @@ export function FeaturedCourses() {
       if (data.code === "00") {
         showToast("success", "Berhasil daftar pelatihan!");
         setShowDetail(false);
+        // Update registered trainings set
+        setRegisteredTrainings(prev => new Set(prev).add(id));
       } else {
         showToast("error", data.message || "Gagal daftar pelatihan.");
       }
@@ -176,20 +202,22 @@ export function FeaturedCourses() {
             />
           </div>
 
+          {/* TOAST */}
+          {toast && (
+            <div
+              className={`fixed top-[80px] left-5 min-w-[250px] px-4 py-3 rounded-lg shadow-lg border flex items-center gap-3 transition-opacity duration-300 z-50 bg-white`}
+            >
+              {toast.type === "success" ? (
+                <span className="text-green-600 text-xl">✔️</span>
+              ) : (
+                <span className="text-red-600 text-xl">❌</span>
+              )}
+              <span className="text-gray-800 font-medium">{toast.message}</span>
+            </div>
+          )}
+
           {/* CARD GRID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {toast && (
-              <div
-                className={`fixed top-[80px] right-5 min-w-[250px] px-4 py-3 rounded-lg shadow-lg border flex items-center gap-3 transition-opacity duration-300 z-50 bg-white`}
-              >
-                {toast.type === "success" ? (
-                  <span className="text-green-600 text-xl">✔️</span>
-                ) : (
-                  <span className="text-red-600 text-xl">❌</span>
-                )}
-                <span className="text-gray-800 font-medium">{toast.message}</span>
-              </div>
-            )}
             {loading ? (
               Array.from({ length: 6 }).map((_, i) => (
                 <Card key={i} className="overflow-hidden animate-pulse rounded-xl shadow-lg">
@@ -249,13 +277,20 @@ export function FeaturedCourses() {
                         </Button>
 
                         <Button
-                          className="bg-white text-blue-900 border border-transparent cursor-pointer hover:bg-white hover:text-blue-900"
+                          disabled={registeredTrainings.has(item.id)}
+                          className={`border border-transparent cursor-pointer ${
+                            registeredTrainings.has(item.id)
+                              ? 'bg-white text-gray-600 cursor-not-allowed opacity-70'
+                              : 'bg-white text-blue-900 hover:bg-white hover:text-blue-900'
+                          }`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            daftarPelatihan(item.id);
+                            if (!registeredTrainings.has(item.id)) {
+                              daftarPelatihan(item.id);
+                            }
                           }}
                         >
-                          Daftar
+                          {registeredTrainings.has(item.id) ? 'Anda Sudah Terdaftar' : 'Daftar'}
                         </Button>
                       </div>
                     </div>

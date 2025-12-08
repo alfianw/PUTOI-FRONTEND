@@ -1,7 +1,10 @@
 import { Droplet, Package, Cylinder } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { useState } from "react";
 
 export function ProductsSection() {
+  const [openImageIndex, setOpenImageIndex] = useState<number | null>(null);
+
   const products = [
     {
       icon: Package,
@@ -63,11 +66,17 @@ export function ProductsSection() {
                 className={`grid lg:grid-cols-2 gap-8 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
               >
                 <div className={isEven ? 'lg:order-1' : 'lg:order-2'}>
-                  <ImageWithFallback
-                    src={product.image}
-                    alt={product.title}
-                    className="rounded-2xl shadow-2xl w-full h-auto object-contain"
-                  />
+                  <button
+                    onClick={() => setOpenImageIndex(index)}
+                    className="w-full focus:outline-none"
+                    aria-label={`Lihat gambar ${product.title}`}
+                  >
+                    <ImageWithFallback
+                      src={product.image}
+                      alt={product.title}
+                      className="rounded-2xl shadow-2xl w-full h-[400px] object-cover object-top hover:opacity-90 transition-opacity cursor-pointer"
+                    />
+                  </button>
                 </div>
                 <div className={isEven ? 'lg:order-2' : 'lg:order-1'}>
                   <div className={`bg-gradient-to-br ${product.gradient} rounded-2xl p-8 text-white`}>
@@ -90,6 +99,37 @@ export function ProductsSection() {
           </p>
         </div>
       </div>
+
+      {/* Image Modal */}
+      {openImageIndex !== null && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4"
+          onClick={() => setOpenImageIndex(null)}
+        >
+          <div className="max-w-2xl w-full bg-white rounded shadow-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="relative">
+              <ImageWithFallback
+                src={products[openImageIndex].image}
+                alt={products[openImageIndex].title}
+                className="w-full bg-black"
+                style={{ height: '70vh', objectFit: 'contain' }}
+              />
+              <button
+                onClick={() => setOpenImageIndex(null)}
+                className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                aria-label="Tutup gambar"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="text-lg font-semibold">{products[openImageIndex].title}</div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

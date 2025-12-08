@@ -8,6 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import jasa1 from "../assets/jasa/jasa-1.png";
+import jasa2 from "../assets/jasa/jasa-2.png";
+
+const jasaImages = [jasa1, jasa2];
 
 export function ServicesSection() {
   const [services, setServices] = useState<any[]>([]);
@@ -104,7 +108,7 @@ export function ServicesSection() {
             <>
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Card key={i} className="overflow-hidden animate-pulse rounded-xl shadow-lg">
-                  <div className="h-[200px] bg-gray-300"></div>
+                  <div className="h-[380px] bg-gray-300"></div>
                   <div className="p-6 space-y-4">
                     <div className="h-4 bg-gray-300 rounded"></div>
                     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
@@ -118,17 +122,50 @@ export function ServicesSection() {
               Data tidak ditemukan
             </div>
           ) : (
-            services.map((item: any) => (
+            services.map((item: any, idx: number) => (
               <Card
                 key={item.id}
-                className="relative p-0 cursor-pointer text-white rounded-xl overflow-hidden group shadow-lg"
-                onClick={() => fetchDetail(item.id)}
+                className="relative p-0 rounded-xl overflow-hidden group shadow-lg h-[400px] transition-all duration-300 hover:shadow-2xl hover:scale-105"
+                style={{
+                  backgroundImage: `url(${jasaImages[idx % jasaImages.length]})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
               >
-                <div className="relative h-[200px] bg-blue-900 p-6 flex flex-col justify-end">
-                  <h3 className="text-2xl font-bold">{item.title}</h3>
-                  <p className="text-white opacity-90 text-sm mt-2">
-                    {item.category}
-                  </p>
+                <div className="absolute inset-0 bg-black bg-opacity-85 group-hover:bg-opacity-90 transition-all duration-300" />
+                <div className="relative h-full p-6 flex flex-col justify-between text-white">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
+                    <p className="text-sm mb-4 line-clamp-4 overflow-hidden" style={{ maxHeight: "84px" }}>
+                      {item.description || "Deskripsi singkat tidak tersedia."}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span><strong>Kategori:</strong> {item.category}</span>
+                    </div>
+
+                    <div className="flex justify-between mt-4">
+                      <Button
+                        variant="outline"
+                        onClick={(e) => { e.stopPropagation(); fetchDetail(item.id); }}
+                        className="border-white text-white bg-transparent cursor-pointer hover:bg-transparent hover:text-white hover:border-white"
+                      >
+                        Detail
+                      </Button>
+
+                      <Button
+                        className="bg-white text-blue-900 border border-transparent cursor-pointer hover:bg-white hover:text-blue-900"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open('https://wa.me/6285755450598', '_blank');
+                        }}
+                      >
+                        Hubungi Kami
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </Card>
             ))

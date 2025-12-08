@@ -414,7 +414,7 @@ function CreateCourseDialog({
                     Add Course
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[80vh] overflow-y-auto">
+            <DialogContent style={{ maxHeight: "600px", overflowY: "auto" }}>
                 <DialogHeader>
                     <DialogTitle>Create New Course</DialogTitle>
                     <DialogDescription>

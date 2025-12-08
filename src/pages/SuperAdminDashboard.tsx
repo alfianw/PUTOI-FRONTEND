@@ -1118,7 +1118,7 @@ export default function SuperAdminDashboard() {
                         Kembali ke Beranda
                     </Button>
                     <h1 className="text-3xl text-gray-900">SuperAdmin Dashboard</h1>
-                    <p className="text-gray-600 mt-2">Kelola semua aspek platform EduLearn</p>
+                    <p className="text-gray-600 mt-2">Kelola semua fitur PUTOI-TIK</p>
                 </div>
 
                 {/* Stats Cards */}
@@ -1304,7 +1304,7 @@ export default function SuperAdminDashboard() {
                         setShowDetailModal(v);
                         if (!v) setIsEdit(false);
                     }}>
-                        <DialogContent className="max-w">  {/* perbesar modal */}
+                        <DialogContent className="max-w" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Detail Pengguna</DialogTitle>
                             </DialogHeader>
@@ -1657,7 +1657,7 @@ export default function SuperAdminDashboard() {
 
                     {/* CREATE TRAINING MODAL */}
                     <Dialog open={showAddTrainingModal} onOpenChange={setShowAddTrainingModal}>
-                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                        <DialogContent className="max-w-3xl" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Buat Pelatihan</DialogTitle>
                             </DialogHeader>
@@ -2004,7 +2004,7 @@ export default function SuperAdminDashboard() {
                             if (!v) setIsEditTraining(false);
                         }}
                     >
-                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                        <DialogContent className="max-w-3xl" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Detail Pelatihan</DialogTitle>
                             </DialogHeader>
@@ -2744,7 +2744,7 @@ export default function SuperAdminDashboard() {
 
                     {/* Add Jasa Modal */}
                     <Dialog open={showAddProductModal} onOpenChange={setShowAddProductModal}>
-                        <DialogContent className="max-w-lg">
+                        <DialogContent className="max-w-lg" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Tambah Jasa</DialogTitle>
                             </DialogHeader>
@@ -2793,7 +2793,7 @@ export default function SuperAdminDashboard() {
                         setShowProductModal(v);
                         if (!v) setIsEditProduct(false);
                     }}>
-                        <DialogContent className="max-w-lg">
+                        <DialogContent className="max-w-lg" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Detail Jasa</DialogTitle>
                             </DialogHeader>
@@ -2979,7 +2979,7 @@ export default function SuperAdminDashboard() {
                         setShowTPModal(v);
                         if (!v) setIsEditTP(false);
                     }}>
-                        <DialogContent className="max-w-lg">
+                        <DialogContent className="max-w-lg" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
                                 <DialogTitle>Detail Peserta</DialogTitle>
                             </DialogHeader>
