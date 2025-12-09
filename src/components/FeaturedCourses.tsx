@@ -270,7 +270,12 @@ export function FeaturedCourses() {
                   <div className="absolute inset-0 bg-black bg-opacity-85 group-hover:bg-opacity-90 transition-all duration-300" />
                   <div className="relative h-full p-6 flex flex-col justify-between text-white">
                     <div>
-                      <h3 className="text-2xl font-bold mb-2">{item.trainingTitle}</h3>
+                      <h3
+                        className="text-2xl font-bold mb-2 h-16 leading-tight line-clamp-2 overflow-hidden"
+                        style={{ maxHeight: '64px' }}
+                      >
+                        {item.trainingTitle}
+                      </h3>
                       <p className="text-sm mb-4 line-clamp-4 overflow-hidden" style={{ maxHeight: "84px" }}>
                         {item.description || item.shortDescription || "Deskripsi singkat tidak tersedia."}
                       </p>

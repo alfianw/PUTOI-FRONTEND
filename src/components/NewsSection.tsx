@@ -140,7 +140,7 @@ export function NewsSection() {
                   </div>
 
                   {/* TITLE */}
-                  <h3 className="text-xl text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                  <h3 className="text-xl text-gray-900 line-clamp-2 group-hover:text-blue-900 transition-colors">
                     {item.title}
                   </h3>
 
@@ -164,7 +164,7 @@ export function NewsSection() {
                     </div>
                     <Button
                       variant="ghost"
-                      className="gap-2 text-purple-600 hover:text-purple-700"
+                      className="gap-2 !hover:text-white hover:bg-blue-900 cursor-pointer"
                     >
                       Baca
                       <ArrowRight className="w-4 h-4" />
@@ -199,12 +199,12 @@ export function NewsSection() {
 
         {/* DETAIL MODAL */}
         <Dialog open={showDetail} onOpenChange={setShowDetail}>
-          <DialogContent className="max-w-lg">
+          <DialogContent style={{ maxWidth: "1000px", maxHeight: "600px", overflowY: "auto" }}>
 
             {detailData && (
               <div className="space-y-4 text-gray-800">
 
-                <h2 className="text-xl font-bold text-center mb-3">
+                <h2 className="text-xl font-bold text-center mb-3 mt-4">
                   {detailData.title}
                 </h2>
 
@@ -213,7 +213,7 @@ export function NewsSection() {
                   dangerouslySetInnerHTML={{ __html: detailData.description }}
                 />
 
-                <div className="border-t pt-3 text-sm space-y-2">
+                <div className="border-t pt-4 text-sm space-y-2">
                   <p><strong>Author:</strong> {detailData.author}</p>
                   <p>
                     <strong>Tanggal:</strong>{" "}

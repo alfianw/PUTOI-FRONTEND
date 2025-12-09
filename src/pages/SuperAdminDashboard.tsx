@@ -643,9 +643,9 @@ export default function SuperAdminDashboard() {
                 setShowAddProductModal(false);
                 setAddProductData({ title: "", description: "", category: "Jasa" });
                 await fetchProducts();
-                showToast("success", "Produk berhasil dibuat");
+                showToast("success", "Jasa berhasil dibuat");
             } else {
-                showToast("error", data.message || "Gagal membuat produk");
+                showToast("error", data.message || "Gagal membuat Jasa");
             }
 
         } catch (err) {
@@ -671,9 +671,9 @@ export default function SuperAdminDashboard() {
             if (data.code === "00") {
                 setIsEditProduct(false);
                 await fetchProducts();
-                showToast("success", "Produk berhasil diperbarui");
+                showToast("success", "Jasa berhasil diperbarui");
             } else {
-                showToast("error", data.message || "Gagal memperbarui produk");
+                showToast("error", data.message || "Gagal memperbarui Jasa");
             }
 
         } catch (err) {
@@ -698,9 +698,9 @@ export default function SuperAdminDashboard() {
             const data = await res.json();
             if (data.code === "00") {
                 await fetchProducts();
-                showToast("success", "Produk berhasil dihapus");
+                showToast("success", "Jasa berhasil dihapus");
             } else {
-                showToast("error", data.message || "Gagal menghapus produk");
+                showToast("error", data.message || "Gagal menghapus Jasa");
             }
 
         } catch (err) {
@@ -1457,7 +1457,7 @@ export default function SuperAdminDashboard() {
                                     </div>
 
                                     {/* Aksi */}
-                                    <div className="flex justify-end gap-3 mt-4">
+                                    <div className="flex justify-end items-center gap-3 mt-4">
                                         {!isEdit && (
                                             <Button onClick={() => setIsEdit(true)} variant="default">
                                                 Edit Pengguna
@@ -1659,7 +1659,7 @@ export default function SuperAdminDashboard() {
                     <Dialog open={showAddTrainingModal} onOpenChange={setShowAddTrainingModal}>
                         <DialogContent className="max-w-3xl" style={{ maxHeight: "600px", overflowY: "auto" }}>
                             <DialogHeader>
-                                <DialogTitle>Buat Pelatihan</DialogTitle>
+                                <DialogTitle>Tambah Pelatihan</DialogTitle>
                             </DialogHeader>
 
                             {/* FORM 2 COLUMN */}
@@ -1767,33 +1767,39 @@ export default function SuperAdminDashboard() {
                                 {/* Duration */}
                                 <div>
                                     <label className="block mb-1">Durasi</label>
-                                    <input
-                                        type="text"
-                                        className="w-full border rounded px-3 py-2"
-                                        value={addTrainingData.duration}
-                                        onChange={(e) =>
-                                            setAddTrainingData({
-                                                ...addTrainingData,
-                                                duration: e.target.value,
-                                            })
-                                        }
-                                    />
+                                    <div className="relative flex items-center">
+                                        <input
+                                            type="text"
+                                            className="w-full border rounded px-3 py-2 pr-14"
+                                            value={addTrainingData.duration}
+                                            onChange={(e) =>
+                                                setAddTrainingData({
+                                                    ...addTrainingData,
+                                                    duration: e.target.value,
+                                                })
+                                            }
+                                        />
+                                        <span className="absolute right-3 text-gray-500 select-none">Hari</span>
+                                    </div>
                                 </div>
 
                                 {/* Minimum Participants */}
                                 <div>
                                     <label className="block mb-1">Minimal Peserta</label>
-                                    <input
-                                        type="text"
-                                        className="w-full border rounded px-3 py-2"
-                                        value={addTrainingData.minimumParticipants}
-                                        onChange={(e) =>
-                                            setAddTrainingData({
-                                                ...addTrainingData,
-                                                minimumParticipants: e.target.value,
-                                            })
-                                        }
-                                    />
+                                    <div className="relative flex items-center">
+                                        <input
+                                            type="text"
+                                            className="w-full border rounded px-3 py-2 pr-20"
+                                            value={addTrainingData.minimumParticipants}
+                                            onChange={(e) =>
+                                                setAddTrainingData({
+                                                    ...addTrainingData,
+                                                    minimumParticipants: e.target.value,
+                                                })
+                                            }
+                                        />
+                                        <span className="absolute right-3 text-gray-500 select-none">Peserta</span>
+                                    </div>
                                 </div>
 
                                 {/* Facilities */}
@@ -1847,10 +1853,11 @@ export default function SuperAdminDashboard() {
 
                                 {/* Schedule */}
                                 <div>
-                                    <label className="block mb-1 font-medium">Jadwal Pelaksanaan</label>
+                                    {/* <label className="block mb-1 font-medium">Jadwal Pelaksanaan</label> */}
 
                                     {/* Label Mulai */}
-                                    <span className="text-xs text-gray-600">Tanggal Mulai</span>
+
+                                    <label className="block mb-1">Tanggal Mulai</label>
                                     <input
                                         type="date"
                                         className="w-full border rounded px-3 py-2 mb-3"
@@ -1876,7 +1883,7 @@ export default function SuperAdminDashboard() {
                                     />
 
                                     {/* Label Selesai */}
-                                    <span className="text-xs text-gray-600">Tanggal Selesai</span>
+                                    <label className="block mb-1">Tanggal Selesai</label>
                                     <input
                                         type="date"
                                         className="w-full border rounded px-3 py-2"
@@ -1971,21 +1978,27 @@ export default function SuperAdminDashboard() {
                                 {/* Training Fee */}
                                 <div className="md:col-span-2">
                                     <label className="block mb-1">Biaya Pelatihan</label>
-                                    <input
-                                        type="number"
-                                        className="w-full border rounded px-3 py-2"
-                                        value={addTrainingData.trainingFee}
-                                        onChange={(e) =>
-                                            setAddTrainingData({
-                                                ...addTrainingData,
-                                                trainingFee: e.target.value,
-                                            })
-                                        }
-                                    />
+                                    <div className="relative flex items-center">
+                                        <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            className="w-full border rounded px-3 py-2 pr-14"
+                                            value={addTrainingData.trainingFee ? Number(addTrainingData.trainingFee).toLocaleString('id-ID') : ''}
+                                            onChange={(e) => {
+                                                // Remove non-digit, then format
+                                                const raw = e.target.value.replace(/\D/g, '');
+                                                setAddTrainingData({
+                                                    ...addTrainingData,
+                                                    trainingFee: raw,
+                                                });
+                                            }}
+                                        />
+                                        <span className="absolute right-3 text-gray-500 select-none">IDR</span>
+                                    </div>
                                 </div>
 
                                 {/* Buttons */}
-                                <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                                <div className="md:col-span-2 flex items-center gap-3 mt-4">
                                     <Button variant="outline" onClick={() => setShowAddTrainingModal(false)}>
                                         Batal
                                     </Button>
@@ -2086,7 +2099,7 @@ export default function SuperAdminDashboard() {
 
                                     {/* Implementation Schedule */}
                                     <div>
-                                        <label className="block mb-1">Jadwal Pelaksanaan</label>
+                                        {/* <label className="block mb-1">Jadwal Pelaksanaan</label> */}
 
                                         {/* Tanggal Mulai */}
                                         <label className="text-sm text-gray-600">Tanggal Mulai</label>
@@ -2314,7 +2327,7 @@ export default function SuperAdminDashboard() {
                                     </div>
 
                                     {/* ACTION BUTTONS */}
-                                    <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                                    <div className="md:col-span-2 flex justify-end items-center gap-3 mt-4">
                                         {!isEditTraining && (
                                             <Button onClick={() => setIsEditTraining(true)}>Edit</Button>
                                         )}
@@ -2528,7 +2541,7 @@ export default function SuperAdminDashboard() {
                                 </div>
 
                                 {/* Buttons */}
-                                <div className="flex justify-end gap-3 mt-4">
+                                <div className="flex justify-end items-center gap-3 mt-4">
                                     <Button variant="outline" onClick={() => setShowAddNewsModal(false)}>
                                         Batal
                                     </Button>
@@ -2620,7 +2633,7 @@ export default function SuperAdminDashboard() {
                                     </div>
 
                                     {/* Buttons */}
-                                    <div className="flex justify-end gap-3 mt-4">
+                                    <div className="flex justify-end items-center gap-3 mt-4">
                                         {!isEditNews && (
                                             <Button onClick={() => setIsEditNews(true)}>Edit</Button>
                                         )}
@@ -2780,7 +2793,7 @@ export default function SuperAdminDashboard() {
                                     ></textarea>
                                 </div>
 
-                                <div className="flex justify-end gap-3 mt-4">
+                                <div className="flex justify-end items-center gap-3 mt-4">
                                     <Button variant="outline" onClick={() => setShowAddProductModal(false)}>Batal</Button>
                                     <Button onClick={createProduct}>Simpan</Button>
                                 </div>
@@ -2843,7 +2856,7 @@ export default function SuperAdminDashboard() {
                                         />
                                     </div>
 
-                                    <div className="flex justify-end gap-3 mt-4">
+                                    <div className="flex justify-end items-center gap-3 mt-4">
                                         {!isEditProduct && (
                                             <Button onClick={() => setIsEditProduct(true)}>Edit</Button>
                                         )}
@@ -3011,7 +3024,7 @@ export default function SuperAdminDashboard() {
                                         </select>
                                     </div>
 
-                                    <div className="flex justify-end gap-3 mt-4">
+                                    <div className="flex justify-end items-center gap-3 mt-4">
                                         {!isEditTP && (
                                             <Button onClick={() => setIsEditTP(true)}>Edit</Button>
                                         )}

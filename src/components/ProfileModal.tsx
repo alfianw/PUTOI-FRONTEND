@@ -373,7 +373,7 @@ const handleVerifyEmail = async () => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-            <div className="bg-white rounded-lg p-6 relative overflow-auto w-[50vw] max-w-[600px] max-h-[90vh] text-[16px] sm:w-[90vw]">
+            <div className="bg-white rounded-lg p-6 relative max-w-lg" style={{ maxHeight: "600px", overflowY: "auto" }}>
                 <button
                     className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full"
                     onClick={onClose}

@@ -56,11 +56,11 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors">Beranda</a>
-            <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors">Pelatihan</a>
-            <a href="#categories" className="text-gray-700 hover:text-blue-900 transition-colors">Jasa</a>
-            <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors">Berita</a>
-            <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors">Galeri</a>
+            <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' }); }}>Beranda</a>
+            <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' }); }}>Pelatihan</a>
+            <a href="#jasa" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('jasa')?.scrollIntoView({ behavior: 'smooth' }); }}>Jasa</a>
+            <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}>Berita</a>
+            <a href="#gallery" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' }); }}>Galeri</a>
             <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI</a>
           </div>
 
@@ -148,11 +148,51 @@ export function Navbar() {
                 onChange={(e) => setMobileSearch(e.target.value)}
               />
             </div>
-            <a onClick={() => setIsMenuOpen(false)} href="#/" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Beranda</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#courses" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Pelatihan</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#categories" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Jasa</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#categories" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Berita</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#categories" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Galeri</a>
+            <a
+              href="#/"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              onClick={e => {
+                e.preventDefault();
+                setIsMenuOpen(false);
+                document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >Beranda</a>
+            <a
+              href="#jasa"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              onClick={e => {
+                e.preventDefault();
+                setIsMenuOpen(false);
+                document.getElementById('jasa')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >Jasa</a>
+            <a
+              href="#news"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              onClick={e => {
+                e.preventDefault();
+                setIsMenuOpen(false);
+                document.getElementById('news')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >Berita</a>
+            <a
+              href="#contact"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              onClick={e => {
+                e.preventDefault();
+                setIsMenuOpen(false);
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >Berita</a>
+            <a
+              href="#gallery"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+              onClick={e => {
+                e.preventDefault();
+                setIsMenuOpen(false);
+                document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >Galeri</a>
             <a onClick={() => setIsMenuOpen(false)} href="#/putoi" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">PUTOI</a>
             <div className="flex flex-col gap-2 pt-4 border-t">
               {user && canAccessProfile && (

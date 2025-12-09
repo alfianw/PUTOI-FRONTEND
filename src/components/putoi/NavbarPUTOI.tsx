@@ -47,7 +47,6 @@ export function NavbarPUTOI() {
   const navLinks = [
     { id: 'about', label: 'Tentang' },
     { id: 'why-choose-us', label: 'Keunggulan' },
-    { id: 'services', label: 'Layanan' },
     { id: 'products', label: 'Produk' },
     { id: 'contact', label: 'Kontak' }
   ];
@@ -134,14 +133,14 @@ export function NavbarPUTOI() {
 
                     {/* Profile */}
                     <DropdownMenuItem onClick={openProfileModal} className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
+                      <User className="mr-2 h-4 w-4 group-hover:text-white" />
                       Profile
                     </DropdownMenuItem>
 
                     {user.role === 'superadmin' && (
                       <>
                         <DropdownMenuItem onClick={() => navigate(getDashboardLink())} className="cursor-pointer">
-                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          <LayoutDashboard className="mr-2 h-4 w-4 group-hover:text-white" />
                           Dashboard
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -150,7 +149,7 @@ export function NavbarPUTOI() {
 
                     {/* Logout */}
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                      <LogOut className="mr-2 h-4 w-4" />
+                      <LogOut className="mr-2 h-4 w-4 group-hover:text-white" />
                       Keluar
                     </DropdownMenuItem>
                   </DropdownMenuContent>

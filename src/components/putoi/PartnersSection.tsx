@@ -22,8 +22,8 @@ export function PartnersSection() {
   ];
 
   const pemerintah = [
-    "PROGRAM HIBAH KOMPETISI PENGEMBANGAN MUTU PENDIDIKAN POLITEKNIK (PHK-PMPP) POLYTECHNIC EDUCATION DEVELOPMENT PROJECT (PEDP) ADB LOAN 2928-INO",
-    "PROGRAM REVITALISASI PERGURUAN TINGGI NEGERI VOKASI (PR-PTNV) TAHUN 2025"
+    "Program Hibah Kompetisi Pengembangan Mutu Pendidikan Politeknik (PHK-PMPP) Polytechnic Education Development Project (PEDP) ADB Loan 2928-INO",
+    "Program Revitalisasi Perguruan Tinggi Negeri Vokasi (PR-PTNV) Tahun 2025"
   ];
 
   return (

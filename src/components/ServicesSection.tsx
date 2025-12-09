@@ -135,7 +135,12 @@ export function ServicesSection() {
                 <div className="absolute inset-0 bg-black bg-opacity-85 group-hover:bg-opacity-90 transition-all duration-300" />
                 <div className="relative h-full p-6 flex flex-col justify-between text-white">
                   <div>
-                    <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
+                    <h3
+                      className="text-2xl font-bold mb-2 h-16 leading-tight line-clamp-2 overflow-hidden"
+                      style={{ maxHeight: '64px' }}
+                    >
+                      {item.title}
+                    </h3>
                     <p className="text-sm mb-4 line-clamp-4 overflow-hidden" style={{ maxHeight: "84px" }}>
                       {item.description || "Deskripsi singkat tidak tersedia."}
                     </p>
@@ -217,23 +222,28 @@ export function ServicesSection() {
         {/* DETAIL MODAL */}
         <Dialog open={showDetail} onOpenChange={setShowDetail}>
           <DialogContent className="max-w-lg">
-
             {detailData && (
               <div className="space-y-4 text-gray-800">
-
                 <h2 className="text-xl font-bold text-center mb-3">
                   {detailData.title}
                 </h2>
-
                 <p className="text-sm leading-relaxed">{detailData.description}</p>
-
                 <div className="space-y-2 text-sm">
                   <div><strong>Kategori:</strong> {detailData.category}</div>
-                  <div><strong>Penulis:</strong> {detailData.author}</div>
+                  {/* <div><strong>Penulis:</strong> {detailData.author}</div>
                   <div><strong>Dibuat:</strong> {detailData.createdAt}</div>
-                  <div><strong>Diperbarui:</strong> {detailData.updateAt}</div>
+                  <div><strong>Diperbarui:</strong> {detailData.updateAt}</div> */}
                 </div>
-
+                <div className="flex justify-center mt-6">
+                  <a
+                    href="https://wa.me/6285755450598"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-blue-900 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+                  >
+                    Hubungi Kami
+                  </a>
+                </div>
               </div>
             )}
           </DialogContent>
