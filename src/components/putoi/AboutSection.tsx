@@ -136,7 +136,7 @@ export function AboutSection() {
         </div>
 
         {/* Keunggulan PUTOI */}
-        <div>
+        {/* <div>
           <div className="text-center mb-12">
             <h3 className="text-3xl text-blue-900 mb-4">Keunggulan PUTOI</h3>
           </div>
@@ -154,7 +154,7 @@ export function AboutSection() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
