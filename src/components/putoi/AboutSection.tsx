@@ -12,11 +12,11 @@ export function AboutSection() {
   ];
 
   const keunggulan = [
-    "Menggunakan standar industrial grade equipment",
-    "Dilengkapi instrumentasi monitoring otomatis (IoT ready)",
-    "Terintegrasi dengan sistem pelatihan dan sertifikasi",
-    "Mendukung kegiatan penelitian terapan dan komersialisasi produk",
-    "Menyediakan layanan masyarakat & jasa industri air bersih"
+    "Menggunakan Standar Industrial Grade Equipment",
+    "Dilengkapi Instrumentasi Monitoring Otomatis (IoT Ready)",
+    "Terintegrasi Dengan Sistem Pelatihan Dan Sertifikasi",
+    "Mendukung Kegiatan Penelitian Terapan Dan Komersialisasi Produk",
+    "Menyediakan Layanan Masyarakat & Jasa Industri Air Bersih"
   ];
 
   return (
@@ -136,7 +136,7 @@ export function AboutSection() {
         </div>
 
         {/* Keunggulan PUTOI */}
-        {/* <div>
+        <div>
           <div className="text-center mb-12">
             <h3 className="text-3xl text-blue-900 mb-4">Keunggulan PUTOI</h3>
           </div>
@@ -154,7 +154,7 @@ export function AboutSection() {
               </div>
             ))}
           </div>
-        </div> */}
+        </div>
       </div>
     </section>
   );
