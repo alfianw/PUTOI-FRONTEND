@@ -46,6 +46,7 @@ export function NavbarPUTOI() {
 
   const navLinks = [
     { id: 'about', label: 'Tentang' },
+    { id: 'organization', label: 'Organisasi' },
     { id: 'why-choose-us', label: 'Keunggulan' },
     { id: 'products', label: 'Produk' },
     { id: 'contact', label: 'Kontak' }

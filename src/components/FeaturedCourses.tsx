@@ -218,7 +218,7 @@ export function FeaturedCourses() {
           {/* FILTER */}
           <div className="flex justify-end mb-6">
             <Input
-              placeholder="Cari title pelatihan..."
+              placeholder="Cari pelatihan..."
               className="w-80 shadow-sm"
               value={filterTitle}
               onChange={(e) => setFilterTitle(e.target.value)}

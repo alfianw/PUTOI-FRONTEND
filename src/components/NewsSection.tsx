@@ -3,6 +3,17 @@ import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
+
+import { useNavigate } from "react-router-dom";
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 import {
   Dialog,
   DialogContent,
@@ -13,6 +24,7 @@ import {
 import { Calendar, User, ArrowRight } from "lucide-react";
 
 export function NewsSection() {
+    const navigate = useNavigate();
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -94,7 +106,7 @@ export function NewsSection() {
         {/* FILTER */}
         <div className="flex justify-end mb-6">
           <Input
-            placeholder="Cari judul berita..."
+            placeholder="Cari berita..."
             className="w-80 shadow-sm"
             value={filterTitle}
             onChange={(e) => setFilterTitle(e.target.value)}
@@ -124,7 +136,7 @@ export function NewsSection() {
               <Card
                 key={item.id}
                 className="overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
-                onClick={() => fetchDetail(item.id)}
+                onClick={() => navigate(`/news/${slugify(item.title)}`)}
               >
                 <div className="p-6 space-y-4">
                   {/* DATE */}
@@ -165,6 +177,10 @@ export function NewsSection() {
                     <Button
                       variant="ghost"
                       className="gap-2 !hover:text-white hover:bg-blue-900 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/news/${slugify(item.title)}`);
+                      }}
                     >
                       Baca
                       <ArrowRight className="w-4 h-4" />

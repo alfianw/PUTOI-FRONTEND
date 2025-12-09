@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import PUTOIPage from './pages/PUTOIPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import NewsDetailPage from './pages/NewsDetailPage';
 import './styles/globals.css';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 
@@ -45,6 +46,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/putoi" element={<PUTOIPage />} />
+          <Route path="/news/:slug" element={<NewsDetailPage />} />
           <Route
             path="/superadmin"
             element={
