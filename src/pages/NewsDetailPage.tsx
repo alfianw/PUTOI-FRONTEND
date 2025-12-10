@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Calendar, User } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Navbar } from '../components/Navbar';
+// import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 
 export default function NewsDetailPage() {
@@ -38,14 +38,12 @@ export default function NewsDetailPage() {
 
   if (loading) {
     return <>
-      <Navbar />
       <div className="min-h-screen flex items-center justify-center text-gray-600">Loading...</div>
       <Footer />
     </>;
   }
   if (!data) {
     return <>
-      <Navbar />
       <div className="min-h-screen flex items-center justify-center text-gray-600">Berita tidak ditemukan.</div>
       <Footer />
     </>;
@@ -53,9 +51,15 @@ export default function NewsDetailPage() {
 
   return (
     <>
-      <Navbar />
       <section className="py-20 bg-white min-h-screen">
         <div className="max-w-2xl mx-auto px-4">
+          <Button
+            variant="outline"
+            className="mb-6 cursor-pointer"
+            onClick={() => navigate(-1)}
+          >
+            &larr; Kembali
+          </Button>
           {/* Breadcrumb */}
           <nav className="mb-6 text-sm" aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 text-gray-500">

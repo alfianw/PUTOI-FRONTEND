@@ -2,11 +2,21 @@ import { useState } from "react";
 import galeri1 from "../assets/galeri/galeri-1.png";
 import galeri2 from "../assets/galeri/galeri-2.png";
 import galeri3 from "../assets/galeri/galeri-3.png";
+import galeri4 from "../assets/galeri/galeri-4.JPG";
+import galeri5 from "../assets/galeri/galeri-5.JPG";
+import galeri6 from "../assets/galeri/galeri-6.JPG";
+import galeri7 from "../assets/galeri/galeri-7.JPG";
+import galeri8 from "../assets/galeri/galeri-8.JPG";
 
 const images = [
   { src: galeri1, alt: "galeri image 1", caption: "Kegiatan PUTOI 1" },
   { src: galeri2, alt: "galeri image 2", caption: "Kegiatan PUTOI 2" },
   { src: galeri3, alt: "galeri image 3", caption: "Kegiatan PUTOI 3" },
+  { src: galeri4, alt: "galeri image 4", caption: "Kegiatan PUTOI 4" },
+  { src: galeri5, alt: "galeri image 5", caption: "Kegiatan PUTOI 5" },
+  { src: galeri6, alt: "galeri image 6", caption: "Kegiatan PUTOI 6" },
+  { src: galeri7, alt: "galeri image 7", caption: "Kegiatan PUTOI 7" },
+  { src: galeri8, alt: "galeri image 8", caption: "Kegiatan PUTOI 8" },
 ];
 
 export function GallerySection() {
