@@ -11,6 +11,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { useAuth } from '../utils/auth-context';
 import { Loader2 } from 'lucide-react';
+import { toast } from "sonner";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -84,7 +85,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
       if (data.code === '00') {
         setOtpSent(true);
         setResendTimer(60);
-        alert('OTP berhasil dikirim ke email Anda');
+        toast.success('OTP berhasil dikirim ke email Anda');
       } else {
         setOtpError(data.message || 'Gagal mengirim OTP');
       }
@@ -106,7 +107,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
       });
       const data = await res.json();
       if (data.code === '00') {
-        alert('OTP berhasil dikirim ulang ke email Anda');
+        toast.success('OTP berhasil dikirim ulang ke email Anda');
         setResendTimer(60);
       } else {
         setOtpError(data.message || 'Gagal mengirim ulang OTP');
@@ -130,7 +131,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
       const data = await res.json();
       if (data.code === '00') {
         setOtpVerified(true);
-        alert('Email berhasil diverifikasi');
+        toast.success('Email berhasil diverifikasi');
       } else {
         setOtpError(data.message || 'OTP salah');
       }
@@ -323,7 +324,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="participantType">Participant Type</Label>
+                    <Label htmlFor="participantType">Tipe Partisipan</Label>
                     <select
                       id="participantType"
                       value={participantType}
@@ -331,7 +332,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
                       required
                       className="w-full rounded-md border bg-white px-3 py-2 text-sm"
                     >
-                      <option value="">- Pilih Participant Type -</option>
+                      <option value="">- Pilih Tiper Partisipan -</option>
                       <option value="Dosen">Dosen</option>
                       <option value="Umum">Umum</option>
                       <option value="Industri">Industri</option>
@@ -369,13 +370,15 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="universityName">Nama Universitas</Label>
+                    <Label htmlFor="universityName">
+                      {participantType === 'Industri' || participantType === 'Umum' ? 'Nama Instansi' : 'Nama Universitas'}
+                    </Label>
                     <Input
                       id="universityName"
                       type="text"
                       value={universityName}
                       onChange={e => setUniversityName(e.target.value)}
-                      placeholder="Contoh: Universitas Indonesia"
+                      placeholder={participantType === 'Industri' || participantType === 'Umum' ? 'Contoh: PT Maju Jaya' : 'Contoh: Universitas Indonesia'}
                       required
                     />
                   </div>
