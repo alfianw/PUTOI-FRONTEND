@@ -1601,7 +1601,7 @@ export default function SuperAdminDashboard() {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() =>
-                                                        openDeleteModal("Apakah Anda yakin ingin menghapus training ini?", async () => {
+                                                        openDeleteModal("Apakah Anda yakin ingin menghapus pelatihan ini?", async () => {
                                                             await deleteTraining(t.id);
                                                             setShowDeleteModal(false);
                                                         })
@@ -2933,7 +2933,7 @@ export default function SuperAdminDashboard() {
                                                     size="sm"
                                                     onClick={() =>
                                                         openDeleteModal(
-                                                            "Apakah Anda yakin ingin menghapus peserta training ini?",
+                                                            "Apakah Anda yakin ingin menghapus peserta pelatihan ini?",
                                                             async () => {
                                                                 await deleteTP(p.id);
                                                                 setShowDeleteModal(false);
