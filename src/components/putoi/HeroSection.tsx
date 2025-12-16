@@ -34,7 +34,7 @@ export function HeroSection() {
             </div>
             
             <h1 className="text-5xl md:text-6xl mb-6">
-              PUTOI
+              PUTOI-TIK
             </h1>
             
             <p className="text-2xl mb-4 opacity-90">

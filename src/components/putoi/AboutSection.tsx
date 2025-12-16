@@ -28,7 +28,7 @@ export function AboutSection() {
             <Droplet className="w-4 h-4" />
             <span className="text-sm">Tentang Kami</span>
           </div>
-          <h2 className="text-4xl mb-4 text-blue-900">PUTOI-TIK</h2>
+          <h2 className="text-4xl mb-4 text-blue-900">PUTOI-TIK-TIK</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Water Treatment Plant
           </p>
@@ -39,16 +39,16 @@ export function AboutSection() {
           <div>
             <ImageWithFallback
               src="/src/assets/tentang-kami.png"
-              alt="PUTOI Water Treatment Plant"
+              alt="PUTOI-TIK Water Treatment Plant"
               className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
             />
           </div>
           <div>
             <p className="text-gray-700 mb-6 leading-relaxed">
-              PUTOI-TIK merupakan Water Treatment Plant berstandar industri yang dimiliki oleh Jurusan Teknik Elektro – Politeknik Negeri Jakarta (PNJ). Didirikan sebagai bagian dari upaya modernisasi fasilitas pembelajaran dan layanan industri, PUTOI berfungsi sebagai pusat pelatihan, riset, jasa kalibrasi, dan produksi air minum dalam kemasan yang mengedepankan kualitas, inovasi, dan keberlanjutan lingkungan.
+              PUTOI-TIK merupakan Water Treatment Plant berstandar industri yang dimiliki oleh Jurusan Teknik Elektro – Politeknik Negeri Jakarta (PNJ). Didirikan sebagai bagian dari upaya modernisasi fasilitas pembelajaran dan layanan industri, PUTOI-TIK berfungsi sebagai pusat pelatihan, riset, jasa kalibrasi, dan produksi air minum dalam kemasan yang mengedepankan kualitas, inovasi, dan keberlanjutan lingkungan.
             </p>
             <p className="text-gray-700 leading-relaxed">
-              PUTOI dirancang dengan sistem pengolahan Reverse Osmosis (RO), filtrasi multi-tahap otomatis, serta teknologi ozonisasi dan ultraviolet (UV) untuk menghasilkan air murni berkualitas tinggi sesuai dengan Permenkes No. 492/MENKES/PER/IV/2010. Fasilitas ini tidak hanya berfungsi sebagai sarana pembelajaran industrial-grade, tetapi juga sebagai model laboratorium cerdas untuk transformasi teknologi lingkungan dan energi bersih di Indonesia.
+              PUTOI-TIK dirancang dengan sistem pengolahan Reverse Osmosis (RO), filtrasi multi-tahap otomatis, serta teknologi ozonisasi dan ultraviolet (UV) untuk menghasilkan air murni berkualitas tinggi sesuai dengan Permenkes No. 492/MENKES/PER/IV/2010. Fasilitas ini tidak hanya berfungsi sebagai sarana pembelajaran industrial-grade, tetapi juga sebagai model laboratorium cerdas untuk transformasi teknologi lingkungan dan energi bersih di Indonesia.
             </p>
           </div>
         </div>
@@ -108,7 +108,7 @@ export function AboutSection() {
             </div>
             <h3 className="text-3xl text-blue-900 mb-4">Fasilitas Teknologi</h3>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              PUTOI dilengkapi dengan sistem pengolahan air berlapis menggunakan teknologi terkini
+              PUTOI-TIK dilengkapi dengan sistem pengolahan air berlapis menggunakan teknologi terkini
             </p>
           </div>
 
@@ -130,15 +130,15 @@ export function AboutSection() {
 
           <div className="mt-8 bg-blue-50 rounded-xl p-6 text-center">
             <p className="text-gray-700">
-              Semua sistem dikontrol secara otomatis dengan sensor tekanan, pH, dan TDS, menjadikan PUTOI sebagai fasilitas pembelajaran berbasis <span className="text-blue-900">smart water management system</span>.
+              Semua sistem dikontrol secara otomatis dengan sensor tekanan, pH, dan TDS, menjadikan PUTOI-TIK sebagai fasilitas pembelajaran berbasis <span className="text-blue-900">smart water management system</span>.
             </p>
           </div>
         </div>
 
-        {/* Keunggulan PUTOI */}
+        {/* Keunggulan PUTOI-TIK */}
         {/* <div>
           <div className="text-center mb-12">
-            <h3 className="text-3xl text-blue-900 mb-4">Keunggulan PUTOI</h3>
+            <h3 className="text-3xl text-blue-900 mb-4">Keunggulan PUTOI-TIK</h3>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

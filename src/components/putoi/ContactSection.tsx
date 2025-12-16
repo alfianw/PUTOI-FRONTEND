@@ -67,10 +67,10 @@ export function ContactSection() {
           <MapPin className="w-16 h-16 text-blue-900 mx-auto mb-4" />
           <h3 className="text-2xl text-blue-900 mb-4">Kunjungi Kami</h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-            PUTOI berlokasi di Jurusan Teknik Elektro, Politeknik Negeri Jakarta, di area Kampus Baru UI Depok. Kami siap melayani kebutuhan pelatihan, kalibrasi, dan produk air minum berkualitas.
+            PUTOI-TIK berlokasi di Jurusan Teknik Elektro, Politeknik Negeri Jakarta, di area Kampus Baru UI Depok. Kami siap melayani kebutuhan pelatihan, kalibrasi, dan produk air minum berkualitas.
           </p>
           <div className="bg-white rounded-xl p-8 shadow-lg">
-            <p className="text-blue-900 mb-2">PUTOI – Water Treatment Plant PNJ</p>
+            <p className="text-blue-900 mb-2">PUTOI-TIK</p>
             <p className="text-gray-600 text-sm">Politeknik Negeri Jakarta</p>
             <p className="text-gray-600 text-sm">Jl. Prof. Dr. G.A. Siwabessy, Kampus Baru UI, Depok 16425</p>
           </div>

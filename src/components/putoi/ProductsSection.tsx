@@ -9,7 +9,7 @@ export function ProductsSection() {
     {
       icon: Package,
       title: "Air Minum Kemasan 600 ml",
-      desc: "Air minum dalam kemasan 600 ml merupakan varian utama produksi PUTOI. Dikemas dengan desain ergonomis dan higienis, cocok untuk aktivitas harian, rapat, pelatihan, maupun kegiatan kampus.",
+      desc: "Air minum dalam kemasan 600 ml merupakan varian utama produksi PUTOI-TIK. Dikemas dengan desain ergonomis dan higienis, cocok untuk aktivitas harian, rapat, pelatihan, maupun kegiatan kampus.",
       image: "/src/assets/produk/botol-besar-kecil.png",
       gradient: "from-blue-900 to-blue-700"
     },
@@ -50,7 +50,7 @@ export function ProductsSection() {
             Air Bersih Berkualitas – Dari Laboratorium ke Masyarakat
           </p>
           <p className="text-gray-600 max-w-3xl mx-auto">
-            PUTOI menghadirkan produk air minum hasil proses Water Treatment Plant berstandar industri. Setiap tetes air melalui sistem filtrasi bertahap, Reverse Osmosis (RO), Ozonisasi, dan Sterilisasi UV, menghasilkan air yang jernih, higienis, dan sesuai Standar. Produk kami digunakan untuk mendukung kegiatan pendidikan, riset, dan kebutuhan masyarakat umum.
+            PUTOI-TIK menghadirkan produk air minum hasil proses Water Treatment Plant berstandar industri. Setiap tetes air melalui sistem filtrasi bertahap, Reverse Osmosis (RO), Ozonisasi, dan Sterilisasi UV, menghasilkan air yang jernih, higienis, dan sesuai Standar. Produk kami digunakan untuk mendukung kegiatan pendidikan, riset, dan kebutuhan masyarakat umum.
           </p>
         </div>
 

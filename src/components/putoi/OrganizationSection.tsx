@@ -52,7 +52,7 @@ export function OrganizationSection() {
           </div>
           <h2 className="text-4xl mb-4 text-blue-900">Struktur & Kepemimpinan</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            PUTOI berada di bawah pengelolaan Jurusan Teknik Elektro, Politeknik Negeri Jakarta
+            PUTOI-TIK berada di bawah pengelolaan Jurusan Teknik Elektro, Politeknik Negeri Jakarta
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export function OrganizationSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           <div className="order-2 lg:order-1">
             <p className="text-gray-700 mb-6 leading-relaxed">
-              PUTOI berada di bawah pengelolaan Jurusan Teknik Elektro, Politeknik Negeri Jakarta, sebagai bagian dari <span className="text-blue-900">Center of Excellence</span>. Struktur organisasi dibentuk untuk menjamin kesinambungan fungsi edukasi, layanan industri, dan pengembangan riset terapan.
+              PUTOI-TIK berada di bawah pengelolaan Jurusan Teknik Elektro, Politeknik Negeri Jakarta, sebagai bagian dari <span className="text-blue-900">Center of Excellence</span>. Struktur organisasi dibentuk untuk menjamin kesinambungan fungsi edukasi, layanan industri, dan pengembangan riset terapan.
             </p>
             <div className="bg-blue-900 text-white rounded-xl p-6">
               <p className="leading-relaxed">

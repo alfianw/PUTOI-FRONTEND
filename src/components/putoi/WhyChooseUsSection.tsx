@@ -5,7 +5,7 @@ export function WhyChooseUsSection() {
     {
       icon: Factory,
       title: "Industrial Grade Facility",
-      desc: "PUTOI bukan sekadar laboratorium akademik — seluruh peralatan menggunakan standar industri (Ebara, Grundfos, Pentair, VIQUA) yang digunakan di instalasi profesional.",
+      desc: "PUTOI-TIK bukan sekadar laboratorium akademik — seluruh peralatan menggunakan standar industri (Ebara, Grundfos, Pentair, VIQUA) yang digunakan di instalasi profesional.",
       gradient: "from-blue-900 to-blue-700"
     },
     {
@@ -23,7 +23,7 @@ export function WhyChooseUsSection() {
     {
       icon: Leaf,
       title: "Sustainable and Smart Water System",
-      desc: "PUTOI mengintegrasikan teknologi sensor, data logger, dan sistem monitoring real-time, menjadikannya model Smart Water Plant untuk edukasi dan riset lingkungan berkelanjutan.",
+      desc: "PUTOI-TIK mengintegrasikan teknologi sensor, data logger, dan sistem monitoring real-time, menjadikannya model Smart Water Plant untuk edukasi dan riset lingkungan berkelanjutan.",
       gradient: "from-blue-600 to-blue-400"
     }
   ];
@@ -45,7 +45,7 @@ export function WhyChooseUsSection() {
           </div>
           <h2 className="text-4xl mb-4 text-blue-900">Why Choose Us</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Mengapa PUTOI menjadi pilihan terbaik untuk kebutuhan water treatment dan pelatihan industri
+            Mengapa PUTOI-TIK menjadi pilihan terbaik untuk kebutuhan water treatment dan pelatihan industri
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export function WhyChooseUsSection() {
             <Award className="w-12 h-12 text-blue-900 mx-auto mb-4" />
             <h3 className="text-2xl text-blue-900 mb-4">Standar Kualitas Internasional</h3>
             <p className="text-gray-600">
-              PUTOI beroperasi dengan mengacu pada standar kualitas nasional dan internasional
+              PUTOI-TIK beroperasi dengan mengacu pada standar kualitas nasional dan internasional
             </p>
           </div>
           

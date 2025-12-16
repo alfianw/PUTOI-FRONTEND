@@ -50,7 +50,7 @@ export function Hero() {
               </span>
             </h1>
             <p className="text-xl text-gray-600">
-              PUTOI merupakan unit pelatihan profesional PNJ yang menyelenggarakan kegiatan pelatihan dan uji kompetensi baik untuk mahasiswa dan alumni maupun masyarakat umum.
+              PUTOI-TIK merupakan unit pelatihan profesional PNJ yang menyelenggarakan kegiatan pelatihan dan uji kompetensi baik untuk mahasiswa dan alumni maupun masyarakat umum.
             </p>
 
             {/* Stats */}

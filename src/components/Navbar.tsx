@@ -73,7 +73,7 @@ export function Navbar() {
             <a href="#services" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('services'); }}>Jasa</a>
             <a href="#news" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('news'); }}>Berita</a>
             <a href="#gallery" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('gallery'); }}>Galeri</a>
-            <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI</a>
+            <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI-TIK</a>
             <a href="#/amdk" className="text-gray-700 hover:text-blue-900 transition-colors">AMDK</a>
           </div>
 
@@ -198,7 +198,7 @@ export function Navbar() {
               }}
             >Galeri</a>
             <div className="flex items-center gap-2 px-4 py-2">
-              <a onClick={() => setIsMenuOpen(false)} href="#/putoi" className="text-gray-700 hover:bg-gray-100 rounded-lg">PUTOI</a>
+              <a onClick={() => setIsMenuOpen(false)} href="#/putoi" className="text-gray-700 hover:bg-gray-100 rounded-lg">PUTOI-TIK</a>
               <a onClick={() => setIsMenuOpen(false)} href="#/amdk" className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-700 hover:bg-gray-200">AMDK</a>
             </div>
             <div className="flex flex-col gap-2 pt-4 border-t">

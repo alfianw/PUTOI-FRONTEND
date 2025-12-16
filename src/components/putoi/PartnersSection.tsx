@@ -37,7 +37,7 @@ export function PartnersSection() {
           </div>
           <h2 className="text-4xl mb-4 text-blue-900">Our Partners</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            PUTOI menjalin kemitraan strategis dengan berbagai pihak, baik dari dunia pendidikan, industri, maupun lembaga pemerintah. Kolaborasi ini memastikan keberlanjutan inovasi dan peningkatan mutu layanan.
+            PUTOI-TIK menjalin kemitraan strategis dengan berbagai pihak, baik dari dunia pendidikan, industri, maupun lembaga pemerintah. Kolaborasi ini memastikan keberlanjutan inovasi dan peningkatan mutu layanan.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export function PartnersSection() {
         {/* Footer Message */}
         <div className="bg-gradient-to-r from-blue-900 to-blue-600 rounded-2xl p-8 text-white text-center">
           <p className="text-lg leading-relaxed">
-            Kolaborasi ini menjadikan PUTOI sebagai <span className="font-semibold">hub sinergi</span> antara akademisi, industri, dan masyarakat, mendukung agenda nasional <span className="font-semibold">Sustainable Development Goals (SDG) 6 – Clean Water and Sanitation</span>.
+            Kolaborasi ini menjadikan PUTOI-TIK sebagai <span className="font-semibold">hub sinergi</span> antara akademisi, industri, dan masyarakat, mendukung agenda nasional <span className="font-semibold">Sustainable Development Goals (SDG) 6 – Clean Water and Sanitation</span>.
           </p>
         </div>
       </div>
