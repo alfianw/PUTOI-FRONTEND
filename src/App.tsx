@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './utils/auth-context';
 import HomePage from './pages/HomePage';
 import PUTOIPage from './pages/PUTOIPage';
+import AMDKPage from './pages/AMDKPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import NewsDetailPage from './pages/NewsDetailPage';
@@ -46,6 +47,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/putoi" element={<PUTOIPage />} />
+          <Route path="/amdk" element={<AMDKPage />} />
           <Route path="/news/:slug" element={<NewsDetailPage />} />
           <Route
             path="/superadmin"

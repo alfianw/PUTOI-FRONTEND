@@ -44,7 +44,7 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8">
-            <h1 className="text-6xl lg:text-6xl text-gray-900">Tingkatkan Kompetensi Anda Dengan Pelatihan.{" "}
+            <h1 className="text-6xl lg:text-6xl text-gray-900">Tingkatkan Kompetensi Anda Dengan Pelatihan{" "}
               <span className="bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
                 Terstandar Industri
               </span>

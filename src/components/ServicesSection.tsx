@@ -209,7 +209,7 @@ export function ServicesSection() {
               Hubungi kami untuk detail lebih lanjut.
             </p>
             <a
-              href="https://wa.me/6285755450598"
+              href="https://wa.me/62895365540539"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 bg-white text-blue-900 font-semibold rounded-lg hover:bg-gray-100 transition"

@@ -30,7 +30,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
   const [gender, setGender] = useState('');
   const [universityName, setUniversityName] = useState('');
   const [lastEducationField, setLastEducationField] = useState('');
-  const [majorStudyProgram, setMajorStudyProgram] = useState('');
+  const [majorStudyProgram, setMajorStudyProgram] = useState('none');
   const [cityOfResidence, setCityOfResidence] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -336,6 +336,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
                       <option value="Dosen">Dosen</option>
                       <option value="Umum">Umum</option>
                       <option value="Industri">Industri</option>
+                      <option value="Mahasiswa">Mahasiswa</option>
                     </select>
                   </div>
 
@@ -395,7 +396,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="majorStudyProgram">Program Studi</Label>
                     <Input
                       id="majorStudyProgram"
@@ -405,7 +406,7 @@ export function AuthModal({ isOpen, onClose, mode }: AuthModalProps) {
                       placeholder="Contoh: Teknik Informatika"
                       required
                     />
-                  </div>
+                  </div> */}
 
                   <div className="space-y-2">
                     <Label htmlFor="cityOfResidence">Kota Domisili</Label>

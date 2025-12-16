@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Menu, X, Search, User, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
 import { Input } from "./ui/input";
@@ -26,6 +26,18 @@ export function Navbar() {
   const [mobileSearch, setMobileSearch] = useState("");
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const goToSection = (id: string) => {
+    // If we're not on the homepage, navigate there first, then scroll.
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Give React a moment to render the home sections, then scroll.
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 120);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const openAuthModal = (mode: 'signin' | 'signup') => {
     setAuthMode(mode);
@@ -33,7 +45,7 @@ export function Navbar() {
   };
 
   const openProfileModal = () => {
-    setProfileUserEmail(user?.email || null); // simpan email saat modal dibuka
+    setProfileUserEmail(user?.email || null);
     setProfileModalOpen(true);
   };
 
@@ -52,16 +64,17 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img  src={logo} alt="PNJ Logo" className="h-10 w-auto"/></div>
+            <img src={logo} alt="PNJ Logo" className="h-10 w-auto" /></div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' }); }}>Beranda</a>
-            <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' }); }}>Pelatihan</a>
-            <a href="#jasa" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('jasa')?.scrollIntoView({ behavior: 'smooth' }); }}>Jasa</a>
-            <a href="#contact" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}>Berita</a>
-            <a href="#gallery" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' }); }}>Galeri</a>
+            <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('home'); }}>Beranda</a>
+            <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('courses'); }}>Pelatihan</a>
+            <a href="#services" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('services'); }}>Jasa</a>
+            <a href="#news" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('news'); }}>Berita</a>
+            <a href="#gallery" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('gallery'); }}>Galeri</a>
             <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI</a>
+            <a href="#/amdk" className="text-gray-700 hover:text-blue-900 transition-colors">AMDK</a>
           </div>
 
           {/* Desktop Actions */}
@@ -112,17 +125,17 @@ export function Navbar() {
               ) : null
             ) : (
               <>
-                    <Button variant="outline" className="gap-2 cursor-pointer" onClick={() => openAuthModal('signin')}>
-                      <User className="w-4 h-4" />
-                      Masuk
-                    </Button>
-                    <Button
-                      className="bg-gradient-to-r from-blue-900 to-blue-600 cursor-pointer"
-                      onClick={() => openAuthModal('signup')}
-                    >
-                      <UserPlus className="w-4 h-4" />
-                      Daftar
-                    </Button>
+                <Button variant="outline" className="gap-2 cursor-pointer" onClick={() => openAuthModal('signin')}>
+                  <User className="w-4 h-4" />
+                  Masuk
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-blue-900 to-blue-600 cursor-pointer"
+                  onClick={() => openAuthModal('signup')}
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Daftar
+                </Button>
               </>
             )}
           </div>
@@ -154,16 +167,16 @@ export function Navbar() {
               onClick={e => {
                 e.preventDefault();
                 setIsMenuOpen(false);
-                document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' });
+                goToSection('home');
               }}
             >Beranda</a>
             <a
-              href="#jasa"
+              href="#services"
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
               onClick={e => {
                 e.preventDefault();
                 setIsMenuOpen(false);
-                document.getElementById('jasa')?.scrollIntoView({ behavior: 'smooth' });
+                goToSection('services');
               }}
             >Jasa</a>
             <a
@@ -172,16 +185,7 @@ export function Navbar() {
               onClick={e => {
                 e.preventDefault();
                 setIsMenuOpen(false);
-                document.getElementById('news')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >Berita</a>
-            <a
-              href="#contact"
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-              onClick={e => {
-                e.preventDefault();
-                setIsMenuOpen(false);
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                goToSection('news');
               }}
             >Berita</a>
             <a
@@ -190,10 +194,13 @@ export function Navbar() {
               onClick={e => {
                 e.preventDefault();
                 setIsMenuOpen(false);
-                document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' });
+                goToSection('gallery');
               }}
             >Galeri</a>
-            <a onClick={() => setIsMenuOpen(false)} href="#/putoi" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">PUTOI</a>
+            <div className="flex items-center gap-2 px-4 py-2">
+              <a onClick={() => setIsMenuOpen(false)} href="#/putoi" className="text-gray-700 hover:bg-gray-100 rounded-lg">PUTOI</a>
+              <a onClick={() => setIsMenuOpen(false)} href="#/amdk" className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-700 hover:bg-gray-200">AMDK</a>
+            </div>
             <div className="flex flex-col gap-2 pt-4 border-t">
               {user && canAccessProfile && (
                 <>

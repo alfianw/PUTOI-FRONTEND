@@ -3018,9 +3018,14 @@ export default function SuperAdminDashboard() {
                                             onChange={(e) => setTpForm({ ...tpForm, status: e.target.value })}
                                             className="w-full border rounded px-3 py-2"
                                         >
-                                            <option value="REGISTERED">REGISTERED</option>
-                                            <option value="DONE">DONE</option>
-                                            <option value="CANCELLED">CANCELLED</option>
+                                            <option value="Terdaftar">Terdaftar</option>
+                                            <option value="Menunggu pembayaran">Menunggu pembayaran</option>
+                                            <option value="Sudah dibayar">Sudah dibayar</option>
+                                            <option value="Sedang berjalan">Sedang berjalan</option>
+                                            <option value="Selesai">Selesai</option>
+                                            <option value="Sudah dibayar tidak selesai">Sudah dibayar tidak selesai</option>
+                                            <option value="Dibatalkan">Dibatalkan</option>
+                                            <option value="Dana dikembalikan">Dana dikembalikan</option>
                                         </select>
                                     </div>
 

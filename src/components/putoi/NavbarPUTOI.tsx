@@ -109,6 +109,14 @@ export function NavbarPUTOI() {
                 {link.label}
               </button>
             ))}
+            {/* AMDK link placed immediately to the right of Contact */}
+            <a
+              href="#/amdk"
+              onClick={(e) => { e.preventDefault(); navigate('/amdk'); }}
+              className="text-gray-700 hover:text-blue-900 transition-colors cursor-pointer"
+            >
+              AMDK
+            </a>
           </div>
 
           {/* Desktop Actions */}
@@ -198,6 +206,13 @@ export function NavbarPUTOI() {
                 {link.label}
               </button>
             ))}
+            {/* AMDK button in mobile menu */}
+            <button
+              onClick={() => { setIsMenuOpen(false); navigate('/amdk'); }}
+              className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+            >
+              AMDK
+            </button>
             <div className="flex flex-col gap-2 pt-4 border-t">
               {user && canAccessProfile && (
                 <>
