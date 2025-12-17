@@ -1,5 +1,6 @@
 import { Users, Award, Wrench, FlaskConical, Cog } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import organisasiImg from "../../assets/organisasi.jpeg";
 
 export function OrganizationSection() {
   const struktur = [
@@ -70,7 +71,7 @@ export function OrganizationSection() {
           </div>
           <div className="order-1 lg:order-2">
             <ImageWithFallback
-              src="/src/assets/organisasi.jpeg"
+              src={organisasiImg}
               alt="Organization Structure"
               className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
             />

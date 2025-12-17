@@ -1,5 +1,7 @@
 import { Building2, GraduationCap, Landmark, Handshake } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import logoNutech from "../../assets/kerjasama/logo-nutech.png";
+import logoYokogawa from "../../assets/kerjasama/logo-yokogawa.png";
 
 export function PartnersSection() {
   const akademik = [
@@ -41,10 +43,10 @@ export function PartnersSection() {
           </p>
           <div className="mt-4 pt-4 grid grid-cols-2 md:grid-cols-2 gap-8 items-center justify-center max-w-4xl mx-auto">
             <div className="flex items-center justify-center">
-              <ImageWithFallback src="/src/assets/kerjasama/logo-nutech.png" alt="Nutech" className="h-20 w-auto object-contain" />
+              <ImageWithFallback src={logoNutech} alt="Nutech" className="h-20 w-auto object-contain" />
             </div>
             <div className="flex items-center justify-center">
-              <ImageWithFallback src="/src/assets/kerjasama/logo-yokogawa.png" alt="Yokogawa" className="h-20 w-auto object-contain" />
+              <ImageWithFallback src={logoYokogawa} alt="Yokogawa" className="h-20 w-auto object-contain" />
             </div>
             {/* Tambahkan logo lain di sini jika ada */}
           </div>

@@ -1,6 +1,8 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../ui/accordion";
 import { Droplet, Target, Briefcase, FlaskConical, CheckCircle2 } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import tentangKamiImg from "../../assets/tentang-kami.png";
+import sejarahImg from "../../assets/sejarah.jpg";
 
 export function AboutSection() {
   const technologies = [
@@ -39,7 +41,7 @@ export function AboutSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
           <div>
             <ImageWithFallback
-              src="/src/assets/tentang-kami.png"
+              src={tentangKamiImg}
               alt="PUTOI-TIK Water Treatment Plant"
               className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
             />
@@ -115,7 +117,7 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
           <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
             <div>
               <ImageWithFallback
-                src="/src/assets/sejarah.jpg"
+                src={sejarahImg}
                 alt="Sejarah PUTOI-TIK"
                 className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
               />
