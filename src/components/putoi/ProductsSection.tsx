@@ -43,9 +43,9 @@ export function ProductsSection() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-blue-900 text-white px-4 py-2 rounded-full mb-4">
             <Droplet className="w-4 h-4" />
-            <span className="text-sm">Produk Kami</span>
+            <span className="text-sm">AMDK</span>
           </div>
-          <h2 className="text-4xl mb-4 text-blue-900">Produk Kami</h2>
+          <h2 className="text-4xl mb-4 text-blue-900">AMDK</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-2">
             Air Bersih Berkualitas – Dari Laboratorium ke Masyarakat
           </p>

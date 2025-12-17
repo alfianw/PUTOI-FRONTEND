@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, Instagram, Link } from "lucide-react";
 import logo from "../../assets/logo-putoi-footer.png";
 
 export function FooterSection() {
@@ -12,21 +12,9 @@ export function FooterSection() {
               <img src={logo} alt="PNJ Logo" className="h-10 w-auto" />
             </div>
             <p className="text-gray-400 mb-4">
-              Water Treatment Plant berstandar industri milik Jurusan Teknik Elektro – Politeknik Negeri Jakarta.
+              Pusat Unggulan Teknologi Otomasi Industri berbasis Teknologi Informasi dan Komunikasi milik Jurusan Teknik Elektro – Politeknik Negeri Jakarta.
             </p>
             <div className="flex gap-3">
-              <a
-                href="#"
-                className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
               <a
                 target="_blank"
                 href="https://www.instagram.com/elektropnj/"
@@ -35,16 +23,20 @@ export function FooterSection() {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                target="_blank"
+                href="https://www.pnj.ac.id"
                 className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
+                title="Politeknik Negeri Jakarta"
               >
-                <Linkedin className="w-5 h-5" />
+                <Link className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                target="_blank"
+                href="https://elektro.pnj.ac.id"
                 className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
+                title="Jurusan Teknik Elektro PNJ"
               >
-                <Youtube className="w-5 h-5" />
+                <Link className="w-5 h-5" />
               </a>
             </div>
           </div>
