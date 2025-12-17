@@ -28,6 +28,9 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Hide menu on dashboard pages
+  const isDashboard = location.pathname.startsWith('/superadmin') || location.pathname.startsWith('/admin');
+
   const goToSection = (id: string) => {
     // If we're not on the homepage, navigate there first, then scroll.
     if (location.pathname !== '/') {
@@ -64,22 +67,24 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img src={logo} alt="PNJ Logo" className="h-10 w-auto" /></div>
+            <img src={logo} alt="PNJ Logo" className="h-10 w-auto" />
+          </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('home'); }}>Beranda</a>
-            <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('courses'); }}>Pelatihan</a>
-            <a href="#services" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('services'); }}>Jasa</a>
-            <a href="#news" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('news'); }}>Berita</a>
-            <a href="#gallery" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('gallery'); }}>Galeri</a>
-            <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI-TIK</a>
-            <a href="#/amdk" className="text-gray-700 hover:text-blue-900 transition-colors">AMDK</a>
-          </div>
+          {!isDashboard && (
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('home'); }}>Beranda</a>
+              <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('courses'); }}>Pelatihan</a>
+              <a href="#services" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('services'); }}>Jasa</a>
+              <a href="#news" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('news'); }}>Berita</a>
+              <a href="#gallery" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('gallery'); }}>Galeri</a>
+              <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI-TIK</a>
+              <a href="#/amdk" className="text-gray-700 hover:text-blue-900 transition-colors">AMDK</a>
+            </div>
+          )}
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
-
             {user ? (
               canAccessProfile ? (
                 <DropdownMenu>
@@ -105,7 +110,7 @@ export function Navbar() {
                       Profile
                     </DropdownMenuItem>
 
-                    {user.role === 'superadmin' && (
+                    {user.role === 'superadmin' && !isDashboard && (
                       <>
                         <DropdownMenuItem onClick={() => navigate(getDashboardLink())} className="cursor-pointer hover:bg-blue-900 hover:text-white group">
                           <LayoutDashboard className="mr-2 h-4 w-4 group-hover:text-white" />
@@ -124,7 +129,7 @@ export function Navbar() {
                 </DropdownMenu>
               ) : null
             ) : (
-              <>
+              !isDashboard && <>
                 <Button variant="outline" className="gap-2 cursor-pointer" onClick={() => openAuthModal('signin')}>
                   <User className="w-4 h-4" />
                   Masuk
@@ -141,16 +146,18 @@ export function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {!isDashboard && (
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
+        {!isDashboard && isMenuOpen && (
           <div className="md:hidden py-4 space-y-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
