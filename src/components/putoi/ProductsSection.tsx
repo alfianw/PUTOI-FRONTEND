@@ -10,28 +10,28 @@ export function ProductsSection() {
       icon: Package,
       title: "Air Minum Kemasan 600 ml",
       desc: "Air minum dalam kemasan 600 ml merupakan varian utama produksi PUTOI-TIK. Dikemas dengan desain ergonomis dan higienis, cocok untuk aktivitas harian, rapat, pelatihan, maupun kegiatan kampus.",
-      image: "../../src/assets/produk/botol-besar-kecil.png",
+      image: "../../assets/produk/botol-besar-kecil.png",
       gradient: "from-blue-900 to-blue-700"
     },
     {
       icon: Package,
       title: "Air Minum Kemasan 300 ml",
       desc: "Air minum 300 ml dirancang untuk kebutuhan kegiatan formal, seminar, dan pertemuan skala besar. Kemasan praktis dan ekonomis menjadikannya pilihan ideal untuk instansi maupun acara kampus.",
-      image: "../../src/assets/produk/botol-besar-kecil.png",
+      image: "../../assets/produk/botol-besar-kecil.png",
       gradient: "from-blue-800 to-blue-600"
     },
     {
       icon: Cylinder,
       title: "Air Galon 19 Liter",
       desc: "Air galon 19 liter merupakan varian air isi ulang berkualitas tinggi hasil proses RO, Ozonisasi, dan UV. Produk ini diperuntukkan bagi kebutuhan kantor, laboratorium, dan industri kecil menengah.",
-      image: "../../src/assets/produk/galon-botol-besar-kecil.png",
+      image: "../../assets/produk/galon-botol-besar-kecil.png",
       gradient: "from-blue-700 to-blue-500"
     },
     {
       icon: Package,
       title: "Botol Kemasan 600ml & 300ml",
       desc: "Kami menawarkan produksi botol kemasan 600ml dan 300ml siap pakai dengan desain modern dan kemasan yang ramah lingkungan untuk kebutuhan retail dan distribusi.",
-      image: "../../src/assets/produk/botol-besar-kecil.png",
+      image: "../../assets/produk/botol-besar-kecil.png",
       gradient: "from-blue-600 to-blue-400"
     }
   ];
