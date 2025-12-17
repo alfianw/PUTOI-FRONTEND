@@ -1,6 +1,6 @@
 import { Droplet, Award, FlaskConical, Zap } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
-import heroPutoi from "../../assets/hero-putoi.JPG";
+import heroPutoi from "../../assets/hero-putoi.jpg";
 
 export function HeroSection() {
   // Scroll ke section dengan id
