@@ -7,6 +7,10 @@ import galeri5 from "../assets/galeri/galeri-5.jpg";
 import galeri6 from "../assets/galeri/galeri-6.jpg";
 import galeri7 from "../assets/galeri/galeri-7.jpg";
 import galeri8 from "../assets/galeri/galeri-8.jpg";
+import galeri9 from "../assets/galeri/galeri-9.JPG";
+import galeri10 from "../assets/galeri/galeri-10.jpeg";
+import galeri11 from "../assets/galeri/galeri-11.jpg";
+import galeri12 from "../assets/galeri/galeri-12.jpeg";
 
 const images = [
   { src: galeri1, alt: "galeri image 1", caption: "Kegiatan PUTOI-TIK 1" },
@@ -17,15 +21,24 @@ const images = [
   { src: galeri6, alt: "galeri image 6", caption: "Kegiatan PUTOI-TIK 6" },
   { src: galeri7, alt: "galeri image 7", caption: "Kegiatan PUTOI-TIK 7" },
   { src: galeri8, alt: "galeri image 8", caption: "Kegiatan PUTOI-TIK 8" },
+  { src: galeri9, alt: "galeri image 9", caption: "Kegiatan PUTOI-TIK 9" },
+  { src: galeri10, alt: "galeri image 10", caption: "Kegiatan PUTOI-TIK 10" },
+  { src: galeri11, alt: "galeri image 11", caption: "Kegiatan PUTOI-TIK 11" },
+  { src: galeri12, alt: "galeri image 12", caption: "Kegiatan PUTOI-TIK 12" },
 ];
 
 export function GallerySection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const imagesPerPage = 8;
+  const totalPages = Math.ceil(images.length / imagesPerPage);
+  const startIdx = (page - 1) * imagesPerPage;
+  const endIdx = startIdx + imagesPerPage;
+  const pagedImages = images.slice(startIdx, endIdx);
 
   return (
     <section id="gallery" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* HEADER */}
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl text-gray-900 mb-4">Galeri</h2>
@@ -33,10 +46,10 @@ export function GallerySection() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images.map((img, idx) => (
+          {pagedImages.map((img, idx) => (
             <button
-              key={idx}
-              onClick={() => setOpenIndex(idx)}
+              key={startIdx + idx}
+              onClick={() => setOpenIndex(startIdx + idx)}
               className="relative group overflow-hidden rounded-lg focus:outline-none"
               aria-label={`Buka gambar ${img.caption}`}
             >
@@ -55,6 +68,27 @@ export function GallerySection() {
             </button>
           ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center gap-2 mt-8">
+            <button
+              className="px-3 py-1 rounded bg-blue-100 text-blue-900 font-semibold disabled:opacity-50"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            <span className="mx-2 text-gray-700">Page {page} of {totalPages}</span>
+            <button
+              className="px-3 py-1 rounded bg-blue-100 text-blue-900 font-semibold disabled:opacity-50"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        )}
 
         {openIndex !== null && (
           <div

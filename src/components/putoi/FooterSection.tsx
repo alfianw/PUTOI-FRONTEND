@@ -28,7 +28,8 @@ export function FooterSection() {
                 <Twitter className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                target="_blank"
+                href="https://www.instagram.com/elektropnj/"
                 className="w-10 h-10 bg-gray-800 hover:bg-blue-900 rounded-lg flex items-center justify-center transition-colors"
               >
                 <Instagram className="w-5 h-5" />
@@ -78,7 +79,7 @@ export function FooterSection() {
         {/* Bottom */}
         <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-gray-400 text-sm">
-            © 2024 PUTOI - Politeknik Negeri Jakarta. All rights reserved.
+            © 2025 PUTOI-TIK - Politeknik Negeri Jakarta. All rights reserved.
           </p>
         </div>
       </div>
