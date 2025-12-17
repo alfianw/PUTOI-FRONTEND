@@ -7,7 +7,7 @@ import galeri5 from "../assets/galeri/galeri-5.jpg";
 import galeri6 from "../assets/galeri/galeri-6.jpg";
 import galeri7 from "../assets/galeri/galeri-7.jpg";
 import galeri8 from "../assets/galeri/galeri-8.jpg";
-import galeri9 from "../assets/galeri/galeri-9.JPG";
+import galeri9 from "../assets/galeri/galeri-9.jpg";
 import galeri10 from "../assets/galeri/galeri-10.jpeg";
 import galeri11 from "../assets/galeri/galeri-11.jpg";
 import galeri12 from "../assets/galeri/galeri-12.jpeg";
