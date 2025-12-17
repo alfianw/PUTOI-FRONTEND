@@ -71,8 +71,8 @@ export function Navbar() {
             <a href="#/" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('home'); }}>Beranda</a>
             <a href="#courses" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('courses'); }}>Pelatihan</a>
             <a href="#services" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('services'); }}>Jasa</a>
-            <a href="#news" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('news'); }}>Berita</a>
             <a href="#gallery" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('gallery'); }}>Galeri</a>
+            <a href="#news" className="text-gray-700 hover:text-blue-900 transition-colors" onClick={e => { e.preventDefault(); goToSection('news'); }}>Berita</a>
             <a href="#/putoi" className="text-gray-700 hover:text-blue-900 transition-colors">PUTOI-TIK</a>
             {/* <a href="#/amdk" className="text-gray-700 hover:text-blue-900 transition-colors">AMDK</a> */}
           </div>
