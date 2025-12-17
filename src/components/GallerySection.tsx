@@ -77,15 +77,15 @@ export function GallerySection() {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
             >
-              Previous
+              Sebelumnya
             </button>
-            <span className="mx-2 text-gray-700">Page {page} of {totalPages}</span>
+            <span className="mx-2 text-gray-700">Halaman {page} dari {totalPages}</span>
             <button
               className="px-3 py-1 rounded bg-blue-100 text-blue-900 font-semibold disabled:opacity-50"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
             >
-              Next
+              Selanjutnya
             </button>
           </div>
         )}

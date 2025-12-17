@@ -199,17 +199,17 @@ export function NewsSection() {
             disabled={page === 1}
             onClick={() => setPage(page - 1)}
           >
-            Previous
+            Sebelumnya
           </Button>
 
-          <div className="text-gray-700">Page {page} of {totalPages}</div>
+          <div className="text-gray-700">Halaman {page} dari {totalPages}</div>
 
           <Button
             variant="outline"
             disabled={page === totalPages}
             onClick={() => setPage(page + 1)}
           >
-            Next
+            Selanjutnya
           </Button>
         </div>
 

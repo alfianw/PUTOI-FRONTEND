@@ -43,7 +43,7 @@ export function WhyChooseUsSection() {
             <CheckCircle2 className="w-4 h-4" />
             <span className="text-sm">Keunggulan</span>
           </div>
-          <h2 className="text-4xl mb-4 text-blue-900">Why Choose Us</h2>
+          <h2 className="text-4xl mb-4 text-blue-900">Mengapa Memilih Kami?</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Mengapa PUTOI-TIK menjadi pilihan terbaik untuk kebutuhan water treatment dan pelatihan industri
           </p>

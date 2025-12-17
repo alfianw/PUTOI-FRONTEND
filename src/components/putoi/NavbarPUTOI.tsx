@@ -48,7 +48,7 @@ export function NavbarPUTOI() {
     { id: 'about', label: 'Tentang' },
     { id: 'organization', label: 'Organisasi' },
     { id: 'why-choose-us', label: 'Keunggulan' },
-    { id: 'products', label: 'Produk' },
+    { id: 'products', label: 'AMDK' },
     { id: 'contact', label: 'Kontak' }
   ];
 

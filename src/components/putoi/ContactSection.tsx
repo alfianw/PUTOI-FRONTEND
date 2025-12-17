@@ -33,7 +33,7 @@ export function ContactSection() {
             <MapPin className="w-4 h-4" />
             <span className="text-sm">Hubungi Kami</span>
           </div>
-          <h2 className="text-4xl mb-4 text-blue-900">Contact Us</h2>
+          <h2 className="text-4xl mb-4 text-blue-900">Kontak Kami</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Hubungi kami untuk informasi lebih lanjut tentang layanan dan produk PUTOI
           </p>
