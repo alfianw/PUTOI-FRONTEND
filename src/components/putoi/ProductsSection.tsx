@@ -1,6 +1,9 @@
+
 import { Droplet, Package, Cylinder } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { useState } from "react";
+import botolBesarKecil from "../../assets/produk/botol-besar-kecil.png";
+import galonBotolBesarKecil from "../../assets/produk/galon-botol-besar-kecil.png";
 
 export function ProductsSection() {
   const [openImageIndex, setOpenImageIndex] = useState<number | null>(null);
@@ -10,28 +13,28 @@ export function ProductsSection() {
       icon: Package,
       title: "Air Minum Kemasan 600 ml",
       desc: "Air minum dalam kemasan 600 ml merupakan varian utama produksi PUTOI-TIK. Dikemas dengan desain ergonomis dan higienis, cocok untuk aktivitas harian, rapat, pelatihan, maupun kegiatan kampus.",
-      image: "../../assets/produk/botol-besar-kecil.png",
+      image: botolBesarKecil,
       gradient: "from-blue-900 to-blue-700"
     },
     {
       icon: Package,
       title: "Air Minum Kemasan 300 ml",
       desc: "Air minum 300 ml dirancang untuk kebutuhan kegiatan formal, seminar, dan pertemuan skala besar. Kemasan praktis dan ekonomis menjadikannya pilihan ideal untuk instansi maupun acara kampus.",
-      image: "../../assets/produk/botol-besar-kecil.png",
+      image: botolBesarKecil,
       gradient: "from-blue-800 to-blue-600"
     },
     {
       icon: Cylinder,
       title: "Air Galon 19 Liter",
       desc: "Air galon 19 liter merupakan varian air isi ulang berkualitas tinggi hasil proses RO, Ozonisasi, dan UV. Produk ini diperuntukkan bagi kebutuhan kantor, laboratorium, dan industri kecil menengah.",
-      image: "../../assets/produk/galon-botol-besar-kecil.png",
+      image: galonBotolBesarKecil,
       gradient: "from-blue-700 to-blue-500"
     },
     {
       icon: Package,
       title: "Botol Kemasan 600ml & 300ml",
       desc: "Kami menawarkan produksi botol kemasan 600ml dan 300ml siap pakai dengan desain modern dan kemasan yang ramah lingkungan untuk kebutuhan retail dan distribusi.",
-      image: "../../assets/produk/botol-besar-kecil.png",
+      image: botolBesarKecil,
       gradient: "from-blue-600 to-blue-400"
     }
   ];

@@ -9,6 +9,8 @@ import { ProductsSection } from "../components/putoi/ProductsSection";
 import { ContactSection } from "../components/putoi/ContactSection";
 import { FooterSection } from "../components/putoi/FooterSection";
 import { ScrollToTop } from "../components/putoi/ScrollToTop";
+import { SejarahSection } from "../components/putoi/SejarahSection";
+import { TeknologiSection } from "../components/putoi/TeknologiSection";
 
 export default function PUTOIPage() {
     return (
@@ -17,6 +19,8 @@ export default function PUTOIPage() {
             <main>
                 <HeroSection />
                 <AboutSection />
+                <SejarahSection />
+                <TeknologiSection />
                 <OrganizationSection />
                 <PartnersSection />
                 <WhyChooseUsSection />

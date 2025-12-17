@@ -106,7 +106,7 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
         </div>
 
         {/* Sejarah */}
-        <div className="mb-20">
+        {/* <div className="mb-20">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-900 px-4 py-2 rounded-full mb-4">
               <FlaskConical className="w-4 h-4" />
@@ -140,10 +140,10 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Fasilitas Teknologi */}
-        <div className="mb-20">
+        {/* <div className="mb-20">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-900 px-4 py-2 rounded-full mb-4">
               <FlaskConical className="w-4 h-4" />
@@ -156,7 +156,6 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-1 gap-6 max-w-5xl mx-auto">
-            {/* Water Treatment Plant Card */}
             <div className="bg-white border-2 border-blue-100 rounded-2xl shadow p-6 flex flex-col">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="wtp">
@@ -176,7 +175,6 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
                 </AccordionItem>
               </Accordion>
             </div>
-            {/* Instrument Card */}
             <div className="bg-white border-2 border-blue-100 rounded-2xl shadow p-6 flex flex-col">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="instrument">
@@ -193,7 +191,6 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
                 </AccordionItem>
               </Accordion>
             </div>
-            {/* Controller dan Monitoring Card */}
             <div className="bg-white border-2 border-blue-100 rounded-2xl shadow p-6 flex flex-col">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="controller">
@@ -211,12 +208,12 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
             </div>
           </div>
 
-          {/* <div className="mt-8 bg-blue-50 rounded-xl p-6 text-center">
+          <div className="mt-8 bg-blue-50 rounded-xl p-6 text-center">
             <p className="text-gray-700">
               Semua sistem dikontrol secara otomatis dengan sensor tekanan, pH, dan TDS, menjadikan PUTOI-TIK sebagai fasilitas pembelajaran berbasis <span className="text-blue-900">smart water management system</span>.
             </p>
-          </div> */}
-        </div>
+          </div>
+        </div> */}
 
         {/* Keunggulan PUTOI-TIK */}
         {/* <div>

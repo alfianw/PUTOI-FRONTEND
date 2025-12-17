@@ -46,6 +46,8 @@ export function NavbarPUTOI() {
 
   const navLinks = [
     { id: 'about', label: 'Tentang' },
+    { id: 'sejarah', label: 'Sejarah' },
+    { id: 'teknologi', label: 'Teknologi' },
     { id: 'organization', label: 'Organisasi' },
     { id: 'why-choose-us', label: 'Keunggulan' },
     { id: 'products', label: 'AMDK' },
