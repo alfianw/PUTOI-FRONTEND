@@ -1,6 +1,7 @@
 import { FlaskConical } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
-import sejarahImg from "../../assets/sejarah.jpg";
+import sejarah1Img from "../../assets/sejarah-1.jpg";
+import sejarah2Img from "../../assets/sejarah-2.jpg";
 
 export function SejarahSection() {
   return (
@@ -16,27 +17,94 @@ export function SejarahSection() {
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           <div>
             <ImageWithFallback
-              src={sejarahImg}
+              src={sejarah1Img}
               alt="Sejarah PUTOI-TIK"
               className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
             />
           </div>
           <div>
-            <p className="text-gray-700 leading-relaxed text-justify mb-4">
-              PUTOI-TIK (Pusat Unggulan Teknologi Otomasi Industri berbasis Teknologi Informasi dan Komunikasi) lahir dari kebutuhan strategis Politeknik Negeri Jakarta untuk meningkatkan kualitas pendidikan vokasi, memperkuat riset terapan, serta menyiapkan sumber daya manusia yang kompeten di bidang otomasi industri dan teknologi informasi. Di era percepatan digitalisasi industri, PNJ melihat perlunya sebuah fasilitas pembelajaran terpadu yang tidak hanya menyediakan praktik laboratorium, tetapi juga mampu menduplikasi lingkungan industri modern secara nyata.
+            <p
+              className="text-gray-700 leading-relaxed text-justify mb-4"
+              style={{ textAlign: "justify" }}
+            >
+              <b>
+                PUTOI-TIK (Pusat Unggulan Teknologi Otomasi Industri berbasis
+                TIK)
+              </b>{" "}
+              didirikan oleh Politeknik Negeri Jakarta sebagai respons strategis
+              terhadap kebutuhan peningkatan kualitas pendidikan vokasi, riset
+              terapan, dan penyiapan sumber daya manusia kompeten di bidang
+              otomasi industri dan teknologi informasi. PUTOI-TIK dirancang
+              sebagai fasilitas pembelajaran terpadu yang merepresentasikan
+              lingkungan industri modern secara nyata.
             </p>
-            <p className="text-gray-700 leading-relaxed text-justify mb-4">
-              Pada tahun 2015, melalui program ADB LOAN INO-2928, PNJ mulai menginisiasi pembangunan Center of Excellence yang kemudian bernama PUTOI-TIK. Program ini mendukung pengembangan laboratorium otomasi industri berstandar internasional dengan integrasi keilmuan teknologi instrumentasi, kontrol proses, jaringan industri, telekomunikasi, serta sistem informasi—sehingga menjadi laboratorium terbesar dan paling lengkap di Jurusan Teknik Elektro. Pada periode 2015–2016, pembangunan fasilitas utama seperti Water Treatment Plant (WTP) kapasitas 3000 L/jam dan sistem kontrol DCS–SCADA mulai direalisasikan dan beroperasi sebagai platform pembelajaran dan riset terpadu.
+            <p
+              className="text-gray-700 leading-relaxed text-justify mb-4"
+              style={{ textAlign: "justify" }}
+            >
+              Pengembangan PUTOI-TIK dimulai pada tahun <b>2015</b> melalui
+              program <b>ADB LOAN INO-2928</b>, dengan pembangunan laboratorium
+              otomasi industri berstandar internasional yang mengintegrasikan
+              instrumentasi, kontrol proses, jaringan industri, telekomunikasi,
+              dan sistem informasi. Pada periode <b>2015–2016</b>, fasilitas
+              utama seperti <b>Water Treatment Plant (WTP) 3000 L/jam</b> serta
+              sistem <b>DCS–SCADA</b> mulai beroperasi sebagai platform
+              pembelajaran dan riset.
             </p>
-            <p className="text-gray-700 leading-relaxed text-justify mb-4">
-              Pengembangan fasilitas berlanjut pada tahun 2017–2018, ditandai dengan hadirnya mesin Automatic Filling Machine 600 mL dan 18,9 L berbasis teknologi LabVIEW Real-Time dan FPGA. Kehadiran fasilitas ini makin memperkuat karakter PUTOI-TIK sebagai Teaching Factory, yaitu model pembelajaran vokasi yang meniru proses industri sesungguhnya. Integrasi antara instrumentasi, kontrol, IT enterprise, dan telekomunikasi menjadikan PUTOI-TIK sebagai ekosistem nyata bagi mahasiswa dan industri untuk melakukan praktik, pengujian, dan inovasi.
+            <p
+              className="text-gray-700 leading-relaxed text-justify mb-4"
+              style={{ textAlign: "justify" }}
+            >
+              Pada tahun <b>2017–2018</b>, PUTOI-TIK diperkuat dengan{" "}
+              <b>Automatic Filling Machine</b> berbasis{" "}
+              <b>LabVIEW Real-Time dan FPGA</b>, yang menegaskan perannya
+              sebagai <b>Teaching Factory</b>. Integrasi teknologi otomasi dan
+              TIK menjadikan PUTOI-TIK sebagai ekosistem nyata untuk praktik,
+              pengujian, dan inovasi mahasiswa serta mitra industri.
             </p>
-            <p className="text-gray-700 leading-relaxed text-justify mb-4">
-              Sejak awal berdirinya, PUTOI-TIK dirancang tidak hanya sebagai laboratorium pembelajaran, tetapi juga sebagai Tempat Uji Kompetensi (TUK) serta pusat sertifikasi bagi profesi otomasi industri berbasis TIK. PUTOI-TIK juga menjadi wadah kolaborasi pendidikan–industri untuk penelitian terapan, inovasi teknologi, dan pengembangan produk berbasis kontrol proses dan teknologi informasi.
+          </div>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto pt-4">
+          <div>
+            <p
+              className="text-gray-700 leading-relaxed text-justify mb-4"
+              style={{ textAlign: "justify" }}
+            >
+              Selain sebagai laboratorium, PUTOI-TIK juga berfungsi sebagai{" "}
+              <b>Tempat Uji Kompetensi (TUK)</b>, pusat sertifikasi, dan wadah
+              kolaborasi pendidikan–industri dalam pengembangan riset terapan
+              dan inovasi otomasi. Pada tahun <b>2025</b>, PUTOI-TIK memperoleh{" "}
+              <b>
+                Hibah Program Revitalisasi Perguruan Tinggi Vokasi (PRPTNV)
+                Tahun 2025
+              </b>{" "}
+              sebagai bagian dari inisiatif{" "}
+              <b>Kementerian Sains dan Teknologi (SAINTEK) Berdampak</b>, yang
+              berfokus pada peningkatan relevansi, kebermanfaatan, dan dampak
+              nyata pendidikan vokasi bagi industri dan masyarakat.{" "}
+              <b>
+                Website PUTOI-TIK ini merupakan salah satu luaran resmi dari
+                kegiatan PRPTNV 2025
+              </b>
+              .
             </p>
-            <p className="text-gray-700 leading-relaxed text-justify">
-              Hingga kini, PUTOI-TIK berkembang menjadi pusat unggulan yang mendukung pengembangan SDM level teknisi hingga ahli (KKNI Level 5–8), menghasilkan inovasi otomasi, serta menjadi referensi nasional dalam pengembangan teaching factory dan teknologi industri berbasis TIK. Keberadaan PUTOI-TIK memperkuat posisi PNJ sebagai institusi vokasi yang adaptif terhadap perkembangan industri 4.0 dan kebutuhan tenaga kerja kompeten di era digital.
+            <p
+              className="text-gray-700 leading-relaxed text-justify"
+              style={{ textAlign: "justify" }}
+            >
+              Hingga kini, PUTOI-TIK berkembang sebagai pusat unggulan yang
+              mendukung pengembangan SDM <b>KKNI Level 5–8</b>, mendorong
+              inovasi otomasi industri berbasis TIK, serta memperkuat posisi PNJ
+              sebagai institusi vokasi yang adaptif terhadap kebutuhan{" "}
+              <b>Industri 4.0</b> dan transformasi digital nasional.
             </p>
+          </div>
+          <div>
+            <ImageWithFallback
+              src={sejarah2Img}
+              alt="Sejarah PUTOI-TIK"
+              className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
+            />
           </div>
         </div>
       </div>

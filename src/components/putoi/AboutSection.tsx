@@ -1,5 +1,16 @@
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../ui/accordion";
-import { Droplet, Target, Briefcase, FlaskConical, CheckCircle2 } from "lucide-react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "../ui/accordion";
+import {
+  Droplet,
+  Target,
+  Briefcase,
+  FlaskConical,
+  CheckCircle2,
+} from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import tentangKamiImg from "../../assets/tentang-kami.png";
 import sejarahImg from "../../assets/sejarah.jpg";
@@ -11,7 +22,7 @@ export function AboutSection() {
     "Water Softener – Mengurangi kandungan kapur (hardness)",
     "Reverse Osmosis System (RO) – Menghilangkan hingga 95% total padatan terlarut (TDS)",
     "Ozone Reactor – Membunuh bakteri dan menyegarkan air",
-    "Ultraviolet Sterilizer – Tahap akhir disinfeksi untuk memastikan air aman diminum"
+    "Ultraviolet Sterilizer – Tahap akhir disinfeksi untuk memastikan air aman diminum",
   ];
 
   const keunggulan = [
@@ -19,7 +30,7 @@ export function AboutSection() {
     "Dilengkapi Instrumentasi Monitoring Otomatis (IoT Ready)",
     "Terintegrasi Dengan Sistem Pelatihan Dan Sertifikasi",
     "Mendukung Kegiatan Penelitian Terapan Dan Komersialisasi Produk",
-    "Menyediakan Layanan Masyarakat & Jasa Industri Air Bersih"
+    "Menyediakan Layanan Masyarakat & Jasa Industri Air Bersih",
   ];
 
   return (
@@ -33,7 +44,8 @@ export function AboutSection() {
           </div>
           <h2 className="text-4xl mb-4 text-blue-900">PUTOI-TIK</h2>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto">
-            Pusat Unggulan Teknologi Otomasi Industri berbasis Teknologi Informasi dan Komunikasi
+            Pusat Unggulan Teknologi Otomasi Industri berbasis Teknologi
+            Informasi dan Komunikasi
           </p>
         </div>
 
@@ -47,11 +59,26 @@ export function AboutSection() {
             />
           </div>
           <div>
-            <p className="text-gray-700 mb-6 leading-relaxed text-justify">
-PUTOI-TIK (Pusat Unggulan Teknologi Otomasi Industri berbasis Teknologi Informasi dan Komunikasi) merupakan pusat unggulan (Center of Excellence) yang dikembangkan oleh Jurusan Teknik Elektro Politeknik Negeri Jakarta sebagai fasilitas terpadu untuk pendidikan vokasi, riset terapan, sertifikasi kompetensi, serta layanan teknologi di bidang otomasi industri. PUTOI-TIK didirikan melalui program ADB LOAN INO-2928 dan dirancang sebagai laboratorium modern yang mendukung pengembangan SDM dan inovasi teknologi tingkat nasional maupun regional.
+            <p className="text-gray-700 mb-6 leading-relaxed text-justify" style={{ textAlign: 'justify' }}>
+              PUTOI-TIK (Pusat Unggulan Teknologi Otomasi Industri berbasis
+              Teknologi Informasi dan Komunikasi) merupakan pusat unggulan
+              (Center of Excellence) yang dikembangkan oleh Jurusan Teknik
+              Elektro Politeknik Negeri Jakarta sebagai fasilitas terpadu untuk
+              pendidikan vokasi, riset terapan, sertifikasi kompetensi, serta
+              layanan teknologi di bidang otomasi industri. PUTOI-TIK didirikan
+              melalui program ADB LOAN INO-2928 dan dirancang sebagai
+              laboratorium modern yang mendukung pengembangan SDM dan inovasi
+              teknologi tingkat nasional maupun regional.
             </p>
-            <p className="text-gray-700 leading-relaxed text-justify">
-PUTOI-TIK menaungi empat klaster keahlian utama, yaitu Instrumentation & Control Engineering, Telecommunication Engineering, Electrical Engineering, dan IT Enterprise Engineering. Keempat klaster ini terintegrasi dalam satu ekosistem pembelajaran industri yang dilengkapi fasilitas pengolahan air minum (Water Treatment Plant), mesin pengisian botol otomatis, sistem kontrol DCS–SCADA, server enterprise, jaringan telekomunikasi, serta peralatan instrumentasi berstandar industri.
+            <p className="text-gray-700 leading-relaxed text-justify" style={{ textAlign: 'justify' }}>
+              PUTOI-TIK menaungi empat klaster keahlian utama, yaitu
+              Instrumentation & Control Engineering, Telecommunication
+              Engineering, Electrical Engineering, dan IT Enterprise
+              Engineering. Keempat klaster ini terintegrasi dalam satu ekosistem
+              pembelajaran industri yang dilengkapi fasilitas pengolahan air
+              minum (Water Treatment Plant), mesin pengisian botol otomatis,
+              sistem kontrol DCS–SCADA, server enterprise, jaringan
+              telekomunikasi, serta peralatan instrumentasi berstandar industri.
             </p>
             {/* <p className="text-gray-700 leading-relaxed text-justify">
 Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran praktik bagi mahasiswa, tenaga industri, serta calon tenaga kerja untuk memperoleh kompetensi level teknisi hingga level ahli berdasarkan KKNI. Selain itu, fasilitas ini berfungsi sebagai Tempat Uji Kompetensi (TUK) untuk berbagai skema otomasi industri berbasis TIK, mencakup operator, teknisi, perancang perangkat lunak, hingga sistem designer.
@@ -69,7 +96,10 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
               <h3 className="text-2xl">Visi</h3>
             </div>
             <p className="leading-relaxed">
-              Menjadi pusat unggulan nasional dalam bidang pengolahan air industri dan lingkungan, yang mendukung pendidikan vokasi, penelitian terapan, dan layanan profesional menuju industri hijau berkelanjutan.
+              Menjadi pusat unggulan nasional dalam bidang pengolahan air
+              industri dan lingkungan, yang mendukung pendidikan vokasi,
+              penelitian terapan, dan layanan profesional menuju industri hijau
+              berkelanjutan.
             </p>
           </div>
 
@@ -83,23 +113,38 @@ Melalui pendekatan Teaching Factory System, PUTOI-TIK menjadi wadah pembelajaran
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Mengembangkan fasilitas water treatment berteknologi tinggi untuk pelatihan dan sertifikasi.</span>
+                <span className="text-gray-700">
+                  Mengembangkan fasilitas water treatment berteknologi tinggi
+                  untuk pelatihan dan sertifikasi.
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Menyediakan layanan kalibrasi dan pengujian kualitas air sesuai standar industri.</span>
+                <span className="text-gray-700">
+                  Menyediakan layanan kalibrasi dan pengujian kualitas air
+                  sesuai standar industri.
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Menghasilkan produk air minum dalam kemasan yang aman, higienis, dan berstandar nasional.</span>
+                <span className="text-gray-700">
+                  Menghasilkan produk air minum dalam kemasan yang aman,
+                  higienis, dan berstandar nasional.
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Mendukung kolaborasi riset antara akademisi, industri, dan pemerintah dalam bidang pengolahan air dan efisiensi energi.</span>
+                <span className="text-gray-700">
+                  Mendukung kolaborasi riset antara akademisi, industri, dan
+                  pemerintah dalam bidang pengolahan air dan efisiensi energi.
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-5 h-5 text-blue-900 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">Meningkatkan kompetensi mahasiswa melalui hands-on project dan problem-based learning berbasis teknologi proses nyata.</span>
+                <span className="text-gray-700">
+                  Meningkatkan kompetensi mahasiswa melalui hands-on project dan
+                  problem-based learning berbasis teknologi proses nyata.
+                </span>
               </li>
             </ul>
           </div>
