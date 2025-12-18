@@ -10,6 +10,8 @@ export function Hero() {
 
   const [countTraining, setCountTraining] = useState(0);
 
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
   const fetchTraining = async () => {
     const body = {
       sortBy: "id",
@@ -22,7 +24,7 @@ export function Hero() {
       },
     };
 
-    const res = await fetch("http://localhost:8080/api/training/pagination", {
+    const res = await fetch(`${API_BASE}/api/training/pagination`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

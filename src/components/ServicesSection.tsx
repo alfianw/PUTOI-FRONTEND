@@ -164,7 +164,7 @@ export function ServicesSection() {
                         className="bg-white text-blue-900 border border-transparent cursor-pointer hover:bg-white hover:text-blue-900"
                         onClick={(e) => {
                           e.stopPropagation();
-                          window.open('https://wa.me/6285755450598', '_blank');
+                          window.open('https://wa.me/62895365540539', '_blank');
                         }}
                       >
                         Hubungi Kami
