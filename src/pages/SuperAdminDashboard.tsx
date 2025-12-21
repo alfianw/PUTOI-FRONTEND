@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../utils/auth-context';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { Button } from '../components/ui/button';
@@ -96,14 +96,45 @@ export default function SuperAdminDashboard() {
     const [addNewsData, setAddNewsData] = useState({
         title: "",
         description: "",
+        images: [] as File[],
     });
-    const [newsForm, setNewsForm] = useState<NewsItem>({
+    // const [newsForm, setNewsForm] = useState<{
+    //     id: number;
+    //     title: string;
+    //     description: string;
+    //     author: string;
+    //     createdAt: string;
+    //     updateAt: string;
+    //     images: ImageDetail[];
+    // }>({
+    //     id: 0,
+    //     title: "",
+    //     description: "",
+    //     author: "",
+    //     createdAt: "",
+    //     updateAt: "",
+    //     images: [],
+    // });
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    interface ImageDetail {
+        imageId?: number;  // null untuk gambar baru
+        url?: string;      // URL gambar lama
+        file?: File;       
+    }
+
+    interface NewsForm {
+        id: number;
+        title: string;
+        description: string;
+        author?: string;
+        images: ImageDetail[];
+    }
+
+    const [newsForm, setNewsForm] = useState<NewsForm>({
         id: 0,
         title: "",
         description: "",
-        author: "",
-        createdAt: "",
-        updateAt: "",
+        images: [],
     });
 
     //jasa
@@ -409,41 +440,94 @@ export default function SuperAdminDashboard() {
             const data = await response.json();
 
             if (data.code === "00") {
+                const images = data.data.images?.map((img: any) => ({
+                    imageId: img.id,
+                    url: `${API_BASE}${img.imagePath}`
+                })) || [];
+
                 setDetailNews(data.data);
                 setShowNewsModal(true);
-                setNewsForm(data.data);
+                setNewsForm({ ...data.data, images });
             }
         } catch (err) {
             console.error("Get detail news error:", err);
         }
     };
 
+    // Fungsi hapus gambar
+    const removeImage = (imageId?: number, index?: number) => {
+        setNewsForm((prev) => ({
+            ...prev,
+            images: prev.images.filter((img, idx) =>
+                imageId ? img.imageId !== imageId : idx !== index
+            ),
+        }));
+    };
+
+    // Fungsi ubah gambar
+    const replaceImage = (imageId: number, file: File) => {
+        setNewsForm((prev) => ({
+            ...prev,
+            images: prev.images.map((img) =>
+                img.imageId === imageId ? { ...img, file, url: undefined } : img
+            ),
+        }));
+    };
+
+    const addNewImage = (file: File) => {
+        setNewsForm((prev) => ({
+            ...prev,
+            images: [...prev.images, { file }],
+        }));
+    };
+
     const updateNews = async () => {
         try {
             const token = localStorage.getItem("accessToken");
+            if (!token) return;
+
+            const formData = new FormData();
+
+            // Payload JSON
+            // Include a flag `hasFile` for each image so backend knows which
+            // images correspond to uploaded files (files are appended compactly).
+            const payload = {
+                id: newsForm.id,
+                title: newsForm.title,
+                description: newsForm.description,
+                images: newsForm.images.map((img) => ({
+                    imageId: img.imageId || null,
+                    hasFile: !!img.file,
+                })),
+            };
+
+            formData.append("data", JSON.stringify(payload));
+
+            // Kirim file sesuai urutan array
+            newsForm.images.forEach((img) => {
+                if (img.file) {
+                    formData.append("images", img.file);
+                }
+            });
 
             const res = await fetch(`${API_BASE}/api/news/update`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(newsForm)
+                body: formData,
             });
 
             const data = await res.json();
-
             if (data.code === "00") {
                 setDetailNews(data.data);
                 setIsEditNews(false);
-                await fetchNews();
                 showToast("success", "Berita berhasil diperbarui");
             } else {
                 showToast("error", data.message || "Gagal memperbarui berita");
             }
-
         } catch (err) {
-            console.error("Update news error:", err);
+            console.error(err);
             showToast("error", "Terjadi kesalahan server!");
         }
     };
@@ -479,30 +563,39 @@ export default function SuperAdminDashboard() {
     const createNews = async () => {
         try {
             const token = localStorage.getItem("accessToken");
+            if (!token) return;
+
+            const formData = new FormData();
+            formData.append(
+                "data",
+                JSON.stringify({
+                    title: addNewsData.title,
+                    description: addNewsData.description
+                })
+            );
+
+            addNewsData.images.forEach((file) => {
+                formData.append("images", file);
+            });
 
             const res = await fetch(`${API_BASE}/api/news/create`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    title: addNewsData.title,
-                    description: addNewsData.description
-                })
+                body: formData,
             });
 
             const data = await res.json();
 
             if (data.code === "00") {
                 setShowAddNewsModal(false);
-                setAddNewsData({ title: "", description: "" });
+                setAddNewsData({ title: "", description: "", images: [] });
                 await fetchNews();
                 showToast("success", "Berita berhasil dibuat");
             } else {
                 showToast("error", data.message || "Gagal membuat berita");
             }
-
         } catch (err) {
             console.error("Create news error:", err);
             showToast("error", "Terjadi kesalahan server!");
@@ -515,7 +608,7 @@ export default function SuperAdminDashboard() {
 
     useEffect(() => {
         if (showAddNewsModal) {
-            setAddNewsData({ title: "", description: "" });
+            setAddNewsData({ title: "", description: "", images: [] });
 
             // Reset editor content jika sudah ada
             if (editor) {
@@ -952,8 +1045,9 @@ export default function SuperAdminDashboard() {
                     limit: String(tpLimit),
                     page: String(tpPage),
                     filters: {
-                        name: filterTPName,
+                        name: "",
                         email: "",
+                        training: filterTPName
                     }
                 })
             });
@@ -1310,7 +1404,7 @@ export default function SuperAdminDashboard() {
                             </DialogHeader>
 
                             {detailUser && (
-                                <div className="space-y-4 text-sm">
+                                <div className={`space-y-4 text-sm ${!isEdit ? 'bg-gray-100 p-4 rounded' : 'bg-white p-4 rounded'}`}>
 
                                     {/* ==== 2 KOLOM ==== */}
                                     <div className="flex gap-4">
@@ -1356,7 +1450,7 @@ export default function SuperAdminDashboard() {
                                                     type="text"
                                                     disabled
                                                     value={formData.email}
-                                                    className="w-full border bg-gray-100 rounded px-3 py-2"
+                                                    className="w-full border rounded px-3 py-2"
                                                 />
                                             </div>
 
@@ -1670,7 +1764,7 @@ export default function SuperAdminDashboard() {
                                     <label className="block mb-1">Judul Pelatihan</label>
                                     <input
                                         type="text"
-                                        className="w-full border rounded px-3 py-2"
+                                        className={`w-full border rounded px-3 py-2 ${!isEditTraining ? 'bg-gray-100' : 'bg-white'}`}
                                         value={addTrainingData.trainingTitle}
                                         onChange={(e) =>
                                             setAddTrainingData({
@@ -1720,7 +1814,7 @@ export default function SuperAdminDashboard() {
                                         <div key={idx} className="flex gap-2 mb-2">
                                             <input
                                                 type="text"
-                                                className="w-full border rounded px-3 py-2"
+                                                className={`w-full border rounded px-3 py-2 ${!isEdit ? 'bg-gray-100' : 'bg-white'}`}
                                                 value={val}
                                                 onChange={(e) => {
                                                     const updated = [...addTrainingData.trainingMaterials];
@@ -1810,7 +1904,7 @@ export default function SuperAdminDashboard() {
                                         <div key={idx} className="flex gap-2 mb-2">
                                             <input
                                                 type="text"
-                                                className="w-full border rounded px-3 py-2"
+                                                className={`w-full border rounded px-3 py-2 ${!isEdit ? 'bg-gray-100' : 'bg-white'}`}
                                                 value={val}
                                                 onChange={(e) => {
                                                     const updated = [...addTrainingData.facilities];
@@ -1886,7 +1980,7 @@ export default function SuperAdminDashboard() {
                                     <label className="block mb-1">Tanggal Selesai</label>
                                     <input
                                         type="date"
-                                        className="w-full border rounded px-3 py-2"
+                                                    className={`w-full border rounded px-3 py-2 ${!isEdit ? 'bg-gray-100' : 'bg-white'}`}
                                         value={addTrainingData.endDate || ""}
                                         onChange={(e) => {
                                             const end = e.target.value;
@@ -2023,7 +2117,7 @@ export default function SuperAdminDashboard() {
                             </DialogHeader>
 
                             {detailTraining && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 text-sm ${!isEditTraining ? 'bg-gray-100 p-4 rounded' : 'bg-white p-4 rounded'}`}>
 
                                     {/* Training Title */}
                                     <div>
@@ -2151,7 +2245,7 @@ export default function SuperAdminDashboard() {
                                         <input
                                             type="text"
                                             disabled={!isEditTraining}
-                                            className="w-full border rounded px-3 py-2"
+                                            className={`w-full border rounded px-3 py-2 ${!isEditTraining ? 'bg-gray-100' : 'bg-white'}`}
                                             value={trainingForm.competencyTestPlace}
                                             onChange={(e) =>
                                                 setTrainingForm({
@@ -2168,7 +2262,7 @@ export default function SuperAdminDashboard() {
                                         <input
                                             type="number"
                                             disabled={!isEditTraining}
-                                            className="w-full border rounded px-3 py-2"
+                                            className={`w-full border rounded px-3 py-2 ${!isEditTraining ? 'bg-gray-100' : 'bg-white'}`}
                                             value={trainingForm.trainingFee}
                                             onChange={(e) =>
                                                 setTrainingForm({
@@ -2479,6 +2573,66 @@ export default function SuperAdminDashboard() {
 
                             <div className="space-y-3 text-sm">
 
+                                <div className="mb-4">
+                                    <label className="block mb-2 font-medium text-gray-700">Upload Gambar</label>
+
+                                    {/* Tombol Upload */}
+                                    <Button
+                                        variant="default"
+                                        onClick={() => fileInputRef.current?.click()}
+                                    >
+                                        Pilih Gambar
+                                    </Button>
+
+                                    {/* Input file disembunyikan */}
+                                    <input
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        ref={fileInputRef}
+                                        onChange={(e) => {
+                                            if (!e.target.files) return;
+                                            const newFiles = Array.from(e.target.files);
+                                            setAddNewsData((prev) => ({
+                                                ...prev,
+                                                images: [...prev.images, ...newFiles],
+                                            }));
+                                            e.target.value = "";
+                                        }}
+                                        className="hidden"
+                                    />
+
+                                    {/* Preview Gambar */}
+                                    <div className="mt-3 grid grid-cols-3 gap-3">
+                                        {addNewsData.images.map((file, idx) => (
+                                            <div key={idx} className="flex flex-col items-center border rounded overflow-hidden">
+                                                {/* Preview gambar */}
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    alt={file.name}
+                                                    className="w-full h-24 object-cover"
+                                                />
+
+                                                {/* Tombol hapus di bawah gambar */}
+                                                <Button
+                                                    variant="default"
+                                                    size="sm"
+                                                    className="mt-2"
+                                                    onClick={() =>
+                                                        setAddNewsData((prev) => ({
+                                                            ...prev,
+                                                            images: prev.images.filter((_, i) => i !== idx),
+                                                        }))
+                                                    }
+                                                >
+                                                    Hapus
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                </div>
+
                                 {/* Title */}
                                 <div>
                                     <label className="block mb-1">Judul</label>
@@ -2565,7 +2719,60 @@ export default function SuperAdminDashboard() {
                             </DialogHeader>
 
                             {detailNews && (
-                                <div className="space-y-3 text-sm">
+                                <div className={`space-y-3 text-sm ${!isEditNews ? 'bg-gray-100 p-4 rounded' : 'bg-white p-4 rounded'}`}>
+                                    <div className="grid grid-cols-3 gap-3 mt-3">
+                                        {newsForm.images.map((img, idx) => (
+                                            <div key={idx} className="flex flex-col items-center border rounded p-2">
+                                                <img
+                                                    src={img.file ? URL.createObjectURL(img.file) : (img.url || "")}
+                                                    alt="news"
+                                                    className="w-full h-24 object-cover"
+                                                />
+
+                                                {isEditNews && (
+                                                    <div className="flex flex-col gap-1 mt-2 w-full">
+                                                        {/* Hapus */}
+                                                        <Button
+                                                            variant="default"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                removeImage(img.imageId, img.imageId ? undefined : idx)
+                                                            }
+                                                        >
+                                                            Hapus
+                                                        </Button>
+
+                                                        {/* Ubah gambar */}
+                                                        {img.imageId && (
+                                                            <>
+                                                                <Button
+                                                                    variant="default"
+                                                                    size="sm"
+                                                                    onClick={() =>
+                                                                        document.getElementById(`replace-file-${idx}`)?.click()
+                                                                    }
+                                                                >
+                                                                    Ubah Gambar
+                                                                </Button>
+                                                                <input
+                                                                    type="file"
+                                                                    id={`replace-file-${idx}`}
+                                                                    accept="image/*"
+                                                                    className="hidden"
+                                                                    onChange={(e) => {
+                                                                        if (!e.target.files || e.target.files.length === 0) return;
+                                                                        replaceImage(img.imageId!, e.target.files[0]);
+                                                                        e.target.value = "";
+                                                                    }}
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+
 
                                     {/* Title */}
                                     <div>
@@ -2812,7 +3019,7 @@ export default function SuperAdminDashboard() {
                             </DialogHeader>
 
                             {detailProduct && (
-                                <div className="space-y-3 text-sm">
+                                <div className={`space-y-3 text-sm ${!isEditProduct ? 'bg-gray-100 p-4 rounded' : 'bg-white p-4 rounded'}`}>
 
                                     <div>
                                         <label className="block mb-1">Judul</label>
@@ -2886,7 +3093,7 @@ export default function SuperAdminDashboard() {
                                 <div className="flex items-center gap-3 ml-auto">
                                     <input
                                         type="text"
-                                        placeholder="Filter bedasarkan nama..."
+                                        placeholder="Filter bedasarkan pelatihan..."
                                         value={filterTPName}
                                         onChange={(e) => {
                                             setFilterTPName(e.target.value);
@@ -2998,7 +3205,7 @@ export default function SuperAdminDashboard() {
                             </DialogHeader>
 
                             {detailTP && (
-                                <div className="space-y-3 text-sm">
+                                <div className={`space-y-3 text-sm ${!isEditTP ? 'bg-gray-100 p-4 rounded' : 'bg-white p-4 rounded'}`}>
 
                                     <div>
                                         <label className="block mb-1">Nama</label>

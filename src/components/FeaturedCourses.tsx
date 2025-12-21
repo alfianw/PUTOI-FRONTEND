@@ -27,10 +27,11 @@ export function FeaturedCourses() {
   const [detailData, setDetailData] = useState<any>(null);
   const [isRegistered, setIsRegistered] = useState(false);
   const [registeredTrainings, setRegisteredTrainings] = useState<Set<number>>(new Set());
-  
+
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [selectedTrainingId, setSelectedTrainingId] = useState<number | null>(null);
   const [selectedTrainingTitle, setSelectedTrainingTitle] = useState<string>("");
+  const [dialogErrorMessage, setDialogErrorMessage] = useState<string | null>(null);
 
   // TOAST STATE
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -73,7 +74,7 @@ export function FeaturedCourses() {
     const data = await res.json();
     setTrainings(data.data || []);
     setTotalPages(data.totalPages || 1);
-    
+
     // Check registration status for all trainings
     const token = localStorage.getItem("accessToken");
     if (token && data.data) {
@@ -95,7 +96,7 @@ export function FeaturedCourses() {
       }
       setRegisteredTrainings(registeredSet);
     }
-    
+
     setLoading(false);
   };
 
@@ -115,7 +116,7 @@ export function FeaturedCourses() {
   // DAFTAR PELATIHAN
   const daftarPelatihan = async () => {
     if (!selectedTrainingId) return;
-    
+
     const token = localStorage.getItem("accessToken");
     if (!token) {
       openAuthModal("signin");
@@ -133,30 +134,23 @@ export function FeaturedCourses() {
         body: JSON.stringify({ trainingId: selectedTrainingId }),
       });
 
-      if (!response.ok) {
-        // Tangani error dari backend
-        const errorData = await response.json();
-        showToast("error", errorData.message || "Gagal daftar pelatihan.");
-        setShowConfirmDialog(false);
-        return;
-      }
-
       const data = await response.json();
 
-      if (data.code === "00") {
+      if (response.ok && data.code === "00") {
         showToast("success", "Berhasil daftar pelatihan!");
         setShowDetail(false);
         setShowConfirmDialog(false);
-        // Update registered trainings set
         setRegisteredTrainings(prev => new Set(prev).add(selectedTrainingId));
+        setDialogErrorMessage(null);
+      } else if (response.status === 409) {
+        // QUOTA FULL: tampilkan error di dialog
+        setDialogErrorMessage(data.message || "Kuota pelatihan sudah penuh.");
       } else {
-        showToast("error", data.message || "Gagal daftar pelatihan.");
-        setShowConfirmDialog(false);
+        setDialogErrorMessage(data.message || "Gagal daftar pelatihan.");
       }
     } catch (err: any) {
       console.error(err);
-      showToast("error", err.message || "Terjadi kesalahan saat mendaftar pelatihan.");
-      setShowConfirmDialog(false);
+      setDialogErrorMessage(err.message || "Terjadi kesalahan saat mendaftar pelatihan.");
     }
   };
 
@@ -306,11 +300,10 @@ export function FeaturedCourses() {
 
                         <Button
                           disabled={registeredTrainings.has(item.id)}
-                          className={`border border-transparent cursor-pointer ${
-                            registeredTrainings.has(item.id)
-                              ? 'bg-white text-gray-600 cursor-not-allowed opacity-70'
-                              : 'bg-white text-blue-900 hover:bg-white hover:text-blue-900'
-                          }`}
+                          className={`border border-transparent cursor-pointer ${registeredTrainings.has(item.id)
+                            ? 'bg-white text-gray-600 cursor-not-allowed opacity-70'
+                            : 'bg-white text-blue-900 hover:bg-white hover:text-blue-900'
+                            }`}
                           onClick={(e) => {
                             e.stopPropagation();
                             if (!registeredTrainings.has(item.id)) {
@@ -461,29 +454,59 @@ export function FeaturedCourses() {
           </Dialog>
 
           {/* CONFIRM DIALOG */}
-          <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+          <Dialog
+            open={showConfirmDialog}
+            onOpenChange={(open) => {
+              setShowConfirmDialog(open);
+              if (!open) {
+                // Reset pesan error saat dialog ditutup
+                setDialogErrorMessage(null);
+              }
+            }}
+          >
             <DialogContent className="max-w-sm z-[9999]">
               <DialogHeader>
-                <DialogTitle>Konfirmasi Pendaftaran</DialogTitle>
+                <DialogTitle>
+                  {dialogErrorMessage ? "Pendaftaran Gagal" : "Konfirmasi Pendaftaran"}
+                </DialogTitle>
               </DialogHeader>
+
               <div className="space-y-4">
-                <p className="text-gray-700">
-                  Apakah Anda ingin mendaftar pelatihan <strong>{selectedTrainingTitle}</strong>?
-                </p>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowConfirmDialog(false)}
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    className="bg-blue-900 hover:bg-blue-700 text-white"
-                    onClick={daftarPelatihan}
-                  >
-                    Ya, Daftar
-                  </Button>
-                </div>
+                {dialogErrorMessage ? (
+                  <div className="flex items-center bg-red-100 text-red-700 p-3 rounded gap-2">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span>Kuota pelatihan penuh</span>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-gray-700">
+                      Apakah Anda ingin mendaftar pelatihan <strong>{selectedTrainingTitle}</strong>?
+                    </p>
+
+                    <div className="flex justify-end gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowConfirmDialog(false)}
+                      >
+                        Batal
+                      </Button>
+                      <Button
+                        className="bg-blue-900 hover:bg-blue-700 text-white"
+                        onClick={daftarPelatihan}
+                      >
+                        Ya, Daftar
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
             </DialogContent>
           </Dialog>

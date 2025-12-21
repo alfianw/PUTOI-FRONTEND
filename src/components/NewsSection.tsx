@@ -33,6 +33,7 @@ export function NewsSection() {
 
   const [showDetail, setShowDetail] = useState(false);
   const [detailData, setDetailData] = useState<any>(null);
+  const [detailImageIndex, setDetailImageIndex] = useState(0);
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   // ===================== FETCH NEWS =====================
@@ -73,6 +74,7 @@ export function NewsSection() {
 
     const data = await res.json();
     setDetailData(data.data);
+    setDetailImageIndex(0);
     setShowDetail(true);
   };
 
@@ -219,6 +221,47 @@ export function NewsSection() {
 
             {detailData && (
               <div className="space-y-4 text-gray-800">
+
+                {/* Image carousel (above title) */}
+                {detailData.images && detailData.images.length > 0 && (
+                  <div className="w-full h-64 bg-gray-100 rounded overflow-hidden relative">
+                    <img
+                      src={encodeURI(`${API_BASE}${detailData.images[detailImageIndex].imagePath}`)}
+                      alt={detailData.title}
+                      className="w-full h-full object-cover"
+                    />
+
+                    {detailData.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDetailImageIndex((i) => (i <= 0 ? detailData.images.length - 1 : i - 1));
+                          }}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                          aria-label="previous image"
+                        >
+                          ‹
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDetailImageIndex((i) => (i >= detailData.images.length - 1 ? 0 : i + 1));
+                          }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                          aria-label="next image"
+                        >
+                          ›
+                        </button>
+
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-2 bg-black/40 text-white text-xs px-2 py-1 rounded">
+                          {detailImageIndex + 1} / {detailData.images.length}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
 
                 <h2 className="text-xl font-bold text-center mb-3 mt-4">
                   {detailData.title}

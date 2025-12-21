@@ -32,7 +32,7 @@ export function Hero() {
 
     const data = await res.json();
 
-    setCountTraining(data.countData); // <-- SIMPAN COUNT DI STATE
+    setCountTraining(data.countData);
   };
 
   useEffect(() => {
