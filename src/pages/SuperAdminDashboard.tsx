@@ -116,10 +116,11 @@ export default function SuperAdminDashboard() {
     //     images: [],
     // });
     const fileInputRef = useRef<HTMLInputElement>(null);
+    // No client-side compression: keep original files
     interface ImageDetail {
         imageId?: number;  // null untuk gambar baru
         url?: string;      // URL gambar lama
-        file?: File;       
+        file?: File;
     }
 
     interface NewsForm {
@@ -455,13 +456,32 @@ export default function SuperAdminDashboard() {
     };
 
     // Fungsi hapus gambar
-    const removeImage = (imageId?: number, index?: number) => {
-        setNewsForm((prev) => ({
-            ...prev,
-            images: prev.images.filter((img, idx) =>
-                imageId ? img.imageId !== imageId : idx !== index
-            ),
-        }));
+    const removeImage = async (imageId?: number, index?: number) => {
+
+        // gambar baru (belum ke DB)
+        if (imageId == null) {
+            setNewsForm((prev) => ({
+                ...prev,
+                images: prev.images.filter((_, idx) => idx !== index),
+            }));
+            return;
+        }
+
+        try {
+            await deleteImageApi(imageId);
+
+            setNewsForm((prev) => ({
+                ...prev,
+                images: prev.images.filter(
+                    (img) => img.imageId !== imageId
+                ),
+            }));
+
+            showToast("success", "Gambar berhasil dihapus");
+        } catch (err) {
+            console.error("delete image error:", err);
+            showToast("error", "Gagal menghapus gambar");
+        }
     };
 
     // Fungsi ubah gambar
@@ -518,17 +538,51 @@ export default function SuperAdminDashboard() {
                 body: formData,
             });
 
-            const data = await res.json();
-            if (data.code === "00") {
-                setDetailNews(data.data);
-                setIsEditNews(false);
-                showToast("success", "Berita berhasil diperbarui");
-            } else {
-                showToast("error", data.message || "Gagal memperbarui berita");
+            const text = await res.text().catch(() => "");
+
+            if (
+                res.status === 413 ||
+                (text && text.includes("MaxUploadSizeExceededException")) ||
+                (text && text.toLowerCase().includes("maximum upload size")) ||
+                (text && text.toLowerCase().includes("maxuploadsizeexceededexception"))
+            ) {
+                showToast("error", "Ukuran file terlalu besar. Silakan gunakan file yang lebih kecil.");
+                return;
             }
-        } catch (err) {
+
+            let data: any = null;
+            try {
+                data = text ? JSON.parse(text) : null;
+            } catch (e) {
+                if (!res.ok) {
+                    showToast("error", "Terjadi kesalahan server!");
+                    return;
+                }
+            }
+
+            if (data) {
+                if (data.code === "00") {
+                    setDetailNews(data.data);
+                    setIsEditNews(false);
+                    showToast("success", "Berita berhasil diperbarui");
+                } else if (String(data.code) === "413" || data.status === 413) {
+                    showToast("error", data.message || "Ukuran file terlalu besar. Silakan gunakan file yang lebih kecil.");
+                } else {
+                    showToast("error", data.message || "Gagal memperbarui berita");
+                }
+            } else {
+                // no JSON body but 200 OK
+                if (!res.ok) {
+                    showToast("error", "Terjadi kesalahan server!");
+                }
+            }
+        } catch (err: any) {
             console.error(err);
-            showToast("error", "Terjadi kesalahan server!");
+            if (err instanceof TypeError || err?.name === 'TypeError') {
+                showToast("error", "Unggahan gagal — ukuran file melebihi batas.");
+            } else {
+                showToast("error", "Terjadi kesalahan server!");
+            }
         }
     };
 
@@ -560,6 +614,32 @@ export default function SuperAdminDashboard() {
         }
     };
 
+    const deleteImageApi = async (imageId: number) => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) throw new Error("No token");
+
+        const res = await fetch(`${API_BASE}/api/news/image/delete`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ imageId: Number(imageId) }),
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || "HTTP error");
+        }
+
+        const data = await res.json();
+        if (data.code !== "00") {
+            throw new Error(data.message || "Failed delete image");
+        }
+
+        return data;
+    };
+
     const createNews = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -586,19 +666,51 @@ export default function SuperAdminDashboard() {
                 body: formData,
             });
 
-            const data = await res.json();
+            const text = await res.text().catch(() => "");
 
-            if (data.code === "00") {
-                setShowAddNewsModal(false);
-                setAddNewsData({ title: "", description: "", images: [] });
-                await fetchNews();
-                showToast("success", "Berita berhasil dibuat");
-            } else {
-                showToast("error", data.message || "Gagal membuat berita");
+            if (
+                res.status === 413 ||
+                (text && text.includes("MaxUploadSizeExceededException")) ||
+                (text && text.toLowerCase().includes("maximum upload size")) ||
+                (text && text.toLowerCase().includes("maxuploadsizeexceededexception"))
+            ) {
+                showToast("error", "Ukuran file terlalu besar. Silakan gunakan file yang lebih kecil.");
+                return;
             }
-        } catch (err) {
+
+            let data: any = null;
+            try {
+                data = text ? JSON.parse(text) : null;
+            } catch (e) {
+                if (!res.ok) {
+                    showToast("error", "Terjadi kesalahan server!");
+                    return;
+                }
+            }
+
+            if (data) {
+                if (data.code === "00") {
+                    setShowAddNewsModal(false);
+                    setAddNewsData({ title: "", description: "", images: [] });
+                    await fetchNews();
+                    showToast("success", "Berita berhasil dibuat");
+                } else if (String(data.code) === "413" || data.status === 413) {
+                    showToast("error", data.message || "Ukuran file terlalu besar. Silakan gunakan file yang lebih kecil.");
+                } else {
+                    showToast("error", data.message || "Gagal membuat berita");
+                }
+            } else {
+                if (!res.ok) {
+                    showToast("error", "Terjadi kesalahan server!");
+                }
+            }
+        } catch (err: any) {
             console.error("Create news error:", err);
-            showToast("error", "Terjadi kesalahan server!");
+            if (err instanceof TypeError || err?.name === 'TypeError') {
+                showToast("error", "Unggahan gagal — ukuran file melebihi batas.");
+            } else {
+                showToast("error", "Terjadi kesalahan server!");
+            }
         }
     };
 
@@ -1980,7 +2092,7 @@ export default function SuperAdminDashboard() {
                                     <label className="block mb-1">Tanggal Selesai</label>
                                     <input
                                         type="date"
-                                                    className={`w-full border rounded px-3 py-2 ${!isEdit ? 'bg-gray-100' : 'bg-white'}`}
+                                        className={`w-full border rounded px-3 py-2 ${!isEdit ? 'bg-gray-100' : 'bg-white'}`}
                                         value={addTrainingData.endDate || ""}
                                         onChange={(e) => {
                                             const end = e.target.value;
@@ -2605,32 +2717,36 @@ export default function SuperAdminDashboard() {
                                     />
 
                                     {/* Preview Gambar */}
-                                    <div className="mt-3 grid grid-cols-3 gap-2">
-                                        {addNewsData.images.map((file, idx) => (
-                                            <div key={idx} className="flex flex-col items-center border rounded overflow-hidden">
-                                                {/* Preview gambar */}
-                                                <img
-                                                    src={URL.createObjectURL(file)}
-                                                    alt={file.name}
-                                                    className="w-full h-24 object-cover"
-                                                />
+                                    <div className="mt-3 horizontal-scroll">
+                                        <div className="flex gap-2">
+                                            {addNewsData.images.map((file, idx) => (
+                                                <div key={idx} className="flex-shrink-0 flex flex-col items-center border rounded overflow-hidden fixed-image-250">
+                                                    {/* Preview gambar */}
+                                                    <div className="image-wrapper w-full h-[250px] rounded">
+                                                        <img
+                                                            src={URL.createObjectURL(file)}
+                                                            alt={file.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
 
-                                                {/* Tombol hapus di bawah gambar */}
-                                                <Button
-                                                    variant="default"
-                                                    size="sm"
-                                                    className="mt-2"
-                                                    onClick={() =>
-                                                        setAddNewsData((prev) => ({
-                                                            ...prev,
-                                                            images: prev.images.filter((_, i) => i !== idx),
-                                                        }))
-                                                    }
-                                                >
-                                                    Hapus
-                                                </Button>
-                                            </div>
-                                        ))}
+                                                    {/* Tombol hapus di bawah gambar */}
+                                                    <Button
+                                                        variant="default"
+                                                        size="sm"
+                                                        className="mt-2"
+                                                        onClick={() =>
+                                                            setAddNewsData((prev) => ({
+                                                                ...prev,
+                                                                images: prev.images.filter((_, i) => i !== idx),
+                                                            }))
+                                                        }
+                                                    >
+                                                        Hapus
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
 
                                 </div>
@@ -2711,109 +2827,191 @@ export default function SuperAdminDashboard() {
                     </Dialog>
 
                     {/* Detail News Modal */}
-                    <Dialog open={showNewsModal} onOpenChange={(v) => {
-                        setShowNewsModal(v);
-                        if (!v) setIsEditNews(false);
-                    }}>
-                        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" style={{ maxHeight: "600px", overflowY: "auto" }}>
+                    <Dialog
+                        open={showNewsModal}
+                        onOpenChange={(v) => {
+                            setShowNewsModal(v);
+                            if (!v) setIsEditNews(false);
+                        }}
+                    >
+                        <DialogContent
+                            className="max-w-lg max-h-[90vh] overflow-y-auto"
+                            style={{ maxHeight: "600px" }}
+                        >
                             <DialogHeader>
                                 <DialogTitle>Detail Berita</DialogTitle>
                             </DialogHeader>
 
                             {detailNews && (
-                                <div className={`space-y-3 text-sm ${!isEditNews ? 'bg-gray-100 p-4 rounded' : 'bg-white p-4 rounded'}`}>
-                                    <div className="grid grid-cols-3 gap-3 mt-3">
-                                        {newsForm.images.map((img, idx) => (
-                                            <div key={idx} className="flex flex-col items-center border rounded p-2">
-                                                <img
-                                                    src={img.file ? URL.createObjectURL(img.file) : (img.url || "")}
-                                                    alt="news"
-                                                    className="w-full h-24 object-cover"
-                                                />
+                                <div
+                                    className={`space-y-3 text-sm ${!isEditNews
+                                        ? "bg-gray-100 p-4 rounded"
+                                        : "bg-white p-4 rounded"
+                                        }`}
+                                >
 
-                                                {isEditNews && (
-                                                    <div className="flex flex-col gap-1 mt-2 w-full">
-                                                        {/* Hapus */}
-                                                        <Button
-                                                            variant="default"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                removeImage(img.imageId, img.imageId ? undefined : idx)
-                                                            }
-                                                        >
-                                                            Hapus
-                                                        </Button>
+                                    {isEditNews && (
+                                        <div className="flex justify-end">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    document.getElementById("add-image")?.click()
+                                                }
+                                            >
+                                                Tambah Gambar
+                                            </Button>
 
-                                                        {/* Ubah gambar */}
-                                                        {img.imageId && (
-                                                            <>
+                                            <input
+                                                type="file"
+                                                id="add-image"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    if (!e.target.files?.length) return;
+
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        setNewsForm((prev) => ({
+                                                            ...prev,
+                                                            images: [
+                                                                ...prev.images,
+                                                                {
+                                                                    file,
+                                                                    url: URL.createObjectURL(file),
+                                                                },
+                                                            ],
+                                                        }));
+                                                    }
+
+                                                    e.target.value = "";
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* ================= GRID GAMBAR (UNIFORM SIZE + HORIZONTAL SCROLL) ================= */}
+                                    {newsForm.images.length > 0 && (
+                                        <div className="mt-3 horizontal-scroll">
+                                            <div className="flex gap-3">
+                                                {newsForm.images.map((img, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="flex-shrink-0 flex flex-col items-center border rounded p-2 fixed-image-250"
+                                                    >
+                                                        <div className="image-wrapper w-full h-[250px] rounded">
+                                                            <img
+                                                                src={
+                                                                    img.file
+                                                                        ? URL.createObjectURL(img.file)
+                                                                        : img.url || ""
+                                                                }
+                                                                alt="news"
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+
+                                                        {isEditNews && (
+                                                            <div className="flex flex-col gap-1 mt-2 w-full">
+                                                                {/* HAPUS */}
                                                                 <Button
-                                                                    variant="default"
                                                                     size="sm"
-                                                                    onClick={() =>
-                                                                        document.getElementById(`replace-file-${idx}`)?.click()
-                                                                    }
+                                                                    onClick={() => removeImage(img.imageId ?? undefined, idx)}
                                                                 >
-                                                                    Ubah Gambar
+                                                                    Hapus
                                                                 </Button>
-                                                                <input
-                                                                    type="file"
-                                                                    id={`replace-file-${idx}`}
-                                                                    accept="image/*"
-                                                                    className="hidden"
-                                                                    onChange={(e) => {
-                                                                        if (!e.target.files || e.target.files.length === 0) return;
-                                                                        replaceImage(img.imageId!, e.target.files[0]);
-                                                                        e.target.value = "";
-                                                                    }}
-                                                                />
-                                                            </>
+
+                                                                {/* UBAH GAMBAR (HANYA GAMBAR LAMA) */}
+                                                                {img.imageId && (
+                                                                    <>
+                                                                        <Button
+                                                                            size="sm"
+                                                                            variant="outline"
+                                                                            onClick={() =>
+                                                                                document
+                                                                                    .getElementById(
+                                                                                        `replace-file-${idx}`
+                                                                                    )
+                                                                                    ?.click()
+                                                                            }
+                                                                        >
+                                                                            Ubah Gambar
+                                                                        </Button>
+
+                                                                        <input
+                                                                            type="file"
+                                                                            id={`replace-file-${idx}`}
+                                                                            accept="image/*"
+                                                                            className="hidden"
+                                                                            onChange={(e) => {
+                                                                                if (
+                                                                                    !e.target.files
+                                                                                        ?.length
+                                                                                )
+                                                                                    return;
+
+                                                                                const file = e.target.files[0];
+                                                                                if (file) {
+                                                                                    replaceImage(
+                                                                                        img.imageId!,
+                                                                                        file
+                                                                                    );
+                                                                                }
+
+                                                                                e.target.value = "";
+                                                                            }}
+                                                                        />
+                                                                    </>
+                                                                )}
+                                                            </div>
                                                         )}
                                                     </div>
-                                                )}
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
+                                        </div>
+                                    )}
 
-
-                                    {/* Title */}
+                                    {/* ================= JUDUL ================= */}
                                     <div>
                                         <label className="block mb-1">Judul</label>
                                         <input
                                             type="text"
                                             disabled={!isEditNews}
                                             value={newsForm.title}
-                                            onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })}
+                                            onChange={(e) =>
+                                                setNewsForm({
+                                                    ...newsForm,
+                                                    title: e.target.value,
+                                                })
+                                            }
                                             className="w-full border rounded px-3 py-2"
                                         />
                                     </div>
 
-                                    {/* Description WYSIWYG */}
+                                    {/* ================= DESKRIPSI ================= */}
                                     <div>
                                         <label className="block mb-1">Deskripsi</label>
 
                                         {editorDetail && (
                                             <RichTextEditor editor={editorDetail}>
-
-                                                {/* Toolbar hanya muncul saat edit */}
                                                 {isEditNews && (
-                                                    <RichTextEditor.Toolbar className="transition-all rounded-md p-1 ring-2 ring-blue-500 bg-blue-50">
+                                                    <RichTextEditor.Toolbar className="rounded-md p-1 ring-2 ring-blue-500 bg-blue-50">
                                                         <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.Bold active={editorDetail.isActive("bold")} />
-                                                            <RichTextEditor.Italic active={editorDetail.isActive("italic")} />
-                                                            <RichTextEditor.Underline active={editorDetail.isActive("underline")} />
-                                                            <RichTextEditor.Strikethrough active={editorDetail.isActive("strike")} />
+                                                            <RichTextEditor.Bold />
+                                                            <RichTextEditor.Italic />
+                                                            <RichTextEditor.Underline />
+                                                            <RichTextEditor.Strikethrough />
                                                         </RichTextEditor.ControlsGroup>
 
                                                         <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.H1 active={editorDetail.isActive("heading", { level: 1 })} />
-                                                            <RichTextEditor.H2 active={editorDetail.isActive("heading", { level: 2 })} />
-                                                            <RichTextEditor.H3 active={editorDetail.isActive("heading", { level: 3 })} />
+                                                            <RichTextEditor.H1 />
+                                                            <RichTextEditor.H2 />
+                                                            <RichTextEditor.H3 />
                                                         </RichTextEditor.ControlsGroup>
 
                                                         <RichTextEditor.ControlsGroup>
-                                                            <RichTextEditor.BulletList active={editorDetail.isActive("bulletList")} />
-                                                            <RichTextEditor.OrderedList active={editorDetail.isActive("orderedList")} />
+                                                            <RichTextEditor.BulletList />
+                                                            <RichTextEditor.OrderedList />
                                                         </RichTextEditor.ControlsGroup>
 
                                                         <RichTextEditor.ControlsGroup>
@@ -2823,14 +3021,12 @@ export default function SuperAdminDashboard() {
                                                     </RichTextEditor.Toolbar>
                                                 )}
 
-                                                {/* Content */}
-                                                <RichTextEditor.Content className="card-editor min-h-[150px] rounded-md p-3 border border-gray-300" />
-
+                                                <RichTextEditor.Content className="min-h-[150px] rounded-md p-3 border border-gray-300" />
                                             </RichTextEditor>
                                         )}
                                     </div>
 
-                                    {/* Author */}
+                                    {/* ================= AUTHOR ================= */}
                                     <div>
                                         <label className="block mb-1">Penulis</label>
                                         <input
@@ -2841,14 +3037,22 @@ export default function SuperAdminDashboard() {
                                         />
                                     </div>
 
-                                    {/* Buttons */}
-                                    <div className="flex justify-end items-center gap-3 mt-4">
+                                    {/* ================= BUTTON ================= */}
+                                    <div className="flex justify-end gap-3 mt-4">
                                         {!isEditNews && (
-                                            <Button onClick={() => setIsEditNews(true)}>Edit</Button>
+                                            <Button onClick={() => setIsEditNews(true)}>
+                                                Edit
+                                            </Button>
                                         )}
+
                                         {isEditNews && (
                                             <>
-                                                <Button variant="outline" onClick={() => setIsEditNews(false)}>Batal</Button>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => setIsEditNews(false)}
+                                                >
+                                                    Batal
+                                                </Button>
                                                 <Button onClick={updateNews}>Simpan</Button>
                                             </>
                                         )}

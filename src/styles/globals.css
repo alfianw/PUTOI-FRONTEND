@@ -195,6 +195,28 @@
     border-radius: 3px;
 }
 
+/* Custom helpers for fixed-size image previews and horizontal scrolling */
+.fixed-image-250 {
+    width: 250px;
+    flex: 0 0 250px;
+    /* do not force container height so buttons below don't reduce image area */
+}
+.fixed-image-250 > div.image-wrapper {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+.fixed-image-250 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.horizontal-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 
 @keyframes fadeOut {
     0% {
