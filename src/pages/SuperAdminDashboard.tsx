@@ -2574,12 +2574,13 @@ export default function SuperAdminDashboard() {
                             <div className="space-y-3 text-sm">
 
                                 <div className="mb-4">
-                                    <label className="block mb-2 font-medium text-gray-700">Upload Gambar</label>
+                                    <label className="block mb-1">Upload Gambar</label>
 
                                     {/* Tombol Upload */}
                                     <Button
                                         variant="default"
                                         onClick={() => fileInputRef.current?.click()}
+                                        className='mb-2'
                                     >
                                         Pilih Gambar
                                     </Button>
@@ -2587,23 +2588,24 @@ export default function SuperAdminDashboard() {
                                     {/* Input file disembunyikan */}
                                     <input
                                         type="file"
-                                        multiple
                                         accept="image/*"
                                         ref={fileInputRef}
                                         onChange={(e) => {
                                             if (!e.target.files) return;
-                                            const newFiles = Array.from(e.target.files);
-                                            setAddNewsData((prev) => ({
-                                                ...prev,
-                                                images: [...prev.images, ...newFiles],
-                                            }));
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                setAddNewsData((prev) => ({
+                                                    ...prev,
+                                                    images: [file],
+                                                }));
+                                            }
                                             e.target.value = "";
                                         }}
                                         className="hidden"
                                     />
 
                                     {/* Preview Gambar */}
-                                    <div className="mt-3 grid grid-cols-3 gap-3">
+                                    <div className="mt-3 grid grid-cols-3 gap-2">
                                         {addNewsData.images.map((file, idx) => (
                                             <div key={idx} className="flex flex-col items-center border rounded overflow-hidden">
                                                 {/* Preview gambar */}
@@ -3088,7 +3090,7 @@ export default function SuperAdminDashboard() {
                             {/* Header + Filter */}
                             <div className="flex items-center justify-between mb-6">
 
-                                <h2 className="text-xl text-gray-900">Peserta training</h2>
+                                <h2 className="text-xl text-gray-900">Peserta Pelatihan</h2>
 
                                 <div className="flex items-center gap-3 ml-auto">
                                     <input

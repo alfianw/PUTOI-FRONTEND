@@ -299,19 +299,23 @@ export function FeaturedCourses() {
                         </Button>
 
                         <Button
-                          disabled={registeredTrainings.has(item.id)}
-                          className={`border border-transparent cursor-pointer ${registeredTrainings.has(item.id)
+                          disabled={registeredTrainings.has(item.id) || item.quotaFull}
+                          className={`border border-transparent cursor-pointer ${registeredTrainings.has(item.id) || item.quotaFull
                             ? 'bg-white text-gray-600 cursor-not-allowed opacity-70'
                             : 'bg-white text-blue-900 hover:bg-white hover:text-blue-900'
                             }`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (!registeredTrainings.has(item.id)) {
+                            if (!registeredTrainings.has(item.id) && !item.quotaFull) {
                               handleDaftarClick(item.id, item.trainingTitle);
                             }
                           }}
                         >
-                          {registeredTrainings.has(item.id) ? 'Anda Sudah Terdaftar' : 'Daftar'}
+                          {registeredTrainings.has(item.id)
+                            ? 'Anda Sudah Terdaftar'
+                            : item.quotaFull
+                              ? 'Kuota Penuh'
+                              : 'Daftar'}
                         </Button>
                       </div>
                     </div>
@@ -440,6 +444,10 @@ export function FeaturedCourses() {
                       <span>Sudah Terdaftar</span>
                       <Check className="w-5 h-5" />
                     </div>
+                  ) : detailData?.quotaFull ? (
+                    <Button className="w-full mt-4 bg-gray-300 text-gray-500 cursor-not-allowed" disabled>
+                      Kuota Penuh
+                    </Button>
                   ) : (
                     <Button
                       className="w-full mt-4 bg-blue-900 hover:bg-blue-700 text-white"
