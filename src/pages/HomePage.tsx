@@ -13,7 +13,7 @@ import { BackendStatus } from "../components/BackendStatus";
 export default function HomePage() {
     return (
         <div className="min-h-screen bg-white">
-            <BackendStatus />
+            {/* <BackendStatus /> */}
             <Navbar />
             <main>
                 <Hero />
