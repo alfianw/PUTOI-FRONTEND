@@ -8,12 +8,10 @@ import { GallerySection } from "../components/GallerySection";
 import { Testimonials } from "../components/Testimonials";
 import { Newsletter } from "../components/Newsletter";
 import { Footer } from "../components/Footer";
-import { BackendStatus } from "../components/BackendStatus";
 
 export default function HomePage() {
     return (
         <div className="min-h-screen bg-white">
-            {/* <BackendStatus /> */}
             <Navbar />
             <main>
                 <Hero />
